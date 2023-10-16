@@ -79,3 +79,4 @@ gem 'jquery-rails'
 gem 'byebug'
 
 gem "devise", "~> 4.9"
+gem "cocoon"
