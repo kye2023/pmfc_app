@@ -5,3 +5,6 @@ import "controllers"
 //import "./popper"
 import "bootstrap"
 import "@rails/request.js"
+
+require("jquery")
+require("@nathanvda/cocoon")

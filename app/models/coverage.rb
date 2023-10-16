@@ -41,9 +41,11 @@ class Coverage < ApplicationRecord
   end
 
   def coverage_lppi_premium
-    lppi_prem = batch.premium_rate.premium
     if lppi_gross_coverage.present? && term.present?
+      
+      lppi_prem = batch.premium_rate.premium
       ((lppi_gross_coverage / 1000) * (term * lppi_prem))
+
     end
   end
 
