@@ -1,0 +1,44 @@
+<%= content_tag :h1, "List of Group Premia" %>
+
+
+<div class="text-end mb-3">
+  <%= link_to new_group_premium_path, class: 'btn btn-primary' do %>
+    New Group Premium
+  <% end %>
+</div>
+
+
+  <table class="table table-striped table-bordered table-hover">
+    <thead>
+      <tr>
+      <th>#</th>
+            <th>Residency From</th>
+            <th>Residency To</th>
+            <th>Term Coverage</th>
+            <th>Amount Premium</th>
+            <th>Relationship</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+      <% @group_premia.each do |group_premium| %>
+        <tr>
+
+        <th scope="row"><%= group_premium.id %></th>
+        <td><%= group_premium.residency_from %></td>
+        <td><%= group_premium.residency_to %></td>
+        <td><%= group_premium.term_coverage %></td>
+        <td><%= group_premium.amount_premium %></td>
+        <td><%= group_premium.relationship %></td>
+    
+          <td>
+            <%= link_to 'View', group_premium, class: 'btn btn-secondary btn-sm' %>
+            <%= link_to 'Edit', edit_group_premium_path(group_premium), class: 'btn btn-secondary btn-sm' %>
+            <%= link_to "Delete", group_premium, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+          </td>
+
+        </tr>
+      <% end %>
+    </tbody>
+  </table>

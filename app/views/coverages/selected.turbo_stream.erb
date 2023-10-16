@@ -1,0 +1,23 @@
+<%= turbo_stream.update @target do %>
+    <% @members.each do |member| %>
+        <% cvg_mbr = member.compute_member_age(member.birth_date) %>
+        <%= cvg_mbr %>
+    <% end %>
+<% end %>
+
+<%
+=begin
+%>
+<turbo-stream action="update" target="<%= @target%>">
+  <template>
+      <% @members.each do |member| %>
+            <% cvg_mbr = member.compute_member_age(member.birth_date) %>
+             <%# text_field(:coverage, :age, :value => cvg_mbr, :select_target => 'outputAge' ) %>
+            <%= cvg_mbr %>
+      <% end %>
+  </template>
+</turbo-stream>
+
+<%
+=end
+%>

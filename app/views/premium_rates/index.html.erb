@@ -1,0 +1,42 @@
+<%= content_tag :h1, "List of Premium Rates" %>
+
+
+<div class="text-start mb-3">
+  <%= link_to new_premium_rate_path, class: 'btn btn-primary' do %>
+    New Premium Rate
+  <% end %>
+</div>
+
+  <table class="table table-striped table-bordered table-hover">
+    <thead>
+      <tr>
+      <th>#</th>
+            <th>Batch</th>
+            <th>Premium</th>
+            <th>Category</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+      <% 
+        pcount = 0
+        pr_category = ""
+        @premium_rates.each do |premium_rate| 
+          pcount += 1
+          pr_category = premium_rate.prm_category
+      %>
+        <tr>
+          <th scope="row"><%= pcount %></th>
+          <td><%= premium_rate.batch.title %></td>
+          <td><%= premium_rate.premium.round(2) %></td>
+          <td><%= pr_category %></td>
+          <td>
+            <%= link_to 'View', premium_rate, class: 'btn btn-secondary btn-sm' %>
+            <%= link_to 'Edit', edit_premium_rate_path(premium_rate), class: 'btn btn-secondary btn-sm' %>
+            <%= link_to "Delete", premium_rate, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>

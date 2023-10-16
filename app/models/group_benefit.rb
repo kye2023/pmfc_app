@@ -1,0 +1,2 @@
+class GroupBenefit < ApplicationRecord
+end

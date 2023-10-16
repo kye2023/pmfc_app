@@ -1,0 +1,9 @@
+
+<%= render @group_premium %>
+
+<div>
+  <%= link_to "Edit", edit_group_premium_path(@group_premium), class: 'btn btn-primary' %> |
+  <%= link_to "Back", group_premia_path, class: 'btn btn-primary' %>
+
+  <%= button_to "Delete", @group_premium, method: :delete, class: 'btn btn-danger' %>
+</div>

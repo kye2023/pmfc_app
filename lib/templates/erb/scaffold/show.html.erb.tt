@@ -1,0 +1,9 @@
+
+<%%= render @<%= singular_table_name %> %>
+
+<div>
+  <%%= link_to "Edit", <%= edit_helper(type: :path) %>, class: 'btn btn-primary' %> |
+  <%%= link_to "Back", <%= index_helper(type: :path) %>, class: 'btn btn-primary' %>
+
+  <%%= button_to "Delete", <%= model_resource_name(prefix: "@") %>, method: :delete, class: 'btn btn-danger' %>
+</div>

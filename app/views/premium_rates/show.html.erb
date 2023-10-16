@@ -1,0 +1,9 @@
+
+<%= render @premium_rate %>
+
+<div>
+  <%= link_to "Edit", edit_premium_rate_path(@premium_rate), class: 'btn btn-primary' %> |
+  <%= link_to "Back", premium_rates_path, class: 'btn btn-primary' %>
+
+  <%= button_to "Delete", @premium_rate, method: :delete, class: 'btn btn-danger' %>
+</div>

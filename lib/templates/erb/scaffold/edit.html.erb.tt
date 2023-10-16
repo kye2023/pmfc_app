@@ -1,0 +1,6 @@
+<div class="card">
+  <h5 class="card-header">Edit <%= human_name.downcase %></h5>
+  <div class="card-body">
+    <%%= render "form", <%= singular_table_name %>: @<%= singular_table_name %> %>
+  </div>
+</div>

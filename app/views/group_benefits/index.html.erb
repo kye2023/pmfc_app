@@ -1,0 +1,44 @@
+<%= content_tag :h1, "List of Group Benefits" %>
+
+
+<div class="text-end mb-3">
+  <%= link_to new_group_benefit_path, class: 'btn btn-primary' do %>
+    New Group Benefit
+  <% end %>
+</div>
+
+
+  <table class="table table-striped table-bordered table-hover">
+    <thead>
+      <tr>
+      <th>#</th>
+            <th>Benefit</th>
+            <th>Residency From</th>
+            <th>Residency To</th>
+            <th>Relationship</th>
+            <th>Amount Benefit</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+      <% @group_benefits.each do |group_benefit| %>
+        <tr>
+
+        <th scope="row"><%= group_benefit.id %></th>
+        <td><%= group_benefit.benefit_id %></td>
+        <td><%= group_benefit.residency_from %></td>
+        <td><%= group_benefit.residency_to %></td>
+        <td><%= group_benefit.relationship %></td>
+        <td><%= group_benefit.amount_benefit %></td>
+    
+          <td>
+            <%= link_to 'View', group_benefit, class: 'btn btn-secondary btn-sm' %>
+            <%= link_to 'Edit', edit_group_benefit_path(group_benefit), class: 'btn btn-secondary btn-sm' %>
+            <%= link_to "Delete", group_benefit, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+          </td>
+
+        </tr>
+      <% end %>
+    </tbody>
+  </table>

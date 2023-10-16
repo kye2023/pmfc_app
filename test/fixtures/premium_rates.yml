@@ -1,0 +1,9 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  batch_id: MyString
+  premium: 1
+
+two:
+  batch_id: MyString
+  premium: 1

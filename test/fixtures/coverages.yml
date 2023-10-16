@@ -1,0 +1,31 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  batch_id: MyString
+  member_id: MyString
+  loan_certificate: MyString
+  age: 1
+  effectivity: 2023-10-05
+  expiry: 2023-10-05
+  term: 1
+  status: MyString
+  lppi_gross_premium: MyString
+  group_certificate: MyString
+  residency: MyString
+  group_coverage: 1
+  group_premium: 1
+
+two:
+  batch_id: MyString
+  member_id: MyString
+  loan_certificate: MyString
+  age: 1
+  effectivity: 2023-10-05
+  expiry: 2023-10-05
+  term: 1
+  status: MyString
+  lppi_gross_premium: MyString
+  group_certificate: MyString
+  residency: MyString
+  group_coverage: 1
+  group_premium: 1

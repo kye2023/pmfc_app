@@ -1,0 +1,18 @@
+<%
+=begin
+%>
+<div class="card">
+  <h5 class="card-header">New batch</h5>
+  <div class="card-body">
+    <%= render "form", batch: @batch %>
+  </div>
+</div>
+<%
+=end
+%>
+
+<%= render "remote_modal", title: "New Coop" do %>
+
+  <%= render "form", item: @item %>
+
+<% end %>

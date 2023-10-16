@@ -1,0 +1,2 @@
+class DependentCoverage < ApplicationRecord
+end

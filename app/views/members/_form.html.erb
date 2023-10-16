@@ -1,0 +1,33 @@
+<%= simple_form_for(@member, data: {
+  controller: "flatpickr"
+}) do |f| %>
+  <%= f.error_notification %>
+  <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+
+  <div class="form-inputs">
+    <% if( @member.member_id != nil ) then %>
+    <%= f.input :member_id %>
+    <% else %>
+    <%= f.input :member_id, input_html: { :value => generate_member_id } %>
+    <% end %>
+    
+    <%= f.input :last_name %>
+    <%= f.input :first_name %>
+    <%= f.input :middle_name %>
+    <br>
+    <%= f.label :birth_date %>
+    <%= f.date_field :birth_date, class: "date_pick" %>
+    <%= f.label :date_membership %>
+    <%= f.date_field :date_membership, class: "date_pick" %>
+    <br>
+    <br>
+    <%= f.input :civil_status , collection: ['Single', 'Married', 'Widowed', 'Divorced'], include_blank: true %>
+    <%= f.input :gender , collection: [['Male','M'],['Female','F']], include_blank: true %>
+    <%= f.input :mobile_no %>
+    <%= f.input :email %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit, class: "btn btn-primary" %>
+  </div>
+<% end %>

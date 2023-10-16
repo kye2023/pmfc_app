@@ -1,0 +1,75 @@
+<div id="<%= dom_id coverage %>">
+  <p>
+    <strong>Coop:</strong>
+    <% coverage.batch_id %>
+    <%=coverage.batch.title %>
+  </p>
+
+  <p>
+    <strong>Member:</strong>
+    <%# coverage.member_id %>
+    <%= coverage.member.get_cmember %>
+  </p>
+
+  <p>
+    <strong>Loan certificate:</strong>
+    <%= coverage.loan_certificate %>
+  </p>
+
+  <p>
+    <strong>Age:</strong>
+    <%= coverage.age %>
+  </p>
+
+  <p>
+    <strong>Effectivity:</strong>
+    <%= coverage.effectivity %>
+  </p>
+
+  <p>
+    <strong>Expiry:</strong>
+    <%= coverage.expiry %>
+  </p>
+
+  <p>
+    <strong>Term:</strong>
+    <%= coverage.term %>
+  </p>
+
+  <p>
+    <strong>Status:</strong>
+    <%= coverage.status %>
+  </p>
+
+ <p>
+    <strong>Lppi gross coverage:</strong>
+    <%= coverage.lppi_gross_coverage %>
+  </p>
+
+  <p>
+    <strong>Lppi gross premium:</strong>
+    <%# coverage.lppi_gross_premium %>
+    <%= coverage.lppi_gross_premium.round(2) %>
+  </p>
+<!--
+  <p>
+    <strong>Group certificate:</strong>
+    <% coverage.group_certificate %>
+  </p>
+
+  <p>
+    <strong>Residency:</strong>
+    <% coverage.residency %>
+  </p>
+
+  <p>
+    <strong>Group coverage:</strong>
+    <% coverage.group_coverage %>
+  </p>
+
+  <p>
+    <strong>Group premium:</strong>
+    <% coverage.group_premium %>
+  </p>
+  -->
+</div>

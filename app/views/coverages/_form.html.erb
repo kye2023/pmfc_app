@@ -1,0 +1,31 @@
+<%= simple_form_for(coverage) do |f| %>
+  <%= f.error_notification %>
+  <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+
+  <div class="form-inputs">
+    <%= f.association :batch, label_method: :batch_info, include_blank: true  %>
+    <%= f.association :member, label_method: :get_cmember, include_blank: true %>
+    <%= f.input :loan_certificate %>
+    <% f.input :age %>
+    <br>
+    <%= f.label :effectivity %>
+    <%= f.date_field :effectivity %>
+    <%= f.label :expiry %>
+    <%= f.date_field :expiry %>
+    <br>
+    <br>
+    <% f.input :term %>
+    <%= f.input :status, collection: [['New','N'],['Renewal','R']], include_blank: true %>
+    <%= f.input :lppi_gross_coverage %>
+    <% f.input :lppi_gross_premium %>
+    <% f.input :group_certificate %>
+    <% f.input :residency %>
+    <% f.input :group_coverage %>
+    <% f.input :group_premium %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit, class: "btn btn-primary" %>
+    <%# console %>
+  </div>
+<% end %>

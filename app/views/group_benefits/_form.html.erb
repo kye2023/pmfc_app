@@ -1,0 +1,17 @@
+
+<%= simple_form_for(@group_benefit) do |f| %>
+  <%= f.error_notification %>
+  <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+
+  <div class="form-inputs">
+    <%= f.input :benefit_id %>
+    <%= f.input :residency_from %>
+    <%= f.input :residency_to %>
+    <%= f.input :relationship %>
+    <%= f.input :amount_benefit %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

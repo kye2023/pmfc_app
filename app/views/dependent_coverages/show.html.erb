@@ -1,0 +1,9 @@
+
+<%= render @dependent_coverage %>
+
+<div>
+  <%= link_to "Edit", edit_dependent_coverage_path(@dependent_coverage), class: 'btn btn-primary' %> |
+  <%= link_to "Back", dependent_coverages_path, class: 'btn btn-primary' %>
+
+  <%= button_to "Delete", @dependent_coverage, method: :delete, class: 'btn btn-danger' %>
+</div>

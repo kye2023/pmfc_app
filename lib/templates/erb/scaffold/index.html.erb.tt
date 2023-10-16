@@ -1,0 +1,40 @@
+<%%= content_tag :h1, "List of <%= plural_table_name.titleize %>" %>
+<%#% subtitle @subtitle if @subtitle %>
+
+<div class="text-end mb-3">
+  <%%= link_to new_<%= singular_table_name %>_path, class: 'btn btn-primary' do %>
+    New <%= human_name.titleize %>
+  <%% end %>
+</div>
+
+
+  <table class="table table-striped table-bordered table-hover">
+    <thead>
+      <tr>
+      <th>#</th>
+      <% attributes.each do |attribute| -%>
+      <th><%= attribute.human_name.titleize %></th>
+      <% end -%>
+      <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+      <%% @<%= plural_table_name %>.each do |<%= singular_table_name %>| %>
+        <tr>
+
+        <th scope="row"><%%= <%= singular_table_name %>.id %></th>
+    <% attributes.each do |attribute| -%>
+    <td><%%= <%= singular_table_name %>.<%= attribute.name %> %></td>
+    <% end -%>
+
+          <td>
+            <%%= link_to 'View', <%= singular_table_name %>, class: 'btn btn-secondary btn-sm' %>
+            <%%= link_to 'Edit', edit_<%= singular_table_name %>_path(<%= singular_table_name %>), class: 'btn btn-secondary btn-sm' %>
+            <%%= link_to "Delete", <%= singular_table_name %>, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+          </td>
+
+        </tr>
+      <%% end %>
+    </tbody>
+  </table>

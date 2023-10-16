@@ -1,0 +1,38 @@
+<%= content_tag :h1, "List of Benefits" %>
+
+
+<div class="text-end mb-3">
+  <%= link_to new_benefit_path, class: 'btn btn-primary' do %>
+    New Benefit
+  <% end %>
+</div>
+
+
+  <table class="table table-striped table-bordered table-hover">
+    <thead>
+      <tr>
+      <th>#</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+      <% @benefits.each do |benefit| %>
+        <tr>
+
+        <th scope="row"><%= benefit.id %></th>
+        <td><%= benefit.name %></td>
+        <td><%= benefit.description %></td>
+    
+          <td>
+            <%= link_to 'View', benefit, class: 'btn btn-secondary btn-sm' %>
+            <%= link_to 'Edit', edit_benefit_path(benefit), class: 'btn btn-secondary btn-sm' %>
+            <%= link_to "Delete", benefit, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+          </td>
+
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
