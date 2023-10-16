@@ -13,6 +13,13 @@ class MembersController < ApplicationController
   # GET /members/new
   def new
     @member = Member.new
+    dummy_data
+  end
+
+  def dummy_data 
+    @member.last_name = FFaker::Name.last_name
+    @member.first_name = FFaker::Name.first_name
+    @member.middle_name = FFaker::Name.first_name[0]
   end
 
   # GET /members/1/edit

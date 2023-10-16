@@ -28,11 +28,10 @@
 
           <th scope="row"><%= mbrcount %></th>
           <td>
-            <div class="text-wrap fw-lighter">Name: <%= member.get_cmember %></div>
+            <div class="text-wrap fw-lighter">Name: <strong><%= member.get_cmember %></strong></div>
             <div class="text-wrap fw-lighter">Birth Date: <%= member.birth_date.strftime("%m/%d/%Y") %></div>
             <div class="text-wrap fw-lighter">Date of Membership: <%= member.date_membership.strftime("%m/%d/%Y") %></div>
-            <div class="text-wrap fw-lighter">Civil Status: <%= member.civil_status %></div>
-            <div class="text-wrap fw-lighter">Gender: <%= member.gender %></div>
+            <div class="text-wrap fw-lighter"><small> CS: <%= member.civil_status %> | Gender: <%= member.gender %></small></div>
           </td>
           <!--<td></td>-->
           <td>
