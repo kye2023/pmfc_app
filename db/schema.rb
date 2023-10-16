@@ -26,21 +26,19 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_16_040201) do
   end
 
   create_table "coverages", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.integer "batch_id"
-    t.integer "member_id"
-    t.integer "premium_id"
+    t.string "batch_id"
+    t.string "member_id"
     t.string "loan_certificate"
     t.integer "age"
     t.date "effectivity"
     t.date "expiry"
     t.integer "term"
     t.string "status"
-    t.integer "lppi_gross_coverage"
-    t.float "lppi_gross_premium", limit: 53
+    t.string "lppi_gross_premium"
     t.string "group_certificate"
     t.string "residency"
     t.integer "group_coverage"
-    t.float "group_premium", limit: 53
+    t.integer "group_premium"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -93,7 +91,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_16_040201) do
   end
 
   create_table "members", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "member_id"
     t.string "last_name"
     t.string "first_name"
     t.string "middle_name"
@@ -116,9 +113,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_16_040201) do
 
   create_table "premium_rates", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "batch_id"
-    t.float "premium"
-    t.integer "min_age"
-    t.integer "max_age"
+    t.integer "premium"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
