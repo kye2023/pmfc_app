@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>PfmcApp</title>
+    <title>PMFC</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -17,8 +17,13 @@
   <body>
     <%= render "layouts/navbar" %>
     <div class="container">
-      <p class="notice"><%= notice %></p>
-      <p class="alert"><%= alert %></p>
+      <div class="row d-flex justify-content-center">
+        <div id="flash" style="width: auto" remote_modal>
+          <%= render "layouts/notification" %>
+        </div>
+      </div>
+      <p class="notice"><%#= notice %></p>
+      <p class="alert"><%#= alert %></p>
       <%= yield %>
       <%= turbo_frame_tag "remote_modal", target: "_top" %>
     </div>

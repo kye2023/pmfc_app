@@ -29,3 +29,21 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+
+# Ignore uploaded files (if using Active Storage).
+/storage/*
+/log/*
+log/development.log
+
+tmp/*
+dump.rdb
+.byebug_history
+/db/uploads/*
+/public/uploads/*
+db/seeds.rb
+log/development.log
+/config/database.yml
+/config/.DS_Store
+.vscode/*
+config/database.yml
+```

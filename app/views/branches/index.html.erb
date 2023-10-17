@@ -1,0 +1,39 @@
+<%= content_tag :h1, "List of Branches" %>
+
+
+<div class="text-end mb-3">
+  <%= link_to new_branch_path, class: 'btn btn-primary' do %>
+    New Branch
+  <% end %>
+</div>
+
+
+  <table class="table table-striped table-bordered table-hover">
+    <thead>
+      <tr>
+      <th>#</th>
+            <th>Branch</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+      <% @branches.each do |branch| %>
+        <tr>
+
+        <th scope="row"><%= branch.id %></th>
+        <td><strong><%= branch.name %></strong> <br>
+        <small><%= branch.address %> <br>
+        <%= branch.contact_no %> | <%= branch.email %></small>
+        </td>
+    
+          <td>
+            <%= link_to 'View', branch, class: 'btn btn-secondary btn-sm' %>
+            <%= link_to 'Edit', edit_branch_path(branch), class: 'btn btn-secondary btn-sm' %>
+            <%= link_to "Delete", branch, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+          </td>
+
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
