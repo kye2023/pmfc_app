@@ -1,0 +1,35 @@
+
+
+<table class="table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Certificate</th>
+            <th>Name</th>
+            <th>Effectivity</th>
+            <th>Expiry</th>
+            <th>Term</th>
+            <th>Status</th>
+            <th>Loan Amount</th>
+            <th>Premium</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <% batch.coverages.each do |c| %>
+            <tr>
+                <th scope="row"><%= c.id %></th>
+                <td><%= c.loan_certificate %></td>
+                <td><%= c.member.get_cmember %> <br>
+                <small><%= to_shortdate(c.member.birth_date) %></small> | <small class="text-primary"> Age: <%= c.age %></small></td>
+                <td><%= to_shortdate(c.effectivity) %></td>
+                <td><%= to_shortdate(c.expiry) %></td>
+                <td><%= c.term %></td>
+                <td><%= c.status %></td>
+                <td class="text-end"><%= to_curr(c.loan_coverage) %></td>
+                <td class="text-end"><%= to_curr(c.lppi_gross_premium) %></td>
+                <td><%= link_to "Delete", c, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %></td>
+            </tr>
+        <% end %>
+    </tbody>
+</table>
