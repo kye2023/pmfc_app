@@ -29,3 +29,19 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+/storage/*
+/log/*
+log/development.log
+
+tmp/*
+dump.rdb
+.byebug_history
+/db/uploads/*
+/public/uploads/*
+db/seeds.rb
+log/development.log
+/config/database.yml
+/config/.DS_Store
+.vscode/*
+config/database.yml
+```
