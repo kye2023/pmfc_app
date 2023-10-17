@@ -15,7 +15,9 @@
   </head>
 
   <body>
-    <%= render "layouts/navbar" %>
+    <% if user_signed_in? %>
+      <%= render "layouts/navbar" %>
+    <% end %>
     <div class="container">
       <div class="row d-flex justify-content-center">
         <div id="flash" style="width: auto" remote_modal>

@@ -1,5 +1,7 @@
 class CoveragesController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_coverage, only: %i[ show edit update destroy ]
+  
 
   # GET /coverages or /coverages.json
   def index
