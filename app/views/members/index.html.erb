@@ -2,45 +2,43 @@
 
 
 <div class="text-start mb-3">
-  <%= link_to new_member_path, class: 'btn btn-primary' do %>
+  <%= link_to new_member_path, data: { turbo_frame:"remote_modal" }, class: 'btn btn-primary' do %>
     New Member
   <% end %>
 </div>
 
 
-  <table class="table table-striped table-bordered table-hover">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Member Info</th>
-        <!--<th>Transaction</th>-->
-        <th></th>
-      </tr>
-    </thead>
-
-    <tbody>
-      <% 
-        mbrcount = 0
-        @members.each do |member| 
-          mbrcount += 1
-      %>
-        <tr id="members">
-
-          <th scope="row"><%= mbrcount %></th>
-          <td>
-            <div class="text-wrap fw-lighter">Name: <strong><%= member.get_cmember %></strong></div>
-            <div class="text-wrap fw-lighter">Birth Date: <%= member.birth_date.strftime("%m/%d/%Y") %></div>
-            <div class="text-wrap fw-lighter">Date of Membership: <%= member.date_membership.strftime("%m/%d/%Y") %></div>
-            <div class="text-wrap fw-lighter"><small> CS: <%= member.civil_status %> | Gender: <%= member.gender %></small></div>
-          </td>
-          <!--<td></td>-->
-          <td>
-              <%= link_to 'View', member, class: 'btn btn-secondary btn-sm ' %>
-              <%= link_to 'Edit', edit_member_path(member), class: 'btn btn-secondary btn-sm' %>
-              <%= link_to "Delete", member, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
-          </td>
-
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+<table class="table table-striped table-bordered table-hover">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Member Info</th>
+      <!--<th>Transaction</th>-->
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% 
+      mbrcount = 0
+      @members.each do |member| 
+        mbrcount += 1
+    %>
+    <tr id="members">
+      <th scope="row"><%= mbrcount %></th>
+      <td>
+        <div class="text-wrap fw-lighter">Name: <strong><%= member.get_cmember %></strong></div>
+        <div class="text-wrap fw-lighter"><small> Birth Date: <%= member.get_formatted_bday %></small></div>
+        <div class="text-wrap fw-lighter"><small> Date of Membership: <%= member.get_formatted_membership %></small></div>
+        <div class="text-wrap fw-lighter"><small> CS: <%= member.civil_status %> | Gender: <%= member.gender %></small></div>
+        <div class="text-wrap fw-lighter"><small> Dependent(s): <%= member.count_dependent %></small></div>
+      </td>
+      <!--<td></td>-->
+      <td>
+        <%= link_to 'View', member, class: 'btn btn-secondary btn-sm ' %>
+        <%= link_to 'Edit', edit_member_path(member), class: 'btn btn-secondary btn-sm' %>
+        <%= link_to "Delete", member, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+      </td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>

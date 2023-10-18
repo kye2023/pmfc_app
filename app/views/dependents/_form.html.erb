@@ -6,7 +6,7 @@
   <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
 
   <div class="form-inputs">
-    <%= f.association :member, label_method: :last_name, include_blank: true %>
+    <%= f.association :member, label_method: :get_cmember, include_blank: true %>
     <%= f.input :last_name %>
     <%= f.input :first_name %>
     <%= f.input :middle_name %>

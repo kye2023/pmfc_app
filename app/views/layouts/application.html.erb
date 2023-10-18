@@ -1,28 +1,31 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>PfmcApp</title>
+    <title>PmfcApp</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <%= javascript_include_tag "jquery" %>
+    
     
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <%= javascript_include_tag "jquery" %>
   </head>
 
   <body>
     <% if user_signed_in? %>
       <%= render "layouts/navbar" %>
     <% end %>
-    <div class="container">
+
+    <div class="container mt-5">
       <p class="notice"><%= notice %></p>
       <p class="alert"><%= alert %></p>
       <%= yield %>
       <%= turbo_frame_tag "remote_modal", target: "_top" %>
     </div>
+    
   </body>
 </html>

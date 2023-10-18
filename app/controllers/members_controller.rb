@@ -1,4 +1,5 @@
 class MembersController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_member, only: %i[ show edit update destroy ]
 
   # GET /members or /members.json
@@ -37,6 +38,7 @@ class MembersController < ApplicationController
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @member.errors, status: :unprocessable_entity }
+        format.turbo_stream { render :form_update, status: :unprocessable_entity }
       end
     end
   end
@@ -72,7 +74,7 @@ class MembersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def member_params
-      params.require(:member).permit(:member_id, :last_name, :first_name, :middle_name, :birth_date, :date_membership, :civil_status, :gender, :mobile_no, :email)
+      params.require(:member).permit(:last_name, :first_name, :middle_name, :birth_date, :date_membership, :civil_status, :gender, :mobile_no, :email, dependents_attributes: [:id, :member_id, :last_name, :first_name, :middle_name, :birth_date, :relationship, :_destroy] )
     end
 
 end

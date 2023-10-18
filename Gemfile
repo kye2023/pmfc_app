@@ -85,3 +85,4 @@ gem "cocoon"
 
 gem 'htmlbeautifier'
 
+gem 'vanilla_nested'
