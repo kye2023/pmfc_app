@@ -15,7 +15,10 @@
             </p>
         </div>
       </div>
-<%= link_to "New Loan", new_coverage_path(b: batch), class: "btn btn-primary", data: { turbo_frame: "remote_modal" }%>
+<div class="mb-3">
+  <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, batches_path, class: "btn btn-secondary" %>
+  <%= link_to "New Loan", new_coverage_path(b: batch), class: "btn btn-primary", data: { turbo_frame: "remote_modal" }%>
+</div>
 <%#= link_to 'Add Branch', new_coop_branch_path(v: c) , class: 'btn btn-primary', data: { turbo_frame: "remote_modal" } %>
 <%= render 'coverages/show_loan_coverage', batch: batch %>
 </div>

@@ -6,18 +6,20 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-
+    <%= favicon_link_tag 'favicon.ico' %>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <%= javascript_include_tag "jquery" %>
     
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "custom", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <% if user_signed_in? %>
+  <body class="d-flex flex-column">
+    <%# if user_signed_in? %>
       <%= render "layouts/navbar" %>
-    <% end %>
+    <%# end %>
     <div class="container">
       <div class="row d-flex justify-content-center">
         <div id="flash" style="width: auto" remote_modal>
@@ -29,5 +31,6 @@
       <%= yield %>
       <%= turbo_frame_tag "remote_modal", target: "_top" %>
     </div>
+    <%= render 'layouts/footer' %>
   </body>
 </html>

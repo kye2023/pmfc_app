@@ -1,5 +1,5 @@
 class CoveragesController < ApplicationController
-  before_action :authenticate_user!
+  # before_action :authenticate_user!
   before_action :set_coverage, only: %i[ show edit update destroy ]
   
 
@@ -42,7 +42,7 @@ class CoveragesController < ApplicationController
       #@member = Member.find(coverage_params[:member_id])
       
       @coverage.compute_age
-      @coverage.term = @coverage.coverage_aging
+      # @coverage.term = @coverage.coverage_aging
       # @coverage.lppi_gross_premium = @coverage.coverage_lppi_premium
       
       respond_to do |format|
@@ -62,10 +62,10 @@ class CoveragesController < ApplicationController
     # @coverage.age = @coverage.compute_age 
     # @coverage.term = @coverage.coverage_aging
     # @coverage.lppi_gross_premium = @coverage.coverage_lppi_premium
-
+    @coverage.compute_age
     respond_to do |format|
       if @coverage.update(coverage_params)
-        format.html { redirect_to coverage_url(@coverage), notice: "Coverage was successfully updated." }
+        format.html { redirect_to @batch, notice: "Coverage was successfully updated." }
         format.json { render :show, status: :ok, location: @coverage }
       else
         format.html { render :edit, status: :unprocessable_entity }
