@@ -22,6 +22,9 @@ class Coverage < ApplicationRecord
     self.expiry = effectivity >> term
 
     self.lppi_gross_premium = (loan_coverage/1000) * (rate * term)
+
+    self.residency = (effectivity.year * 12 + effectivity.month) - (member.date_membership.year * 12 + member.date_membership.month)
+
   end
   
   def coverage_aging

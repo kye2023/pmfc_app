@@ -13,7 +13,8 @@
       <tr>
       <th>#</th>
             <th>Batch</th>
-            
+            <th>Count</th>
+            <th class="text-end">LPPI Premium</th>
             <th></th>
         </tr>
     </thead>
@@ -25,6 +26,8 @@
           <th scope="row"><%= batch.id %></th>
           <td><%= batch.title %> <strong><%= batch.branch %></strong> <br>
           <%= batch.description %></td>
+          <td><%= batch.coverages.count %></td>
+          <td class="text-end"><%= to_curr(batch.coverages.sum(:lppi_gross_premium)) %></td>
           <td>
               <%= link_to 'View', batch, class: 'btn btn-secondary btn-sm' %>
               <%= link_to 'Edit', edit_batch_path(batch), data: { turbo_frame:"remote_modal" }, class: 'btn btn-secondary btn-sm' %>
