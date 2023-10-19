@@ -3,7 +3,11 @@ class DependentsController < ApplicationController
 
   # GET /dependents or /dependents.json
   def index
-    @dependents = Dependent.all
+    if params[:query].present?
+      @dependents = Dependent.where("last_name LIKE ?", "%#{params[:query]}%")
+    else
+      @dependents = Dependent.all
+    end
   end
 
   # GET /dependents/1 or /dependents/1.json

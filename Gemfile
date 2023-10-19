@@ -82,7 +82,7 @@ gem 'byebug'
 gem "devise", "~> 4.9"
 
 gem "cocoon"
-
 gem 'htmlbeautifier'
-
 gem 'vanilla_nested'
+gem 'pagy'
+gem 'roo'

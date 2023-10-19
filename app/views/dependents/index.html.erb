@@ -1,10 +1,24 @@
 <%= content_tag :h1, "List of Dependents" %>
 
-
-<div class="text-end mb-3">
-  <%= link_to new_dependent_path, class: 'btn btn-primary' do %>
-    New Dependent
-  <% end %>
+<div class="row">
+  
+  <div class="col-lg-6">
+    <div class="text-start mb-3">
+      <%= link_to new_dependent_path, class: 'btn btn-primary' do %>
+        New Dependent
+      <% end %>
+    </div>
+  </div>
+  <div class="col-lg-6">
+  <!--Search-->
+    <%= form_with( url: dependents_path, method: :get, data: {turbo_frame: "search_dependent"} ) do |form| %>
+    <div class="input-group mb-3">
+      <%= form.text_field :query, placeholder: 'Search by last name...', class: "form-control" %>
+      <%= form.submit 'Search', class: "btn btn-success" %>
+    </div>
+    <% end %>
+  <!--Search-->
+  </div>
 </div>
 
 

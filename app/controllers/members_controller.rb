@@ -4,7 +4,15 @@ class MembersController < ApplicationController
 
   # GET /members or /members.json
   def index
-    @members = Member.all
+    require 'pagy/extras/bootstrap'
+    
+    if params[:query].present?
+      @members = Member.where("last_name LIKE ?", "%#{params[:query]}%")
+    else
+      @members = Member.all
+    end
+    
+    @pagy, @members = pagy(@members)
   end
 
   # GET /members/1 or /members/1.json
@@ -64,6 +72,12 @@ class MembersController < ApplicationController
       format.html { redirect_to members_url, notice: "Member was successfully destroyed." }
       format.json { head :no_content }
     end
+  end
+
+  def import
+    import_service = ImportService.new(:member,params[:file])
+    import_message = import_service.import
+    redirect_to members_path, notice: import_message
   end
 
   private

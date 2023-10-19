@@ -1,21 +1,16 @@
 <div class="row">
-  <div class="col-md-6" id="<%= dom_id member %>">
-    <%= content_tag :h4, "Member Info" %>
-    <!--<p>
-      <strong>Member:</strong>
-      <%#= member.member_id %>
-      <%# member.id %>
-    </p>-->
-    <p><strong>Name: </strong><%= member.get_cmember %></p>
-    <p><strong>Birth date: </strong><%= member.get_formatted_bday %></p>
-    <p><strong>Date membership: </strong><%= member.get_formatted_membership %></p>
-    <p><strong>Civil status: </strong><%= member.civil_status %></p>
-    <p><strong>Gender: </strong><%= member.gender %></p>
-    <p><strong>Mobile no: </strong><%= member.mobile_no %></p>
-    <p><strong>Email: </strong><%= member.email %></p>
-  </div>
-
-  <div class="col-md-6">
+  <div class="col-md-4">
+    <div class="mt-4 p-5 bg-secondary text-white rounded" id="<%= dom_id member %>">
+      <h1><%= member.get_cmember %></h1>
+      <div class="text-wrap fw-lighter"><strong>Birth date: </strong><%= member.get_formatted_bday %></div>
+      <div class="text-wrap fw-lighter"><strong>Date membership: </strong><%= member.get_formatted_membership %></div>
+      <div class="text-wrap fw-lighter"><strong>Civil status: </strong><%= member.civil_status %></div>
+      <div class="text-wrap fw-lighter"><strong>Gender: </strong><%= member.gender %></div>
+      <div class="text-wrap fw-lighter"><strong>Mobile no: </strong><%= member.mobile_no %></div>
+      <div class="text-wrap fw-lighter"><strong>Email: </strong><%= member.email %></div>
+    </div>
+  </div>  
+  <div class="col-md-8">
     <%= content_tag :h4, "List of Dependents" %>
     <table class="table table-striped table-bordered table-hover">
         <thead>
