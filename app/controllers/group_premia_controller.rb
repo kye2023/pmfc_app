@@ -65,6 +65,6 @@ class GroupPremiaController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def group_premium_params
-      params.require(:group_premium).permit(:residency_from, :residency_to, :term_coverage, :amount_premium, :relationship)
+      params.require(:group_premium).permit(:member_type, :term, :residency_floor, :residency_ceiling, :premium)
     end
 end

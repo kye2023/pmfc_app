@@ -26,7 +26,7 @@
                 <td><%= to_shortdate(c.expiry) %></td>
                 <td class="text-center"><%= c.term %></td>
                 <td class="text-end"><%= to_curr(c.loan_coverage) %></td>
-                <td class="text-end"><%= to_curr(c.lppi_gross_premium) %></td>
+                <td class="text-end"><%= to_curr(c.loan_premium) %></td>
                 <td class="text-center">
                 <small>Status: <%= c.status %></small> <br>
                 <%= link_to '<i class="bi bi-pencil-square"></i>'.html_safe, edit_coverage_path(c), class: "btn btn-secondary btn-sm", data: { turbo_frame: "remote_modal" } %> 

@@ -4,14 +4,14 @@
   <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
 
   <div class="form-inputs">
-    <%= f.input :residency_from %>
-    <%= f.input :residency_to %>
-    <%= f.input :term_coverage %>
-    <%= f.input :amount_premium %>
-    <%= f.input :relationship %>
+    <%= f.input :member_type %>
+    <%= f.input :term %>
+    <%= f.input :residency_floor %>
+    <%= f.input :residency_ceiling %>
+    <%= f.input :premium %>
   </div>
 
   <div class="form-actions">
-    <%= f.button :submit %>
+    <%= f.button :submit, class: "btn btn_primary" %>
   </div>
 <% end %>

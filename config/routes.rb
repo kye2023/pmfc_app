@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :group_benefits
+  resources :group_premia
   resources :branches
   devise_for :users
   resources :premium_rates
@@ -12,8 +14,6 @@ Rails.application.routes.draw do
 
   resources :coverages
   resources :dependent_coverages
-  resources :group_benefits
-  resources :group_premia
   resources :dependents
   resources :batches
   resources :benefits

@@ -284,7 +284,11 @@ DEPENDENCIES
   puma (~> 5.0)
   rails (~> 7.0.8)
   requestjs-rails
+<<<<<<< HEAD
   roo
+=======
+  roo (~> 2.10.0)
+>>>>>>> main
   sassc-rails
   selenium-webdriver
   simple_form

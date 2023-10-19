@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_17_035122) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_19_003437) do
   create_table "batches", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "title"
     t.text "description"
@@ -47,16 +47,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_17_035122) do
     t.date "expiry"
     t.integer "term"
     t.string "status"
-    t.integer "lppi_gross_coverage"
-    t.float "lppi_gross_premium", limit: 53
+    t.decimal "loan_premium", precision: 10, scale: 2
+    t.decimal "group_premium", precision: 10, scale: 2
     t.string "group_certificate"
     t.string "residency"
-    t.integer "group_coverage"
-    t.float "group_premium", limit: 53
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "loan_coverage", precision: 10, scale: 2
     t.decimal "rate", precision: 10, scale: 2
+    t.bigint "group_benefit_id"
+    t.decimal "dependent_premium", precision: 10, scale: 2
+    t.index ["group_benefit_id"], name: "index_coverages_on_group_benefit_id"
   end
 
   create_table "dependent_coverages", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -87,21 +88,22 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_17_035122) do
   end
 
   create_table "group_benefits", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "benefit_id"
-    t.string "residency_from"
-    t.string "residency_to"
-    t.string "relationship"
-    t.integer "amount_benefit"
+    t.string "member_type"
+    t.integer "residency_floor"
+    t.integer "residency_ceiling"
+    t.decimal "life", precision: 12, scale: 2
+    t.decimal "add", precision: 12, scale: 2
+    t.decimal "burial", precision: 12, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "group_premia", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "residency_from"
-    t.string "residency_to"
-    t.date "term_coverage"
-    t.integer "amount_premium"
-    t.string "relationship"
+    t.string "member_type"
+    t.integer "term"
+    t.integer "residency_floor"
+    t.integer "residency_ceiling"
+    t.decimal "premium", precision: 10, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
