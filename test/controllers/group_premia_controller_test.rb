@@ -17,7 +17,7 @@ class GroupPremiaControllerTest < ActionDispatch::IntegrationTest
 
   test "should create group_premium" do
     assert_difference("GroupPremium.count") do
-      post group_premia_url, params: { group_premium: { amount_premium: @group_premium.amount_premium, relationship: @group_premium.relationship, residency_from: @group_premium.residency_from, residency_to: @group_premium.residency_to, term_coverage: @group_premium.term_coverage } }
+      post group_premia_url, params: { group_premium: { member_type: @group_premium.member_type, premium: @group_premium.premium, residency_ceiling: @group_premium.residency_ceiling, residency_floor: @group_premium.residency_floor, term: @group_premium.term } }
     end
 
     assert_redirected_to group_premium_url(GroupPremium.last)
@@ -34,7 +34,7 @@ class GroupPremiaControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update group_premium" do
-    patch group_premium_url(@group_premium), params: { group_premium: { amount_premium: @group_premium.amount_premium, relationship: @group_premium.relationship, residency_from: @group_premium.residency_from, residency_to: @group_premium.residency_to, term_coverage: @group_premium.term_coverage } }
+    patch group_premium_url(@group_premium), params: { group_premium: { member_type: @group_premium.member_type, premium: @group_premium.premium, residency_ceiling: @group_premium.residency_ceiling, residency_floor: @group_premium.residency_floor, term: @group_premium.term } }
     assert_redirected_to group_premium_url(@group_premium)
   end
 

@@ -9,11 +9,11 @@ class CreateCoverages < ActiveRecord::Migration[7.0]
       t.date :expiry
       t.integer :term
       t.string :status
-      t.string :lppi_gross_premium
+      t.decimal :loan_premium, precision: 10, scale: 2
+      t.decimal :group_premium, precision: 10, scale: 2
       t.string :group_certificate
       t.string :residency
-      t.integer :group_coverage
-      t.integer :group_premium
+      
 
       t.timestamps
     end

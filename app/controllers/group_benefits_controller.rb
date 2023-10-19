@@ -65,6 +65,6 @@ class GroupBenefitsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def group_benefit_params
-      params.require(:group_benefit).permit(:benefit_id, :residency_from, :residency_to, :relationship, :amount_benefit)
+      params.require(:group_benefit).permit(:member_type, :residency_floor, :residency_ceiling, :life, :add, :burial)
     end
 end

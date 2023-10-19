@@ -12,11 +12,12 @@
     <thead>
       <tr>
       <th>#</th>
-            <th>Benefit</th>
-            <th>Residency From</th>
-            <th>Residency To</th>
-            <th>Relationship</th>
-            <th>Amount Benefit</th>
+            <th>Member Type</th>
+            <th>Residency Floor</th>
+            <th>Residency Ceiling</th>
+            <th>Life</th>
+            <th>Add</th>
+            <th>Burial</th>
             <th></th>
         </tr>
     </thead>
@@ -26,11 +27,12 @@
         <tr>
 
         <th scope="row"><%= group_benefit.id %></th>
-        <td><%= group_benefit.benefit_id %></td>
-        <td><%= group_benefit.residency_from %></td>
-        <td><%= group_benefit.residency_to %></td>
-        <td><%= group_benefit.relationship %></td>
-        <td><%= group_benefit.amount_benefit %></td>
+        <td><%= group_benefit.member_type %></td>
+        <td><%= group_benefit.residency_floor %></td>
+        <td><%= group_benefit.residency_ceiling %></td>
+        <td><%= group_benefit.life %></td>
+        <td><%= group_benefit.add %></td>
+        <td><%= group_benefit.burial %></td>
     
           <td>
             <%= link_to 'View', group_benefit, class: 'btn btn-secondary btn-sm' %>

@@ -1,15 +1,17 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  benefit_id: MyString
-  residency_from: MyString
-  residency_to: MyString
-  relationship: MyString
-  amount_benefit: 1
+  member_type: MyString
+  residency_floor: 1
+  residency_ceiling: 1
+  life: 9.99
+  add: 9.99
+  burial: 9.99
 
 two:
-  benefit_id: MyString
-  residency_from: MyString
-  residency_to: MyString
-  relationship: MyString
-  amount_benefit: 1
+  member_type: MyString
+  residency_floor: 1
+  residency_ceiling: 1
+  life: 9.99
+  add: 9.99
+  burial: 9.99

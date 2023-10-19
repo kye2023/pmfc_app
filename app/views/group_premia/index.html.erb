@@ -12,11 +12,11 @@
     <thead>
       <tr>
       <th>#</th>
-            <th>Residency From</th>
-            <th>Residency To</th>
-            <th>Term Coverage</th>
-            <th>Amount Premium</th>
-            <th>Relationship</th>
+            <th>Member Type</th>
+            <th>Term</th>
+            <th>Residency Floor</th>
+            <th>Residency Ceiling</th>
+            <th>Premium</th>
             <th></th>
         </tr>
     </thead>
@@ -26,11 +26,11 @@
         <tr>
 
         <th scope="row"><%= group_premium.id %></th>
-        <td><%= group_premium.residency_from %></td>
-        <td><%= group_premium.residency_to %></td>
-        <td><%= group_premium.term_coverage %></td>
-        <td><%= group_premium.amount_premium %></td>
-        <td><%= group_premium.relationship %></td>
+        <td><%= group_premium.member_type %></td>
+        <td><%= group_premium.term %></td>
+        <td><%= group_premium.residency_floor %></td>
+        <td><%= group_premium.residency_ceiling %></td>
+        <td><%= group_premium.premium %></td>
     
           <td>
             <%= link_to 'View', group_premium, class: 'btn btn-secondary btn-sm' %>
