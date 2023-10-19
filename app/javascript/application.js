@@ -8,10 +8,6 @@ import "bootstrap"
 import * as bootstrap from "bootstrap"
 import "@rails/request.js"
 
-<<<<<<< HEAD
-//import "jquery"
-//import "@nathanvda/cocoon"
-=======
 Turbo.session.drive = true
 window.bootstrap = bootstrap
 
@@ -21,4 +17,3 @@ document.addEventListener("turbo:load", function () {
   var toast = new bootstrap.Toast(toastEl)
   toast.show()
 });
->>>>>>> main
