@@ -7,24 +7,32 @@ class Coverage < ApplicationRecord
     self.age = effectivity.year-member.birth_date.year
     # if member.present? && effectivity.present?
     # end
-    primary_rate = 18..65
+    # primary_rate = 18..65
     case age 
     when 18..65 
       self.rate = 0.83
     when 66..70
       self.rate = 3
+      self.rate = 4 if loan_coverage > 350000
     when 71..75 
       self.rate = 4
+      self.rate = 5 if loan_coverage > 350000
     when 76..80
       self.rate = 5
+      self.rate = 8.75 if loan_coverage > 350000
     end
     #GET EXPIRY BASED ON EFFECTIVITY AND TERM
     self.expiry = effectivity >> term
 
-    self.lppi_gross_premium = (loan_coverage/1000) * (rate * term)
+    self.loan_premium = (loan_coverage/1000) * (rate * term)
 
     self.residency = (effectivity.year * 12 + effectivity.month) - (member.date_membership.year * 12 + member.date_membership.month)
 
+    gp = GroupPremium.where('? between residency_floor and residency_ceiling', self.residency)
+    self.group_premium = gp.find_by(member_type: 'principal', term: self.term).premium unless gp.nil?
+
+    gb = GroupBenefit.where('? between residency_floor and residency_ceiling', self.residency)
+    self.group_benefit_id = gp.find_by(member_type: 'principal').id
   end
   
   def coverage_aging

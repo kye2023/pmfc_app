@@ -14,11 +14,12 @@ class GroupBenefitsTest < ApplicationSystemTestCase
     visit group_benefits_url
     click_on "New group benefit"
 
-    fill_in "Amount benefit", with: @group_benefit.amount_benefit
-    fill_in "Benefit", with: @group_benefit.benefit_id
-    fill_in "Relationship", with: @group_benefit.relationship
-    fill_in "Residency from", with: @group_benefit.residency_from
-    fill_in "Residency to", with: @group_benefit.residency_to
+    fill_in "Add", with: @group_benefit.add
+    fill_in "Burial", with: @group_benefit.burial
+    fill_in "Life", with: @group_benefit.life
+    fill_in "Member type", with: @group_benefit.member_type
+    fill_in "Residency ceiling", with: @group_benefit.residency_ceiling
+    fill_in "Residency floor", with: @group_benefit.residency_floor
     click_on "Create Group benefit"
 
     assert_text "Group benefit was successfully created"
@@ -29,11 +30,12 @@ class GroupBenefitsTest < ApplicationSystemTestCase
     visit group_benefit_url(@group_benefit)
     click_on "Edit this group benefit", match: :first
 
-    fill_in "Amount benefit", with: @group_benefit.amount_benefit
-    fill_in "Benefit", with: @group_benefit.benefit_id
-    fill_in "Relationship", with: @group_benefit.relationship
-    fill_in "Residency from", with: @group_benefit.residency_from
-    fill_in "Residency to", with: @group_benefit.residency_to
+    fill_in "Add", with: @group_benefit.add
+    fill_in "Burial", with: @group_benefit.burial
+    fill_in "Life", with: @group_benefit.life
+    fill_in "Member type", with: @group_benefit.member_type
+    fill_in "Residency ceiling", with: @group_benefit.residency_ceiling
+    fill_in "Residency floor", with: @group_benefit.residency_floor
     click_on "Update Group benefit"
 
     assert_text "Group benefit was successfully updated"

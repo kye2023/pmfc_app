@@ -17,6 +17,12 @@ class CoveragesController < ApplicationController
     # @coverage = Coverage.new
     @batch = Batch.find(params[:b])
     @coverage = @batch.coverages.build
+    dummy_data
+  end
+
+  def dummy_data 
+    @coverage.loan_certificate = rand(100000..999999)
+    @coverage.group_certificate = rand(100000..999999)
   end
 
   # GET /coverages/1/edit

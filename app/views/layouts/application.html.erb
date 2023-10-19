@@ -20,14 +20,13 @@
     <%# if user_signed_in? %>
       <%= render "layouts/navbar" %>
     <%# end %>
-    <div class="container">
+    <div class="container mt-3">
       <div class="row d-flex justify-content-center">
         <div id="flash" style="width: auto" remote_modal>
           <%= render "layouts/notification" %>
         </div>
       </div>
-      <p class="notice"><%#= notice %></p>
-      <p class="alert"><%#= alert %></p>
+     
       <%= yield %>
       <%= turbo_frame_tag "remote_modal", target: "_top" %>
     </div>
