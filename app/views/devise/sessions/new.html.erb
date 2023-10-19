@@ -1,0 +1,35 @@
+<div class="p-5 mt-5 mb-4 bg-light rounded-3">
+  <div class="row">
+    <div class="col-md-7">
+      <div class="container-fluid py5 text-center">
+        <%= image_tag 'pmfc.png', width: 200, class: 'mb-lg-0 me-2' %>
+        <h5 class="text-success">People Micro-Finance Cooperatiion</h5>
+        <h5>Insurance Portal</h5>
+      </div>
+    </div>
+    <div class="col-md-5">
+      <div class="card">
+        <div class="card-header">Log in to your account</div>
+        <div class="card-body">
+          <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+            <div class="form-inputs mb-3">
+              <%= f.input :email,
+                required: false,
+                autofocus: true,
+                input_html: { autocomplete: "email" } %>
+              <%= f.input :password,
+                required: false,
+                input_html: { autocomplete: "current-password" } %>
+              <%= f.input :remember_me, as: :boolean if devise_mapping.rememberable? %>
+            </div>
+            <div class="form-actions mb-3">
+              <%= f.button :submit, "Log in", class: "btn-primary", style: 'background-color: #007bff !important;
+    border-color: #007bff !important;', data: {turbo: false} %>
+            </div>
+          <% end %>
+          <%= render "devise/shared/links" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
