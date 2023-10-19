@@ -10,17 +10,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_16_040201) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_17_035122) do
   create_table "batches", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "title"
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "branch_id"
+    t.index ["branch_id"], name: "index_batches_on_branch_id"
   end
 
   create_table "benefits", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "branches", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.string "address"
+    t.string "contact_no"
+    t.string "email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -41,6 +53,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_16_040201) do
     t.integer "group_premium"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "loan_coverage", precision: 10, scale: 2
+    t.decimal "rate", precision: 10, scale: 2
   end
 
   create_table "dependent_coverages", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

@@ -1,6 +1,3 @@
-<div class="card">
-  <h5 class="card-header">Edit coverage</h5>
-  <div class="card-body">
-    <%= render "form", coverage: @coverage %>
-  </div>
-</div>
+<%= render "remote_modal", title: "Edit Loan" do %>
+  <%= render "form", url: coverage_path(@coverage), meth: 'patch' %>
+<% end %>

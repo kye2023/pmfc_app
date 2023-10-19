@@ -12,8 +12,9 @@
     <thead>
       <tr>
       <th>#</th>
-            <th>Title</th>
-            <th>Description</th>
+            <th>Batch</th>
+            <th>Count</th>
+            <th class="text-end">LPPI Premium</th>
             <th></th>
         </tr>
     </thead>
@@ -23,10 +24,12 @@
         <tr>
 
           <th scope="row"><%= batch.id %></th>
-          <td><%= batch.title %></td>
-          <td><%= batch.description %></td>
+          <td><%= batch.title %> <strong><%= batch.branch %></strong> <br>
+          <%= batch.description %></td>
+          <td><%= batch.coverages.count %></td>
+          <td class="text-end"><%= to_curr(batch.coverages.sum(:lppi_gross_premium)) %></td>
           <td>
-              <%= link_to 'View', batch, data: { turbo_frame:"remote_modal" }, class: 'btn btn-secondary btn-sm' %>
+              <%= link_to 'View', batch, class: 'btn btn-secondary btn-sm' %>
               <%= link_to 'Edit', edit_batch_path(batch), data: { turbo_frame:"remote_modal" }, class: 'btn btn-secondary btn-sm' %>
               <%= link_to "Delete", batch, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
           </td>

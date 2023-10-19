@@ -1,0 +1,12 @@
+
+<div class="card">
+  <div class="card-body">
+    <%= render @branch %>
+  </div>
+  <div class="card-footer">
+  <%= link_to "Edit", edit_branch_path(@branch), class: 'btn btn-secondary btn-sm' %> |
+  <%= link_to "Back", branches_path, class: 'btn btn-secondary btn-sm' %> 
+  </div>
+</div>
+
+
