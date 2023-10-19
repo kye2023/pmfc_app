@@ -7,16 +7,19 @@ class Coverage < ApplicationRecord
     self.age = effectivity.year-member.birth_date.year
     # if member.present? && effectivity.present?
     # end
-    primary_rate = 18..65
+    # primary_rate = 18..65
     case age 
     when 18..65 
       self.rate = 0.83
     when 66..70
       self.rate = 3
+      self.rate = 4 if loan_coverage > 350000
     when 71..75 
       self.rate = 4
+      self.rate = 5 if loan_coverage > 350000
     when 76..80
       self.rate = 5
+      self.rate = 8.75 if loan_coverage > 350000
     end
     #GET EXPIRY BASED ON EFFECTIVITY AND TERM
     self.expiry = effectivity >> term
