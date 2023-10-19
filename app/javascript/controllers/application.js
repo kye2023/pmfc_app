@@ -1,6 +1,8 @@
 import { Application } from "@hotwired/stimulus"
 import "bootstrap"
 
+import "@nathanvda/cocoon"
+
 const application = Application.start()
 
 // Configure Stimulus development experience
