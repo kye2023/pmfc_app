@@ -156,6 +156,7 @@ GEM
     nokogiri (1.15.4-x86_64-linux)
       racc (~> 1.4)
     orm_adapter (0.5.0)
+    pagy (6.1.0)
     popper_js (2.11.8)
     psych (5.1.1)
       stringio
@@ -244,6 +245,7 @@ GEM
       railties (>= 6.0.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
+    vanilla_nested (1.7.1)
     warden (1.2.9)
       rack (>= 2.0.9)
     web-console (4.2.1)
@@ -278,10 +280,15 @@ DEPENDENCIES
   jbuilder
   jquery-rails
   mysql2 (~> 0.5)
+  pagy
   puma (~> 5.0)
   rails (~> 7.0.8)
   requestjs-rails
+<<<<<<< HEAD
+  roo
+=======
   roo (~> 2.10.0)
+>>>>>>> main
   sassc-rails
   selenium-webdriver
   simple_form
@@ -289,6 +296,7 @@ DEPENDENCIES
   stimulus-rails
   turbo-rails
   tzinfo-data
+  vanilla_nested
   web-console
 
 RUBY VERSION

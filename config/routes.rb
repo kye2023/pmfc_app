@@ -4,7 +4,14 @@ Rails.application.routes.draw do
   resources :branches
   devise_for :users
   resources :premium_rates
-  resources :members
+  
+  resources :members do
+    collection do
+      post :import
+    end
+  end
+
+
   resources :coverages
   resources :dependent_coverages
   resources :dependents
