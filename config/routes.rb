@@ -13,7 +13,6 @@ Rails.application.routes.draw do
 
 
   resources :coverages
-  resources :dependent_coverages
   resources :dependents
   resources :batches
   resources :benefits

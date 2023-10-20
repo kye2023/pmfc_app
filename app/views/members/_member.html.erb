@@ -12,6 +12,11 @@
   </div>  
   <div class="col-md-8">
     <%= content_tag :h4, "List of Dependents" %>
+    <div class="text-start mb-3">
+      <%= link_to new_dependent_path(m: member), class: 'btn btn-primary' do %>
+        New Dependent
+      <% end %>
+    </div>
     <table class="table table-striped table-bordered table-hover">
         <thead>
           <tr>

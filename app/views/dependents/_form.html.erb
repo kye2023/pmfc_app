@@ -1,18 +1,18 @@
 
-<%= simple_form_for(@dependent, data: {
-  controller: "flatpickr"
-}) do |f| %>
+<%# simple_form_for(@dependent, data: { controller: "flatpickr" }) do |f| %>
+
+<%= simple_form_for(@dependent, url: url, method: meth) do |f| %>
   <%= f.error_notification %>
   <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
 
   <div class="form-inputs">
-    <%= f.association :member, label_method: :get_cmember, include_blank: true %>
+    <%# f.association :member, label_method: :get_cmember, include_blank: true %>
     <%= f.input :last_name %>
     <%= f.input :first_name %>
     <%= f.input :middle_name %>
     <br>
     <%= f.label :birth_date %>
-    <%= f.date_field :birth_date, class: "date_pick" %>
+    <%= f.date_field :birth_date %>
     <br>
     <br>
     <%= f.input :civil_status , collection: ['Single', 'Married', 'Widowed', 'Divorced'], include_blank: true %>

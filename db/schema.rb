@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_19_003437) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_19_040044) do
   create_table "batches", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "title"
     t.text "description"
@@ -38,9 +38,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_19_003437) do
   end
 
   create_table "coverages", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.integer "batch_id"
-    t.integer "member_id"
-    t.integer "premium_id"
+    t.string "batch_id"
+    t.string "member_id"
     t.string "loan_certificate"
     t.integer "age"
     t.date "effectivity"
@@ -61,15 +60,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_19_003437) do
   end
 
   create_table "dependent_coverages", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "coverage_id"
-    t.string "dependent_id"
-    t.string "member_id"
-    t.date "term"
-    t.string "residency"
-    t.integer "group_coverage"
-    t.integer "group_premium"
+    t.bigint "coverage_id", null: false
+    t.bigint "dependent_id", null: false
+    t.bigint "member_id", null: false
+    t.bigint "group_benefit_id", null: false
+    t.decimal "premium", precision: 10, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["coverage_id"], name: "index_dependent_coverages_on_coverage_id"
+    t.index ["dependent_id"], name: "index_dependent_coverages_on_dependent_id"
+    t.index ["group_benefit_id"], name: "index_dependent_coverages_on_group_benefit_id"
+    t.index ["member_id"], name: "index_dependent_coverages_on_member_id"
   end
 
   create_table "dependents", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -109,7 +110,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_19_003437) do
   end
 
   create_table "members", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "member_id"
     t.string "last_name"
     t.string "first_name"
     t.string "middle_name"
@@ -132,9 +132,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_19_003437) do
 
   create_table "premium_rates", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "batch_id"
-    t.float "premium"
-    t.integer "min_age"
-    t.integer "max_age"
+    t.integer "premium"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -151,4 +149,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_19_003437) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "dependent_coverages", "coverages"
+  add_foreign_key "dependent_coverages", "dependents"
+  add_foreign_key "dependent_coverages", "group_benefits"
+  add_foreign_key "dependent_coverages", "members"
 end
