@@ -1,0 +1,38 @@
+<%= content_tag :h1, "List of User Details" %>
+
+
+<div class="text-end mb-3">
+  <%= link_to new_user_detail_path, class: 'btn btn-primary' do %>
+    New User Detail
+  <% end %>
+</div>
+
+
+  <table class="table table-striped table-bordered table-hover">
+    <thead>
+      <tr>
+      <th>#</th>
+            <th>User</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+      <% @user_details.each do |user_detail| %>
+        <tr>
+
+        <th scope="row"><%= user_detail.id %></th>
+        <td><%= user_detail.last_name %>, <%= user_detail.first_name %> <%= user_detail.middle_initial %> <br>
+        <small><%= user_detail.contact_no %> | <%= user_detail.branch %> <%= content_tag :span, 'Disable', class: "badge rounded-pill bg-warning text-dark" unless user_detail.user.approved %></small></td>
+    
+          <td>
+            <%= link_to 'View', user_detail, class: 'btn btn-secondary btn-sm' %>
+            <%= link_to 'Edit', edit_user_detail_path(user_detail), class: 'btn btn-secondary btn-sm' %>
+            <%= link_to "Delete", user_detail, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+            <%= link_to 'Approve', approve_user_user_detail_path(user_detail), class: 'btn btn-warning btn-sm' %>
+          </td>
+
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
