@@ -27,7 +27,7 @@
           <th scope="row"><%= batch.id %></th>
           <td><%= batch.title %> <strong><%= batch.branch %></strong> <br>
           <%= batch.description %></td>
-          <td><%= batch.coverages.count %></td>
+          <td class="text-center"><%= batch.coverages.count %></td>
           <td class="text-end"><%= to_curr(batch.coverages.sum(:loan_premium)) %></td>
           <td class="text-end"><%= to_curr(batch.coverages.sum(:group_premium)) %></td>
           <td>

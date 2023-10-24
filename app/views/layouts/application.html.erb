@@ -18,9 +18,9 @@
   </head>
 
   <body class="d-flex flex-column">
-    <%# if user_signed_in? %>
-      <%= render "layouts/navbar" %>
-    <%# end %>
+   
+      <%= render "layouts/navbar" if user_signed_in? %>
+  
     <div class="container mt-3">
       <div class="row d-flex justify-content-center">
         <div id="flash" style="width: auto" remote_modal>

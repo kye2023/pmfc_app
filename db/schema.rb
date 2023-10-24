@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_19_003437) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_23_053854) do
   create_table "batches", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "title"
     t.text "description"
@@ -38,9 +38,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_19_003437) do
   end
 
   create_table "coverages", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.integer "batch_id"
-    t.integer "member_id"
-    t.integer "premium_id"
+    t.string "batch_id"
+    t.string "member_id"
     t.string "loan_certificate"
     t.integer "age"
     t.date "effectivity"
@@ -109,7 +108,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_19_003437) do
   end
 
   create_table "members", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "member_id"
     t.string "last_name"
     t.string "first_name"
     t.string "middle_name"
@@ -132,11 +130,24 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_19_003437) do
 
   create_table "premium_rates", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "batch_id"
-    t.float "premium"
-    t.integer "min_age"
-    t.integer "max_age"
+    t.integer "premium"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "user_details", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "branch_id"
+    t.string "last_name"
+    t.string "first_name"
+    t.string "middle_initial"
+    t.string "gender"
+    t.string "contact_no"
+    t.boolean "admin", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["branch_id"], name: "index_user_details_on_branch_id"
+    t.index ["user_id"], name: "index_user_details_on_user_id"
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -147,8 +158,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_19_003437) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "approved", default: false
+    t.bigint "user_detail_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["user_detail_id"], name: "index_users_on_user_detail_id"
   end
 
 end
