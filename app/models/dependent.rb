@@ -1,6 +1,7 @@
 class Dependent < ApplicationRecord
   validates_presence_of :last_name, :first_name, :middle_name, :birth_date
   belongs_to :member
+  has_one :dependent_coverage
 
   def to_s
     "#{last_name}" + ", " + "#{first_name}" + " " + "#{middle_name[0.1]}" + ". "
@@ -34,8 +35,10 @@ class Dependent < ApplicationRecord
       group_benefit_id = gb.find_by(member_type: "#{mmbr_type}").id
       return group_benefit_id
     end
+  end
 
-
+  def get_dependent_group_benefit
+    #return dependent.dependent_coverage.group_benefit.life
   end
 
 end

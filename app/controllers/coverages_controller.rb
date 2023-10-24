@@ -75,13 +75,18 @@ class CoveragesController < ApplicationController
       dep_coverage.member_id = @coverage.member_id
       
       #search data from group benefit
-      # dependent.compute_dependent_benefit(@coverage)
+      #dependent.compute_dependent_benefit(@coverage)
 
       dep_coverage.group_benefit_id = dependent.compute_dependent_benefit(@coverage, "gb")
       dep_coverage.premium = dependent.compute_dependent_benefit(@coverage, "gp")
+      
+      unless dep_coverage.blank?
+        dep_coverage.save!
+      end
 
-      dep_coverage.save!
+      
     end
+
   end
 
   # PATCH/PUT /coverages/1 or /coverages/1.json
@@ -105,7 +110,7 @@ class CoveragesController < ApplicationController
   # DELETE /coverages/1 or /coverages/1.json
   def destroy
     @coverage.destroy
-    
+    #@coverage.dependent_coverage.destroy
     respond_to do |format|
       format.html { redirect_to @batch, notice: "Coverage was successfully destroyed." }
       format.json { head :no_content }

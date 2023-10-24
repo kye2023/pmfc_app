@@ -1,24 +1,31 @@
 <div id="<%= dom_id batch %>">
-      <div class="card mb-3">
-        <div class="card-header">Batch</div>
-        <div class="card-body">
-            <p>
-              <strong>Title:</strong>
-              <%= batch.title %>
-            </p>
-            <p>
-              <strong>Branch:</strong>
-              <%= batch.branch %>
-            </p>
-            <p>
-              <%= batch.description %>
-            </p>
-        </div>
-      </div>
+  <div class="card mb-3">
+    <div class="card-header">Batch</div>
+    <div class="card-body">
+      <p><strong>Title:</strong><%= batch.title %></p>
+      <p><strong>Branch:</strong><%= batch.branch %></p>
+      <p><%= batch.description %></p>
+    </div>
+  </div>
 <div class="mb-3">
   <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, batches_path, class: "btn btn-secondary" %>
   <%= link_to "New Loan", new_coverage_path(b: batch), class: "btn btn-primary", data: { turbo_frame: "remote_modal" }%>
 </div>
 <%#= link_to 'Add Branch', new_coop_branch_path(v: c) , class: 'btn btn-primary', data: { turbo_frame: "remote_modal" } %>
-<%= render 'coverages/show_loan_coverage', batch: batch %>
+<!--Tabs/Pills-->
+<div class="row">
+  <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">LPPI</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">GYRT</button>
+    </li>
+  </ul>
+  <div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0"><%= render 'coverages/show_loan_coverage', batch: batch %></div>
+    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0"><%= render 'coverages/show_group_coverage', batch: batch %></div>
+  </div>
+</div>
+<!--Tabs/Pills-->
 </div>

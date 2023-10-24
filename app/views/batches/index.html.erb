@@ -21,10 +21,13 @@
     </thead>
 
     <tbody>
-      <% @batches.each do |batch| %>
+      <% 
+        bcount = 0
+        @batches.each do |batch| 
+          bcount += 1
+      %>
         <tr>
-
-          <th scope="row"><%= batch.id %></th>
+          <th scope="row"><%= bcount %><%# batch.id %></th>
           <td><%= batch.title %> <strong><%= batch.branch %></strong> <br>
           <%= batch.description %></td>
           <td><%= batch.coverages.count %></td>
@@ -35,7 +38,6 @@
               <%= link_to 'Edit', edit_batch_path(batch), data: { turbo_frame:"remote_modal" }, class: 'btn btn-secondary btn-sm' %>
               <%= link_to "Delete", batch, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
           </td>
-
         </tr>
       <% end %>
     </tbody>

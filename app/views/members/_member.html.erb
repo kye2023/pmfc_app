@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-md-4">
     <div class="mt-4 p-5 bg-secondary text-white rounded" id="<%= dom_id member %>">
-      <h1><%= member.get_cmember %></h1>
+      <h1 class="text-truncate"><%= member.get_cmember %></h1>
       <div class="text-wrap fw-lighter"><strong>Birth date: </strong><%= member.get_formatted_bday %></div>
       <div class="text-wrap fw-lighter"><strong>Date membership: </strong><%= member.get_formatted_membership %></div>
       <div class="text-wrap fw-lighter"><strong>Civil status: </strong><%= member.civil_status %></div>
@@ -17,35 +17,47 @@
         New Dependent
       <% end %>
     </div>
-    <table class="table table-striped table-bordered table-hover">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Dependent Info</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <% 
-            dpdntcount = 0
-            @member.dependents.each do |dependent| 
-              dpdntcount += 1
-          %>
-            <tr>
-              <th scope="row"><%= dpdntcount %></th>
-              <td>
-                <div class="text-wrap fw-lighter">Name: <strong><%= dependent %></strong></div>
-                <div class="text-wrap fw-lighter">Birth Date: <%= dependent.get_formatted_dbday %></div>
-                <div class="text-wrap fw-lighter">Relation: <%= dependent.relationship %></div>
-              </td>
-              <td>
-                <%= link_to 'View', dependent, class: 'btn btn-secondary btn-sm' %>
-                <%= link_to 'Edit', edit_dependent_path(dependent), class: 'btn btn-secondary btn-sm' %>
-                <%= link_to "Delete", dependent, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
+    <table class="table table-striped table-bordered table-hover table-sm">
+      <caption>List of Dependent(s)</caption>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Dependent Info</th>
+          <th>Coverage</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+      <% 
+        dpdntid = 0
+        dpdntcount = 0
+        dpprm = 0
+        @member.dependents.each do |dependent| 
+          dpdntcount += 1
+          dpdntid = dependent.id
+          dpprm = dependent.dependent_coverage.premium
+      %>
+        <tr>
+          <th scope="row"><%# dpdntid %><%= dpdntcount %></th>
+          <td>
+            <div class="text-wrap fw-lighter"><small>Name: <%= dependent %></small></div>
+            <div class="text-wrap fw-lighter"><small>Birth Date: <%= dependent.get_formatted_dbday %></small></div>
+            <div class="text-wrap fw-lighter"><small>Relation: <%= dependent.relationship %></small></div>
+          </td>
+          <td>
+            <div class="text-wrap fw-lighter"><small>Life: <%= to_curr(dependent.dependent_coverage.group_benefit.life) %></small></div>
+            <div class="text-wrap fw-lighter"><small>A.D.D: <%= to_curr(dependent.dependent_coverage.group_benefit.add) %></small></div>
+            <div class="text-wrap fw-lighter"><small>Burial: <%= to_curr(dependent.dependent_coverage.group_benefit.burial) %></small></div>
+            <div class="text-wrap fw-lighter"><small>Premium: <%= dpprm %></small></div>
+          </td>
+          <td>
+            <%= link_to 'View', dependent, class: 'btn btn-secondary btn-sm' %>
+            <%= link_to 'Edit', edit_dependent_path(dependent), class: 'btn btn-secondary btn-sm' %>
+            <%= link_to "Delete", dependent, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+          </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
   </div>
 </div>

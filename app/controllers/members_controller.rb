@@ -11,7 +11,8 @@ class MembersController < ApplicationController
     else
       @members = Member.all
     end
-    
+
+    #set pagination
     @pagy, @members = pagy(@members)
   end
 

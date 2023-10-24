@@ -2,6 +2,7 @@ class Coverage < ApplicationRecord
   validates_presence_of :loan_certificate, :effectivity, :expiry, :loan_coverage, :term
   belongs_to :member
   belongs_to :batch
+  belongs_to :group_benefit
 
   def compute_age
     self.age = effectivity.year-member.birth_date.year
@@ -28,6 +29,7 @@ class Coverage < ApplicationRecord
     self.loan_premium = (loan_coverage/1000) * (rate * term)
     self.residency = (effectivity.year * 12 + effectivity.month) - (member.date_membership.year * 12 + member.date_membership.month)
 
+    
 
     #search group premium
     gp = GroupPremium.where('? between residency_floor and residency_ceiling', self.residency)
@@ -70,6 +72,15 @@ class Coverage < ApplicationRecord
     # if lppi_gross_coverage.present? && term.present?
     #   ((lppi_gross_coverage / 1000) * (term * lppi_prem))
     # end
+  end
+
+  def get_group_life
+    #return coverage.group_benefits.life
+  end
+
+  def alpharray(val)
+    numalpha = Array["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
+    return numalpha[val-1]
   end
 
 

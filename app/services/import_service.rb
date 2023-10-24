@@ -2,9 +2,7 @@ class ImportService
   def initialize (type, file)
     @type = type
     @file = file
-
   end
-
 
   def import
     if file.nil?

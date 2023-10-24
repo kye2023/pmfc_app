@@ -4,5 +4,8 @@ class DependentCoverage < ApplicationRecord
   belongs_to :member
   belongs_to :group_benefit
 
+  # def self.dep_premium
+  #   premium = DependentCoverage.premium
+  # end
 
 end

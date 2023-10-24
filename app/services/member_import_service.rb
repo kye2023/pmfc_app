@@ -11,6 +11,7 @@ class MemberImportService
 
     members_spreadsheet = parse_file('MemberMasterlist')
   
+    #drop 1 - header excluded
     members_spreadsheet.drop(1).each do |row|
       member_hash = {
         last_name: row["LASTNAME"] == nil ? nil : row["LASTNAME"].strip,
@@ -34,7 +35,7 @@ class MemberImportService
 
       member.assign_attributes(member_hash)
       member.save!
-
+      
       # if member.persisted?
       #  member.update(member_hash)
       #  next
