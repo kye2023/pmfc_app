@@ -11,9 +11,14 @@ Rails.application.routes.draw do
     end
   end
 
-
   resources :coverages
-  resources :dependents
+  
+  resources :dependents do
+    collection do
+      post :import
+    end
+  end
+
   resources :batches
   resources :benefits
   resources :posts

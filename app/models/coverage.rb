@@ -1,8 +1,9 @@
 class Coverage < ApplicationRecord
-  validates_presence_of :loan_certificate, :effectivity, :expiry, :loan_coverage, :term
+  validates_presence_of :loan_certificate, :effectivity, :loan_coverage, :term
   belongs_to :member
   belongs_to :batch
   belongs_to :group_benefit
+  has_many :dependent_coverage, dependent: :destroy
 
   def compute_age
     self.age = effectivity.year-member.birth_date.year
@@ -40,7 +41,6 @@ class Coverage < ApplicationRecord
 
     self.member.dependents.each do |dependent|
       dep_coverage = DependentCoverage.new 
-      
     end
 
   end

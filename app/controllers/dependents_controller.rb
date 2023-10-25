@@ -66,6 +66,12 @@ class DependentsController < ApplicationController
     end
   end
 
+  def import
+    import_service = ImportService.new(:dependent,params[:file])
+    import_message = import_service.import
+    redirect_to dependents_path, notice: import_message
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_dependent
