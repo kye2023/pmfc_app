@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  resources :user_details do 
+    get :approve_user, on: :member
+  end
   resources :group_benefits
   resources :group_premia
   resources :branches

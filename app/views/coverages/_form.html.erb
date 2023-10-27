@@ -4,7 +4,8 @@
   <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
 
   <div class="form-inputs">
-    <%= f.association :member, label_method: :get_cmember, include_blank: true %>
+    <%#= f.association :member, label_method: :get_cmember, {}, {data: { controller: "select" }} %>
+    <%= f.association :member, label: "Member", input_html: { data: { controller: 'ts--select' } } %>
       <div class="row">
         <%= f.input :loan_certificate, wrapper_html: { class: "col-md-6" }  %>
         <%= f.input :group_certificate, wrapper_html: { class: "col-md-6" }  %>

@@ -9,6 +9,7 @@
         <div class="text-wrap fw-lighter"><strong>Branch:</strong><small><%= batch.branch %></small></div>
         <div class="text-wrap fw-lighter"><small><%= batch.description %></small></div>
       </div>
+<<<<<<< HEAD
       <!--Branch Loan Info-->
       <div class="col-lg-6">
         <div class="text-wrap fw-lighter"><strong>Insured :</strong><small> <%= batch.coverages.count %></small></div>
@@ -66,4 +67,14 @@
   <!--pills-tabContent-->
 </div>
 <!--Tabs/Pills-->
+=======
+<div class="mb-3">
+  <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, batches_path, class: "btn btn-secondary" %>
+  <%= link_to "New Loan", new_coverage_path(b: batch), class: "btn btn-primary", data: { turbo_frame: "remote_modal" }%>
+  <%= link_to 'All', batch_url(batch, s: 0), class: 'btn btn-secondary btn-sm' %>
+  <%= link_to '18 - 65', batch_url(batch, s: 1), class: 'btn btn-secondary btn-sm' %>
+</div>
+<%#= link_to 'Add Branch', new_coop_branch_path(v: c) , class: 'btn btn-primary', data: { turbo_frame: "remote_modal" } %>
+<%= render 'coverages/show_loan_coverage', sw: @show_coverage %>
+>>>>>>> main
 </div>

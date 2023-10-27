@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "@nathanvda/cocoon": "^1.2.14"
+    "@nathanvda/cocoon": "^1.2.14",
+    "tom-select": "^2.2.3"
   }
 }

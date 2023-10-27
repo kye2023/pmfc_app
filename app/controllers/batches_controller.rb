@@ -8,6 +8,7 @@ class BatchesController < ApplicationController
 
   # GET /batches/1 or /batches/1.json
   def show
+<<<<<<< HEAD
     
     age_group = params[:s]
     plan_type = params[:t]
@@ -22,6 +23,16 @@ class BatchesController < ApplicationController
     when "7175"
       @show_coverage = @batch.coverages.where(age: 71..75)
     end	
+=======
+    case params[:s]
+    when "0"
+      @show_coverage = @batch.coverages
+    when "1"
+      @show_coverage = @batch.coverages.where(age: 18..40)
+    end
+
+    # raise "errors"
+>>>>>>> main
   end
 
   # GET /batches/new

@@ -13,6 +13,7 @@
         </tr>
     </thead>
     <tbody>
+<<<<<<< HEAD
         <% 
             ccount = 0
             csum_si = 0
@@ -28,6 +29,13 @@
             <td class="text-center"><div class="text-wrap fw-lighter"><small><%= c.loan_certificate %></small></div></td>
             <td>
                 <div class="text-wrap fw-lighter"><small><%= c.member.get_cmember %> <br>
+=======
+        <% sw.each do |c| %>
+            <tr>
+                <th scope="row"><%= c.id %></th>
+                <td><%= c.loan_certificate %></td>
+                <td><%= c.member.get_cmember %> <br>
+>>>>>>> main
                 <small><%= to_shortdate(c.member.birth_date) %></small> | <small class="text-primary"> Age: <%= c.age %></small> |
                 <small class="text-muted">Residency: <%= c.residency %></small>
             </td>

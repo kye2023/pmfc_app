@@ -8,6 +8,10 @@ class Member < ApplicationRecord
   def get_cmember
     "#{last_name.capitalize}" + ", " + "#{first_name.capitalize}" + " " + "#{middle_name[0.1]}" + ". "
   end
+
+  def to_s 
+    "#{last_name}" + ", " + "#{first_name}" + " " + "#{middle_name[0.1]}" + ". "
+  end
   
   def get_formatted_bday
     bday = birth_date.strftime("%m/%d/%Y")
