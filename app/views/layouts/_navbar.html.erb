@@ -11,18 +11,21 @@
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item"><a class="nav-link active" aria-current="page" href="/">Home</a></li>
           <li class="nav-item"><a class="nav-link" href="<%= batches_url %>">Batch</a></li>
-          <li class="nav-item"><a class="nav-link" href="<%= members_url %>">Members</a></li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Data Entries</a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="<%= group_benefits_url %>">Group Benefits</a></li>
-              <li><a class="dropdown-item" href="<%= group_premia_url %>">Group Premium</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="<%= branches_url %>">Branch</a></li>
-              <li><a class="dropdown-item" href="<%= benefits_url %>">Benefits</a></li>
-              <li><a class="dropdown-item" href="<%= user_details_url %>">Users</a></li>
-            </ul>
-          </li>
+            <li class="nav-item"><a class="nav-link" href="<%= members_url %>">Members</a></li>
+          <% if current_user.admin? %>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Data Entries</a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="<%= group_benefits_url %>">Group Benefits</a></li>
+                <li><a class="dropdown-item" href="<%= group_premia_url %>">Group Premium</a></li>
+                <li><hr class="dropdown-divider"></li>
+                  
+                <li><a class="dropdown-item" href="<%= branches_url %>">Branch</a></li>
+                <li><a class="dropdown-item" href="<%= benefits_url %>">Benefits</a></li>
+                <li><a class="dropdown-item" href="<%= user_details_url %>">Users</a></li>
+              </ul>
+            </li>
+        <% end %>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="bi bi-person-circle"></i> Hi, <%= current_user.email %>
@@ -37,3 +40,5 @@
       </div>
     </div>
   </nav>
+
+<%# console %>

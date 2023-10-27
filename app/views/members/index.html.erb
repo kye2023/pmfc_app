@@ -59,9 +59,7 @@
       <th scope="row"><%= mbrcount %></th>
       <td>
         <div class="text-wrap fw-lighter">Name: <strong><%= member.get_cmember %></strong></div>
-        <div class="text-wrap fw-lighter"><small> Birth Date: <%= member.get_formatted_bday %></small></div>
-        <div class="text-wrap fw-lighter"><small> Date of Membership: <%= member.get_formatted_membership %></small></div>
-        <div class="text-wrap fw-lighter"><small> CS: <%= member.civil_status %> | Gender: <%= member.gender %></small></div>
+        <div class="text-wrap fw-lighter"><small> Birth Date: <%= member.get_formatted_bday %> | Membership: <%= member.get_formatted_membership %></small></div>
         <div class="text-wrap fw-lighter"><small> Dependent(s): <%= member.count_dependent %></small></div>
       </td>
       <!--<td></td>-->

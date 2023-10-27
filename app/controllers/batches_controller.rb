@@ -8,6 +8,14 @@ class BatchesController < ApplicationController
 
   # GET /batches/1 or /batches/1.json
   def show
+    case params[:s]
+    when "0"
+      @show_coverage = @batch.coverages
+    when "1"
+      @show_coverage = @batch.coverages.where(age: 18..40)
+    end
+
+    # raise "errors"
   end
 
   # GET /batches/new
