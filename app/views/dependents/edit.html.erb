@@ -1,6 +1,21 @@
+<%
+=begin
+%>
 <div class="card">
   <h5 class="card-header">Edit dependent</h5>
   <div class="card-body">
-    <%= render "form", dependent: @dependent %>
+    <%= render "form", url: dependent_path(@dependent), meth: 'patch' %>
   </div>
 </div>
+<%
+=end
+%>
+<%= render "members/remote_modal", title: "Edit Dependent Info" do %>
+  <%# render @dependent, item: @item %>
+<div class="card">
+  <h5 class="card-header">Edit dependent</h5>
+  <div class="card-body">
+    <%= render "form", url: dependent_path(@dependent), meth: 'patch' %>
+  </div>
+</div>
+<% end %>

@@ -1,9 +1,16 @@
-
-<%= render @dependent %>
-
+<%# render @dependent %>
+<%
+=begin
+%>
 <div>
   <%= link_to "Edit", edit_dependent_path(@dependent), class: 'btn btn-primary' %> |
-  <%= link_to "Back", dependents_path, class: 'btn btn-primary' %>
+  <%= link_to "Back", @member, class: 'btn btn-primary' %>
 
   <%= button_to "Delete", @dependent, method: :delete, class: 'btn btn-danger' %>
 </div>
+<%
+=end
+%>
+<%= render "members/remote_modal", title: "Dependent Info" do %>
+  <%= render @dependent, item: @item %>
+<% end %>

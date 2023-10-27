@@ -1,13 +1,13 @@
 class Coverage < ApplicationRecord
-  validates_presence_of :loan_certificate, :effectivity, :expiry, :loan_coverage, :term
+  validates_presence_of :loan_certificate, :effectivity, :loan_coverage, :term
   belongs_to :member
   belongs_to :batch
+  belongs_to :group_benefit, optional: true
+  has_many :dependent_coverages, dependent: :destroy
 
   def compute_age
     self.age = effectivity.year-member.birth_date.year
-    # if member.present? && effectivity.present?
-    # end
-    # primary_rate = 18..65
+    # SET PREMIUM RATE ACCORDING TO AGE group/range
     case age 
     when 18..65 
       self.rate = 0.83
@@ -21,23 +21,29 @@ class Coverage < ApplicationRecord
       self.rate = 5
       self.rate = 8.75 if loan_coverage > 350000
     end
+    
     #GET EXPIRY BASED ON EFFECTIVITY AND TERM
     self.expiry = effectivity >> term
 
     self.loan_premium = (loan_coverage/1000) * (rate * term)
-
     self.residency = (effectivity.year * 12 + effectivity.month) - (member.date_membership.year * 12 + member.date_membership.month)
 
+<<<<<<< HEAD
+    
+    #SEARCH GROUP PREMIUM
+    g_prm = GroupPremium.where('? between residency_floor and residency_ceiling', self.residency)
+    self.group_premium = g_prm.find_by(member_type: 'principal', term: self.term).premium unless g_prm.nil?
+=======
     gp = GroupPremium.where('? between residency_floor and residency_ceiling', self.residency)
     self.group_premium = gp.find_by(member_type: 'principal', term: self.term).premium unless gp.nil?
 
     gb = GroupBenefit.where('? between residency_floor and residency_ceiling', self.residency)
     self.group_benefit_id = gb.find_by(member_type: 'principal').id
+>>>>>>> main
 
-    self.member.dependents.each do |dependent|
-      dep_coverage = DependentCoverage.new 
-      
-    end
+    #SEARCH GROUP BENEFIT
+    g_bnft = GroupBenefit.where('? between residency_floor and residency_ceiling', self.residency)
+    self.group_benefit_id = g_bnft.find_by(member_type: 'principal').id
   end
   
   def coverage_aging
@@ -71,6 +77,15 @@ class Coverage < ApplicationRecord
     # if lppi_gross_coverage.present? && term.present?
     #   ((lppi_gross_coverage / 1000) * (term * lppi_prem))
     # end
+  end
+
+  def get_group_life
+    #return coverage.group_benefits.life
+  end
+
+  def alpharray(val)
+    numalpha = Array["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
+    return numalpha[val-1]
   end
 
 

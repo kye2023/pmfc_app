@@ -78,7 +78,6 @@ gem 'flatpickr'
 gem 'requestjs-rails'
 gem 'jquery-rails'
 gem 'byebug'
-# gem "roo", "~> 2.10.0"
 gem "devise", "~> 4.9"
 
 gem "cocoon"
@@ -86,6 +85,7 @@ gem 'htmlbeautifier'
 gem 'vanilla_nested'
 gem 'pagy'
 gem 'roo'
+
 
 gem 'capistrano', '~> 3.11'
 gem 'capistrano-rails', '~> 1.4'
