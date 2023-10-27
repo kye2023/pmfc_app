@@ -78,10 +78,6 @@ gem 'flatpickr'
 gem 'requestjs-rails'
 gem 'jquery-rails'
 gem 'byebug'
-<<<<<<< HEAD
-=======
-# gem "roo", "~> 2.10.0"
->>>>>>> main
 gem "devise", "~> 4.9"
 
 gem "cocoon"
@@ -89,12 +85,9 @@ gem 'htmlbeautifier'
 gem 'vanilla_nested'
 gem 'pagy'
 gem 'roo'
-<<<<<<< HEAD
-gem 'pry', '~> 0.14.2'
-=======
+
 
 gem 'capistrano', '~> 3.11'
 gem 'capistrano-rails', '~> 1.4'
 gem 'capistrano-passenger', '~> 0.2.0'
 gem 'capistrano-rbenv', '~> 2.1', '>= 2.1.4'
->>>>>>> main
