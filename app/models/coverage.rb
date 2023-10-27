@@ -32,7 +32,7 @@ class Coverage < ApplicationRecord
     self.group_premium = gp.find_by(member_type: 'principal', term: self.term).premium unless gp.nil?
 
     gb = GroupBenefit.where('? between residency_floor and residency_ceiling', self.residency)
-    self.group_benefit_id = gp.find_by(member_type: 'principal').id
+    self.group_benefit_id = gb.find_by(member_type: 'principal').id
 
     self.member.dependents.each do |dependent|
       dep_coverage = DependentCoverage.new 
