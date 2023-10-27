@@ -2,11 +2,11 @@ class Member < ApplicationRecord
   validates_presence_of :last_name, :first_name, :middle_name, :birth_date, :date_membership
   has_many :coverages
   has_many :batches, through: :coverages
-  has_many :dependents, inverse_of: :member
+  has_many :dependents, dependent: :destroy
   accepts_nested_attributes_for :dependents, reject_if: :all_blank, allow_destroy: true
 
   def get_cmember
-    "#{last_name}" + ", " + "#{first_name}" + " " + "#{middle_name[0.1]}" + ". "
+    "#{last_name.capitalize}" + ", " + "#{first_name.capitalize}" + " " + "#{middle_name[0.1]}" + ". "
   end
 
   def to_s 

@@ -16,7 +16,10 @@ class DependentsController < ApplicationController
 
   # GET /dependents/new
   def new
-    @dependent = Dependent.new
+    #@dependent = Dependent.new
+    #pass member id parameter @ dependents
+    @member = Member.find(params[:m])
+    @dependent = @member.dependents.build
   end
 
   # GET /dependents/1/edit
@@ -25,11 +28,13 @@ class DependentsController < ApplicationController
 
   # POST /dependents or /dependents.json
   def create
-    @dependent = Dependent.new(dependent_params)
+    #@dependent = Dependent.new(dependent_params)
+    @member = Member.find(params[:m])
+    @dependent = @member.dependents.build(dependent_params)
 
     respond_to do |format|
       if @dependent.save
-        format.html { redirect_to dependent_url(@dependent), notice: "Dependent was successfully created." }
+        format.html { redirect_to @member, notice: "Dependent was successfully created." }
         format.json { render :show, status: :created, location: @dependent }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -42,7 +47,7 @@ class DependentsController < ApplicationController
   def update
     respond_to do |format|
       if @dependent.update(dependent_params)
-        format.html { redirect_to dependent_url(@dependent), notice: "Dependent was successfully updated." }
+        format.html { redirect_to @member, notice: "Dependent was successfully updated." }
         format.json { render :show, status: :ok, location: @dependent }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -61,10 +66,17 @@ class DependentsController < ApplicationController
     end
   end
 
+  def import
+    import_service = ImportService.new(:dependent,params[:file])
+    import_message = import_service.import
+    redirect_to dependents_path, notice: import_message
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_dependent
       @dependent = Dependent.find(params[:id])
+      @member = @dependent.member
     end
 
     # Only allow a list of trusted parameters through.

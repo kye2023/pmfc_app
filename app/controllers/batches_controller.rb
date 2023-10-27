@@ -8,6 +8,22 @@ class BatchesController < ApplicationController
 
   # GET /batches/1 or /batches/1.json
   def show
+<<<<<<< HEAD
+    
+    age_group = params[:s]
+    plan_type = params[:t]
+
+    case age_group
+    when "0"
+      @show_coverage = @batch.coverages
+    when "1865"
+      @show_coverage = @batch.coverages.where(age: 18..65)
+    when "6670"
+      @show_coverage = @batch.coverages.where(age: 66..70)
+    when "7175"
+      @show_coverage = @batch.coverages.where(age: 71..75)
+    end	
+=======
     case params[:s]
     when "0"
       @show_coverage = @batch.coverages
@@ -16,6 +32,7 @@ class BatchesController < ApplicationController
     end
 
     # raise "errors"
+>>>>>>> main
   end
 
   # GET /batches/new
@@ -64,6 +81,13 @@ class BatchesController < ApplicationController
       format.html { redirect_to batches_url, notice: "Batch was successfully destroyed." }
       format.json { head :no_content }
     end
+  end
+
+  def import
+    batch_id = params[:p]
+    import_service = ImportService.new(:batch,params[:file],batch_id)
+    import_message = import_service.import
+    redirect_to batches_path, notice: import_message
   end
 
   private

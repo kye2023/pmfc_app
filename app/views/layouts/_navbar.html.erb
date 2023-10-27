@@ -8,6 +8,7 @@
         <%= image_tag 'pmfc.png', width: 100, class: 'mb-2 mb-lg-0 me-2' %>
       </a>
       <a class="navbar-brand text-success" href="#">PMFC</a>
+        <% if user_signed_in? %> 
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item"><a class="nav-link active" aria-current="page" href="/">Home</a></li>
           <li class="nav-item"><a class="nav-link" href="<%= batches_url %>">Batch</a></li>
@@ -35,8 +36,21 @@
               <li class="nav-item"> <%= button_to "Sign Out", destroy_user_session_path, method: :delete, class: "btn btn-sm btn-primary mx-2" %></li>
             </ul>
           </li>
+<<<<<<< HEAD
+          <li class="nav-item">
+            <!--<a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>-->
+            <% if user_signed_in? %> 
+              <%= button_to "Sign out", destroy_user_session_path, method: :delete %> 
+            <% else %>
+              <%= button_to "Sign in", new_user_session_path %> 
+            <% end %>
+          </li>
+        </ul>
+        <% end %>
+=======
         </ul>
 
+>>>>>>> main
       </div>
     </div>
   </nav>
