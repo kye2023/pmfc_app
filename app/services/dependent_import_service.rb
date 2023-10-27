@@ -14,15 +14,22 @@ class DependentImportService
     
     #drop 1 - header excluded
     dependents_spreadsheet.drop(1).each do |row|
+      #iteration per row
       #Break string into array - Principal column
       splt_principal = row["PRINCIPAL"].split(",")
       principal_lname = splt_principal[0].strip.upcase
       principal_fname = splt_principal[1].strip.upcase
       principal_mname = splt_principal[2].strip.upcase
       
-      parse_date = Date.strptime(row["BIRTHDATE"],"%m/%d/%Y")
-      formatted_dbirthdate = parse_date.strftime("%Y-%m-%d")
+      rdbdate = row["BIRTHDATE"]
 
+      if rdbdate.class == String
+        parse_date = Date.strptime(rdbdate,"%m/%d/%Y")
+        formatted_dbirthdate = parse_date.strftime("%Y-%m-%d")
+      else
+        formatted_dbirthdate = rdbdate
+      end
+      
       dependent_hash = {
         last_name: row["LASTNAME"] == nil ? nil : row["LASTNAME"].strip,
         first_name: row["FIRSTNAME"] == nil ? nil : row["FIRSTNAME"].strip,

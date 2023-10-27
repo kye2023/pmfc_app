@@ -5,16 +5,20 @@
           <th class="text-center">Certificate</th>
           <th class="text-center">#</th>
           <th>Name</th>
-          <th>Effectivity</th>
-          <th>Expiry</th>
-          <th>Term</th>
-          <th>Loan Amount</th>
-          <th>Premium</th>
+          <th class="text-center">Effectivity</th>
+          <th class="text-center">Expiry</th>
+          <th class="text-center">Term</th>
+          <th class="text-center">Loan Amount</th>
+          <th class="text-center">Premium</th>
           <th></th>
         </tr>
     </thead>
     <tbody>
-      <% ccount = 0 %>
+      <% 
+        ccount = 0 
+        gcp_sum_prm = 0
+        gcd_sum_prm = 0
+      %>
       <% batch.coverages.each do |c| %>
       <% ccount += 1 %>
         <tr class="table-success">
@@ -26,11 +30,11 @@
             <!--<small><%# to_shortdate(c.member.birth_date) %></small> | <small class="text-primary"> Age: <%# c.age %></small> |
             <small class="text-muted">Residency: <%# c.residency %></small>-->
           </td>
-          <td><div class="text-wrap fw-lighter"><small><%= to_shortdate(c.effectivity) %></small></div></td>
-          <td><div class="text-wrap fw-lighter"><small><%= to_shortdate(c.expiry) %></small></div></td>
+          <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_shortdate(c.effectivity) %></small></div></td>
+          <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_shortdate(c.expiry) %></small></div></td>
           <td class="text-center"><div class="text-wrap fw-lighter"><small><%= c.term %></small></div></td>
-          <td class="text-start"><div class="text-wrap fw-lighter"><small><%# to_curr(c.loan_coverage) %><%= to_curr(c.group_benefit.life) %></small></div></td>
-          <td class="text-start"><div class="text-wrap fw-lighter"><small><%= to_curr(c.group_premium) %></small></div></td>
+          <td class="text-center"><div class="text-wrap fw-lighter"><small><%# to_curr(c.loan_coverage) %><%= to_curr(c.group_benefit.life) %></small></div></td>
+          <td class="text-center"><div class="text-wrap fw-lighter"><small><% gcp_sum_prm += c.group_premium %><%= to_curr(c.group_premium) %></small></div></td>
           <td class="text-center">
             <small>Status: <%= c.status %></small> <br>
             <% link_to '<i class="bi bi-pencil-square"></i>'.html_safe, edit_coverage_path(c), class: "btn btn-secondary btn-sm", data: { turbo_frame: "remote_modal" } %> 
@@ -47,11 +51,26 @@
           <td></td>
           <td></td>
           <td></td>
-          <td class="text-start"><div class="text-wrap fw-lighter"><small><%= to_curr(dpndnt.dependent_coverage.group_benefit.life) %></small></div></td>
-          <td class="text-start"><div class="text-wrap fw-lighter"><small><%= to_curr(dpndnt.dependent_coverage.premium) %></small></div></td>
+          <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_curr(dpndnt.dependent_coverage.group_benefit.life) %></small></div></td>
+          <td class="text-center"><div class="text-wrap fw-lighter"><small><% gcd_sum_prm += dpndnt.dependent_coverage.premium %><%= to_curr(dpndnt.dependent_coverage.premium) %></small></div></td>
           <td></td>
         </tr>
         <% end %>
       <% end %>
+        <tr>
+          <td class="text-end" colspan="7"><div class="text-wrap fw-lighter"><strong>Total Net Premium Due</strong></div></td>
+          <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_curr(gcp_sum_prm+gcd_sum_prm) %></small></div></td>
+          <td></td>
+        </tr>
+        <tr>
+            <td class="text-end text-danger" colspan="7"><div class="text-wrap fw-lighter"><strong>Less: Service Fee</strong></div></td>
+            <td class="text-center text-danger"><%# service_fee %></td>
+            <td></td>
+        </tr>
+        <tr>
+          <td class="text-end" colspan="7"><div class="text-wrap fw-lighter"><strong>Total Net Premium Due</strong></div></td>
+          <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_curr(gcp_sum_prm+gcd_sum_prm) %></small></div></td>
+          <td></td>
+        </tr>
     </tbody>
 </table>

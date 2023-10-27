@@ -1,10 +1,8 @@
-
 <%= render @member %>
-
 <br>
 <div>
   <%= link_to "Edit", edit_member_path(@member), class: 'btn btn-primary' %> |
-  <%= link_to "Back", members_path, class: 'btn btn-primary' %>
-  <%= button_to "Delete", @member, class: 'btn btn-danger', method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+  <%= link_to "Back", members_path, class: 'btn btn-primary' %> |
+  <%= link_to "Delete", @member, class: 'btn btn-danger', method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
 </div>
-
+<br>

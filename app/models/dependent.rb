@@ -27,13 +27,19 @@ class Dependent < ApplicationRecord
     end
 
     if val == "gp"
-      gp = GroupPremium.where('? between residency_floor and residency_ceiling', coverage.residency)
-      group_premium = gp.find_by(member_type: "#{mmbr_type}", term: coverage.term).premium unless gp.nil?
+      
+      g_prm = GroupPremium.where('? between residency_floor and residency_ceiling', coverage.residency)
+      group_premium = g_prm.find_by(member_type: "#{mmbr_type}", term: coverage.term).premium unless g_prm.nil?
+      
       return group_premium
+    
     else
-      gb = GroupBenefit.where('? between residency_floor and residency_ceiling', coverage.residency)
-      group_benefit_id = gb.find_by(member_type: "#{mmbr_type}").id
+
+      g_bnft = GroupBenefit.where('? between residency_floor and residency_ceiling', coverage.residency)
+      group_benefit_id = g_bnft.find_by(member_type: "#{mmbr_type}").id
+      
       return group_benefit_id
+
     end
   end
 

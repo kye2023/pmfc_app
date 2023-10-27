@@ -2,14 +2,12 @@ class Coverage < ApplicationRecord
   validates_presence_of :loan_certificate, :effectivity, :loan_coverage, :term
   belongs_to :member
   belongs_to :batch
-  belongs_to :group_benefit
-  has_many :dependent_coverage, dependent: :destroy
+  belongs_to :group_benefit, optional: true
+  has_many :dependent_coverages, dependent: :destroy
 
   def compute_age
     self.age = effectivity.year-member.birth_date.year
-    # if member.present? && effectivity.present?
-    # end
-    # primary_rate = 18..65
+    # SET PREMIUM RATE ACCORDING TO AGE group/range
     case age 
     when 18..65 
       self.rate = 0.83
@@ -31,18 +29,13 @@ class Coverage < ApplicationRecord
     self.residency = (effectivity.year * 12 + effectivity.month) - (member.date_membership.year * 12 + member.date_membership.month)
 
     
+    #SEARCH GROUP PREMIUM
+    g_prm = GroupPremium.where('? between residency_floor and residency_ceiling', self.residency)
+    self.group_premium = g_prm.find_by(member_type: 'principal', term: self.term).premium unless g_prm.nil?
 
-    #search group premium
-    gp = GroupPremium.where('? between residency_floor and residency_ceiling', self.residency)
-    self.group_premium = gp.find_by(member_type: 'principal', term: self.term).premium unless gp.nil?
-    #search group benefit
-    gb = GroupBenefit.where('? between residency_floor and residency_ceiling', self.residency)
-    self.group_benefit_id = gp.find_by(member_type: 'principal').id
-
-    self.member.dependents.each do |dependent|
-      dep_coverage = DependentCoverage.new 
-    end
-
+    #SEARCH GROUP BENEFIT
+    g_bnft = GroupBenefit.where('? between residency_floor and residency_ceiling', self.residency)
+    self.group_benefit_id = g_bnft.find_by(member_type: 'principal').id
   end
   
   def coverage_aging

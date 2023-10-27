@@ -15,9 +15,16 @@ class MemberImportService
     mbr_ecount = 0
     #drop 1 - header excluded
     members_spreadsheet.drop(1).each do |row|
-      
-      parse_bdate = Date.strptime(row["BIRTHDATE"],"%m/%d/%Y")
-      formatted_bdate = parse_bdate.strftime("%Y-%m-%d")
+      #iteration per row
+
+      rbdate = row["BIRTHDATE"]
+
+      if rbdate.class == String
+        parse_bdate = Date.strptime(rbdate,"%m/%d/%Y")
+        formatted_bdate = parse_bdate.strftime("%Y-%m-%d") 
+      else
+        formatted_bdate = rbdate
+      end
 
       member_hash = {
         last_name: row["LASTNAME"] == nil ? nil : row["LASTNAME"].strip,

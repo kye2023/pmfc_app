@@ -19,7 +19,13 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :batches
+  resources :batches do
+    collection do
+      post :import
+    end
+  end
+
+
   resources :benefits
   resources :posts
 

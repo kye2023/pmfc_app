@@ -50,7 +50,7 @@ class CoveragesController < ApplicationController
       #@member = Member.find(coverage_params[:member_id])
       
       @coverage.compute_age
-
+     
       #@coverage.term = @coverage.coverage_aging
       #@coverage.lppi_gross_premium = @coverage.coverage_lppi_premium
       

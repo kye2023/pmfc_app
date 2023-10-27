@@ -28,15 +28,15 @@
         </tr>
       </thead>
       <tbody>
-      <% 
-        dpdntid = 0
-        dpdntcount = 0
-        dpprm = 0
-        @member.dependents.each do |dependent| 
-          dpdntcount += 1
-          dpdntid = dependent.id
-          dpprm = dependent.dependent_coverage.premium
-      %>
+        <% 
+          dpdntid = 0
+          dpdntcount = 0
+          dpprm = 0
+
+          @member.dependents.each do |dependent| 
+            dpdntcount += 1
+            dpdntid = dependent.id
+        %>
         <tr>
           <th scope="row"><%# dpdntid %><%= dpdntcount %></th>
           <td>
@@ -45,18 +45,22 @@
             <div class="text-wrap fw-lighter"><small>Relation: <%= dependent.relationship %></small></div>
           </td>
           <td>
+            <% unless dependent.dependent_coverage.nil? %>
             <div class="text-wrap fw-lighter"><small>Life: <%= to_curr(dependent.dependent_coverage.group_benefit.life) %></small></div>
             <div class="text-wrap fw-lighter"><small>A.D.D: <%= to_curr(dependent.dependent_coverage.group_benefit.add) %></small></div>
             <div class="text-wrap fw-lighter"><small>Burial: <%= to_curr(dependent.dependent_coverage.group_benefit.burial) %></small></div>
-            <div class="text-wrap fw-lighter"><small>Premium: <%= dpprm %></small></div>
+            <div class="text-wrap fw-lighter"><small>Premium: <%= to_curr(dependent.dependent_coverage.premium) %></small></div>
+            <% else %>
+            <div class="text-wrap fw-lighter"><small>No record(s) found...</small></div>
+            <% end %>
           </td>
           <td>
-            <%= link_to 'View', dependent, class: 'btn btn-secondary btn-sm' %>
-            <%= link_to 'Edit', edit_dependent_path(dependent), class: 'btn btn-secondary btn-sm' %>
-            <%= link_to "Delete", dependent, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+            <%= link_to '<i class="bi bi-eye-fill"></i>'.html_safe, dependent, class: 'btn btn-secondary btn-sm', data: { turbo_frame: "remote_modal"} %>
+            <%= link_to '<i class="bi bi-pencil-square"></i>'.html_safe, edit_dependent_path(dependent), class: 'btn btn-secondary btn-sm', data: { turbo_frame: "remote_modal"} %>
+            <%= link_to '<i class="bi bi-trash"></i>'.html_safe, dependent, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
           </td>
         </tr>
-      <% end %>
+        <% end %>
       </tbody>
     </table>
   </div>
