@@ -28,22 +28,15 @@ class Coverage < ApplicationRecord
     self.loan_premium = (loan_coverage/1000) * (rate * term)
     self.residency = (effectivity.year * 12 + effectivity.month) - (member.date_membership.year * 12 + member.date_membership.month)
 
-<<<<<<< HEAD
-    
-    #SEARCH GROUP PREMIUM
-    g_prm = GroupPremium.where('? between residency_floor and residency_ceiling', self.residency)
-    self.group_premium = g_prm.find_by(member_type: 'principal', term: self.term).premium unless g_prm.nil?
-=======
     gp = GroupPremium.where('? between residency_floor and residency_ceiling', self.residency)
     self.group_premium = gp.find_by(member_type: 'principal', term: self.term).premium unless gp.nil?
 
     gb = GroupBenefit.where('? between residency_floor and residency_ceiling', self.residency)
     self.group_benefit_id = gb.find_by(member_type: 'principal').id
->>>>>>> main
 
     #SEARCH GROUP BENEFIT
-    g_bnft = GroupBenefit.where('? between residency_floor and residency_ceiling', self.residency)
-    self.group_benefit_id = g_bnft.find_by(member_type: 'principal').id
+    # g_bnft = GroupBenefit.where('? between residency_floor and residency_ceiling', self.residency)
+    # self.group_benefit_id = g_bnft.find_by(member_type: 'principal').id
   end
   
   def coverage_aging

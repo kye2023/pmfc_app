@@ -1,80 +1,40 @@
 <div id="<%= dom_id batch %>">
-<div class="card mb-3">
-  <div class="card-header">Batch</div>
-  <div class="card-body">
-    <div class="row">
-      <!--Branch Info-->
-      <div class="col-lg-6">
-        <div class="text-wrap fw-lighter"><strong>Title:</strong><small><%= batch.title %></small></div>
-        <div class="text-wrap fw-lighter"><strong>Branch:</strong><small><%= batch.branch %></small></div>
-        <div class="text-wrap fw-lighter"><small><%= batch.description %></small></div>
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">Batch</div>
+        <div class="card-body">
+            <!--Branch Info-->
+            <div class="mb-3">
+              <div class="text-wrap fw-lighter"><strong>Title:</strong><small><%= batch.title %></small></div>
+              <div class="text-wrap fw-lighter"><strong>Branch:</strong><small><%= batch.branch %></small></div>
+              <div class="text-wrap fw-lighter"><small><%= batch.description %></small></div>
+            </div>
+        </div>
       </div>
-<<<<<<< HEAD
-      <!--Branch Loan Info-->
-      <div class="col-lg-6">
-        <div class="text-wrap fw-lighter"><strong>Insured :</strong><small> <%= batch.coverages.count %></small></div>
-        <div class="text-wrap fw-lighter"><strong>LPPI Premium :</strong><small> <%= to_curr(batch.coverages.sum(:loan_premium)) %></small></div>
-        <div class="text-wrap fw-lighter"><strong>Group Premium :</strong><small> <%# to_curr(batch.coverages.sum(:group_premium)+(batch.batch_coverage)) %></small></div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <dl class="row">
+            <dt class="col-sm-5">Count</dt>
+            <dd class="col-sm-7"><%= @show_coverage.count %></dd>
+            <dt class="col-sm-5">Loan Coverage</dt>
+            <dd class="col-sm-7"><%= to_curr(@show_coverage.sum(:loan_coverage)) %></dd>
+            <dt class="col-sm-5">Gross Premium</dt>
+            <dd class="col-sm-7"><%= to_curr(@show_coverage.sum(:loan_premium)) %></dd>
+          </dl>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<div class="row">
-  <div class="col-md-6 mb-3">
+
+  <div class="mb-3">
     <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, batches_path, class: "btn btn-secondary" %>
     <%= link_to "New Loan", new_coverage_path(b: batch), class: "btn btn-primary", data: { turbo_frame: "remote_modal" }%>
+    <%= link_to 'All', batch_url(batch, s: 0), class: 'btn btn-secondary btn-sm' %>
+    <%= link_to '18 - 65', batch_url(batch, s: 1), class: 'btn btn-secondary btn-sm' %>
   </div>
-  <div class="col-md-6 mb-3">
-    <!--Upload Member-->
-    <div class="col-md-6 float-md-end">
-      <%= form_with url: import_batches_path(p: batch.id), method: :post do |form| %>
-        <%= form.label :file, "For lppi coverage enrollment upload your csv file.", class: "form-text" %>
-          <div class="d-flex gap-3">
-            <%= form.file_field :file, class: "form-control", style: "width: 80%" %>
-            <%= submit_tag 'Upload', class: "btn btn-primary btn-sm" %>
-          </div>
-      <% end %>
-    </div>
-    <!--Upload Member-->
-  </div>
-</div>
-<%#= link_to 'Add Branch', new_coop_branch_path(v: c) , class: 'btn btn-primary', data: { turbo_frame: "remote_modal" } %>
-<!--Tabs/Pills-->
-<div class="row">
-  <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-    <li class="nav-item" role="presentation">
-      <button class="nav-link active" id="pills-lppi-tab" data-bs-toggle="pill" data-bs-target="#pills-lppi" type="button" role="tab" aria-controls="pills-lppi" aria-selected="true"><i class="bi bi-person-fill"></i> LPPI</button>
-    </li>
-    <li class="nav-item" role="presentation">
-      <button class="nav-link" id="pills-gyrt-tab" data-bs-toggle="pill" data-bs-target="#pills-gyrt" type="button" role="tab" aria-controls="pills-gyrt" aria-selected="false"><i class="bi bi-people-fill"></i> GYRT</button>
-    </li>
-  </ul>
-  <!--pills-tabContent-->
-  <div class="tab-content" id="pills-tabContent">
-    <div class="tab-pane fade show active" id="pills-lppi" role="tabpanel" aria-labelledby="pills-lppi-tab" tabindex="0">
-      
-      <%= link_to "All", batch_url(batch, s: 0, t: 1), class: "btn btn-primary"%>
-      <%= link_to "18-65", batch_url(batch, s: 1865, t: 1), class: "btn btn-primary"%>
-      <%= link_to "66-70", batch_url(batch, s: 6670, t: 1), class: "btn btn-primary"%>
-      <%= link_to "71-75", batch_url(batch, s: 7175, t: 1), class: "btn btn-primary"%>
-      <%= render 'coverages/show_loan_coverage', slc: @show_coverage %>
 
-    </div>
-    <div class="tab-pane fade" id="pills-gyrt" role="tabpanel" aria-labelledby="pills-gyrt-tab" tabindex="0">
-      <%= render 'coverages/show_group_coverage', batch: batch %>
-    </div>
-  </div>
-  <!--pills-tabContent-->
-</div>
-<!--Tabs/Pills-->
-=======
-<div class="mb-3">
-  <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, batches_path, class: "btn btn-secondary" %>
-  <%= link_to "New Loan", new_coverage_path(b: batch), class: "btn btn-primary", data: { turbo_frame: "remote_modal" }%>
-  <%= link_to 'All', batch_url(batch, s: 0), class: 'btn btn-secondary btn-sm' %>
-  <%= link_to '18 - 65', batch_url(batch, s: 1), class: 'btn btn-secondary btn-sm' %>
-</div>
-<%#= link_to 'Add Branch', new_coop_branch_path(v: c) , class: 'btn btn-primary', data: { turbo_frame: "remote_modal" } %>
-<%= render 'coverages/show_loan_coverage', sw: @show_coverage %>
->>>>>>> main
+  <%= render 'coverages/show_group_coverage', sw: @show_coverage %>
 </div>
