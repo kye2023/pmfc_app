@@ -27,68 +27,47 @@
     </div>     
 </div>
 
-<div class="container mt-3">
+
   <div class="row">
-  <!--Add Member-->
-  <div class="col-lg-6 text-start mb-3">
-    <%= link_to new_member_path, data: { turbo_frame:"remote_modal" }, class: 'btn btn-primary' do %>
-      New Member
-    <% end %>
-  </div>
-  <!--Add Member-->
-  <!--Search-->
-  <div class="col-lg-6">
-    <%= form_with( url: members_path, method: :get, data: {turbo_frame: "search_member"} ) do |form| %>
-      <div class="input-group mb-3">
-        <%= form.text_field :query, placeholder: 'Search by last name...', class: "form-control" %>
-        <%= form.submit 'Search', class: "btn btn-success" %>
+    <!--Add Member-->
+      <div class="col-lg-6 text-start mb-3">
+        <%= link_to new_member_path, data: { turbo_frame:"remote_modal" }, class: 'btn btn-primary' do %>
+          New Member
+        <% end %>
       </div>
-    <% end %>
+    <!--Add Member-->
+    <!--Search-->
+    <div class="col-lg-6">
+      <%= form_with( url: members_path, method: :get, data: {turbo_frame: "search_member"} ) do |form| %>
+        <div class="input-group mb-3">
+          <%= form.text_field :query, placeholder: 'Search by last name...', class: "form-control" %>
+          <%= form.submit 'Search', class: "btn btn-success" %>
+        </div>
+      <% end %>
+    </div>
   </div>
   <!--Search-->
-  <table class="table table-striped table-bordered table-hover table-sm">
+  <table class="table table-striped table-bordered table-hover">
     <thead>
       <tr>
         <th>#</th>
         <th>Member Info</th>
-        <th>LPPI</th>
-        <th>GYRT</th>
+        <th>Dependent</th>
         <th></th>
       </tr>
     </thead>
     <tbody>
-      <% 
-        mbrcount = 0
-        mbr_dependent= 0
-        @members.each do |member| 
-          mbrcount += 1
-          mbr_dependent = member.count_dependent
-      %>
+      <% @members.each do |member| %>
       <tr id="members">
-        <th scope="row"><%= mbrcount %></th>
+        <th><%= member.id %></th>
         <td>
-          <div class="text-wrap fw-lighter"><small>Name: <%= member.get_cmember %></small></div>
-          <div class="text-wrap fw-lighter"><small>Birth Date: <%= member.get_formatted_bday %></small></div>
-          <div class="text-wrap fw-lighter"><small>Date of Membership: <%= member.get_formatted_membership %></small></div>
-          <div class="text-wrap fw-lighter"><small>CS: <%= member.civil_status %> | Gender: <%= member.gender %></small></div>
+          Name: <%= member.get_cmember %> <br>
+          <small class="text-muted"> Birth Date: <%= to_shortdate(member.birth_date) %> |
+          Membership: <%= to_shortdate(member.date_membership) %></small>
         </td>
-        <td>
-          <% member.coverages.each do |cvg| %>
-          <div class="text-wrap fw-lighter"><small>Loan Amount: <%= to_curr(cvg.loan_coverage) %></small></div>
-          <div class="text-wrap fw-lighter"><small>Premium: <%= cvg.loan_premium %></small></div>
-          <% end %>
-        </td>
-        <td>
-           <% member.coverages.each do |cvg| %>
-            <div class="text-wrap fw-lighter"><small>Dependent(s): <%= mbr_dependent %></small></div>
-            <% 
-              dcvgsum = 0 
-              member.dependents.each do |dcvg| 
-              dcvgsum += dcvg.dependent_coverage.premium 
-            %>
-            <% end %>
-            <div class="text-wrap fw-lighter"><small>Premium: <%= to_curr(dcvgsum) %></small></div>
-           <% end %>
+        <td> <small> <ol><% member.dependents.each do |d| %>
+                <li><%= d.full_name %> (<%= d.relationship %>)</li>
+              <% end %></ol></small>
         </td>
         <td>
           <%= link_to '<i class="bi bi-eye-fill"></i>'.html_safe, member, class: 'btn btn-secondary btn-sm ' %>
@@ -100,50 +79,5 @@
     </tbody>
   </table>
 
-<<<<<<< HEAD
-  <!--Pagination-@-Pagy-->
-  <div class="mt-5">
-    <% if @pagy.count > @pagy.items %>
-    <div class="fw-lighter"><%== pagy_info(@pagy) %></div>
-    <%== pagy_bootstrap_nav(@pagy) %>
-=======
-</div>
 
 
-<div class="container mt-3">
-<table class="table table-striped table-bordered table-hover table-sm">
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>Member Info</th>
-      <!--<th>Transaction</th>-->
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <% 
-      mbrcount = 0
-      @members.each do |member| 
-        mbrcount += 1
-    %>
-    <tr id="members">
-      <th scope="row"><%= mbrcount %></th>
-      <td>
-        <div class="text-wrap fw-lighter">Name: <strong><%= member.get_cmember %></strong></div>
-        <div class="text-wrap fw-lighter"><small> Birth Date: <%= member.get_formatted_bday %> | Membership: <%= member.get_formatted_membership %></small></div>
-        <div class="text-wrap fw-lighter"><small> Dependent(s): <%= member.count_dependent %></small></div>
-      </td>
-      <!--<td></td>-->
-      <td>
-        <%= link_to 'View', member, class: 'btn btn-secondary btn-sm ' %>
-        <%= link_to 'Edit', edit_member_path(member), class: 'btn btn-secondary btn-sm' %>
-        <%= link_to "Delete", member, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
-      </td>
-    </tr>
->>>>>>> main
-    <% end %>
-  </div>
-  <!--Pagination-@-Pagy-->
-
-  </div>
-</div>
