@@ -17,8 +17,8 @@ default: &default
   password:
   # socket: /tmp/mysql.sock
   # socket: /var/run/mysqld/mysqld.sock
-  socket: /tmp/mysql.sock
-  # socket: /Applications/XAMPP/xamppfiles/var/mysql/mysql.sock
+  # socket: /tmp/mysql.sock
+  socket: /Applications/XAMPP/xamppfiles/var/mysql/mysql.sock
 
   # socket: C:/xampp/mysql/mysql.sock
 
