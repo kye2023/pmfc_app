@@ -13,7 +13,7 @@ class MembersController < ApplicationController
     end
 
     #set pagination
-    @pagy, @members = pagy(@members)
+    @pagy, @members = pagy(@members, items: 10)
   end
 
   # GET /members/1 or /members/1.json
