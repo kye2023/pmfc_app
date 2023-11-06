@@ -7,6 +7,7 @@
             <th class="text-center">Certificate</th>
             <th>Name</th>
             <th class="text-center">Coverage</th>
+            <th class="text-center">Loan Amount</th>
             <th class="text-center">Effectivity</th>
             <th class="text-center">Expiry</th>
             <th class="text-center">Term</th>
@@ -30,10 +31,14 @@
                 </td>
                 <td class="text-end"><small>L: <%= to_curr(c.group_benefit.life) %> <br>
                                                   AD: <%= to_curr(c.group_benefit.add) %> <br> B: <%= to_curr(c.group_benefit.burial) %></small></td>
+                <td class="text-center"><%= to_curr(c.loan_coverage) %></td>
                 <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_shortdate(c.effectivity) %></small></div></td>
                 <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_shortdate(c.expiry) %></small></div></td>
                 <td class="text-center"><div class="text-wrap fw-lighter"><%= c.term %></td>
-                <td class="text-end"><%= to_curr(c.group_premium) %></td>
+                <td class="text-end">
+                    <%= content_tag :small, "Loan Premium: " %><%= to_curr(c.loan_premium) %> <br>
+                    <%= content_tag :small, "Group Premium: " %><%= to_curr(c.group_premium) %> 
+                </td>
                 <td class="text-end"><%= c.dependent_coverages.sum(:premium) %></td>
         </tr>
         <% end %>

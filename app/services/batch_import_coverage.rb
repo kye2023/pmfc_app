@@ -70,8 +70,9 @@ class BatchImportCoverage
             term: coverage_hash[:term],
             status: coverage_hash[:status]
           )
-          #raise "errors"
+          # raise "errors"
           coverage.assign_attributes(coverage_hash)
+          coverage.compute_age
           coverage.save!
         end
       end

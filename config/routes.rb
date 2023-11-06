@@ -26,6 +26,9 @@ Rails.application.routes.draw do
     collection do
       post :import
     end
+    member do 
+      get :import_cov
+    end
     # post :import_coverages, on: :member
   end
 

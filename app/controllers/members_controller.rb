@@ -13,7 +13,7 @@ class MembersController < ApplicationController
     end
 
     #set pagination
-    @pagy, @members = pagy(@members)
+    @pagy, @members = pagy(@members, items: 10)
   end
 
   # GET /members/1 or /members/1.json
@@ -75,7 +75,7 @@ class MembersController < ApplicationController
   end
 
   def import
-    import_service = ImportService.new(:member,params[:file])
+    import_service = ImportService.new(:member, params[:file])
     import_message = import_service.import
     redirect_to members_path, notice: import_message
   end
