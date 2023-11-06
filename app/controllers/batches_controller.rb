@@ -14,7 +14,6 @@ class BatchesController < ApplicationController
     when "1"
       @show_coverage = @batch.coverages.where(age: 18..40)
     end
-
     @pagy, @records = pagy(@show_coverage, items: 5)
 
     # raise "errors"
