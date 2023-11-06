@@ -20,8 +20,14 @@ class DependentsController < ApplicationController
     #pass member id parameter @ dependents
     @member = Member.find(params[:m])
     @dependent = @member.dependents.build
+    dummy_data
   end
 
+  def dummy_data 
+    @dependent.last_name = FFaker::Name.last_name
+    @dependent.first_name = FFaker::Name.first_name
+    @dependent.middle_name = FFaker::Name.first_name[0]
+  end
   # GET /dependents/1/edit
   def edit
   end

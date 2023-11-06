@@ -8,22 +8,6 @@ class BatchesController < ApplicationController
 
   # GET /batches/1 or /batches/1.json
   def show
-<<<<<<< HEAD
-    
-    age_group = params[:s]
-    plan_type = params[:t]
-
-    case age_group
-    when "0"
-      @show_coverage = @batch.coverages
-    when "1865"
-      @show_coverage = @batch.coverages.where(age: 18..65)
-    when "6670"
-      @show_coverage = @batch.coverages.where(age: 66..70)
-    when "7175"
-      @show_coverage = @batch.coverages.where(age: 71..75)
-    end	
-=======
     case params[:s]
     when "0"
       @show_coverage = @batch.coverages
@@ -31,8 +15,9 @@ class BatchesController < ApplicationController
       @show_coverage = @batch.coverages.where(age: 18..40)
     end
 
+    @pagy, @records = pagy(@show_coverage, items: 5)
+
     # raise "errors"
->>>>>>> main
   end
 
   # GET /batches/new
@@ -88,6 +73,13 @@ class BatchesController < ApplicationController
     import_service = ImportService.new(:batch,params[:file],batch_id)
     import_message = import_service.import
     redirect_to batches_path, notice: import_message
+  end
+
+  def import_coverages
+    # batch_id = @batch.id
+    # import_service = ImportService.new(:coverage, params[:file], batch_id)
+    # import_message = import_service.import
+    # redirect_to batches_path, notice: import_message
   end
 
   private

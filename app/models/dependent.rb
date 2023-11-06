@@ -7,6 +7,10 @@ class Dependent < ApplicationRecord
     "#{last_name}" + ", " + "#{first_name}" + " " + "#{middle_name[0.1]}" + ". "
   end
 
+  def full_name 
+    "#{last_name}" + ", " + "#{first_name}" + " " + "#{middle_name[0.1]}" + ". "
+  end
+
   def get_formatted_dbday
     bday = birth_date.strftime("%m/%d/%Y")
   end

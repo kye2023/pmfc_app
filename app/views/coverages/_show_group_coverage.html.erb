@@ -1,76 +1,41 @@
 
+
 <table class="table table-responsive table-sm table-light table-bordered table-hover">
     <thead>
         <tr>
-          <th class="text-center">Certificate</th>
-          <th class="text-center">#</th>
-          <th>Name</th>
-          <th class="text-center">Effectivity</th>
-          <th class="text-center">Expiry</th>
-          <th class="text-center">Term</th>
-          <th class="text-center">Loan Amount</th>
-          <th class="text-center">Premium</th>
-          <th></th>
+            <th class="text-center">#</th>
+            <th class="text-center">Certificate</th>
+            <th>Name</th>
+            <th class="text-center">Coverage</th>
+            <th class="text-center">Effectivity</th>
+            <th class="text-center">Expiry</th>
+            <th class="text-center">Term</th>
+            <th class="text-center">Premium</th>
+            <th>Dependent</th>
         </tr>
     </thead>
     <tbody>
-      <% 
-        ccount = 0 
-        gcp_sum_prm = 0
-        gcd_sum_prm = 0
-      %>
-      <% batch.coverages.each do |c| %>
-      <% ccount += 1 %>
-        <tr class="table-success">
-          <td class="text-center"><div class="text-wrap fw-lighter"><small><%= c.group_certificate %></small></div></td>
-          <th class="text-center" scope="row"><%= ccount %><%# c.id %></th>
-          <td>
-            <div class="text-wrap fw-light"><small><%= c.member.get_cmember %></small></div>
-            <div class="text-wrap fw-lighter"><small><%= to_shortdate(c.member.birth_date) %> | Age: <%= c.age %> | Residency: <%= c.residency %></small></div>
-            <!--<small><%# to_shortdate(c.member.birth_date) %></small> | <small class="text-primary"> Age: <%# c.age %></small> |
-            <small class="text-muted">Residency: <%# c.residency %></small>-->
-          </td>
-          <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_shortdate(c.effectivity) %></small></div></td>
-          <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_shortdate(c.expiry) %></small></div></td>
-          <td class="text-center"><div class="text-wrap fw-lighter"><small><%= c.term %></small></div></td>
-          <td class="text-center"><div class="text-wrap fw-lighter"><small><%# to_curr(c.loan_coverage) %><%= to_curr(c.group_benefit.life) %></small></div></td>
-          <td class="text-center"><div class="text-wrap fw-lighter"><small><% gcp_sum_prm += c.group_premium %><%= to_curr(c.group_premium) %></small></div></td>
-          <td class="text-center">
-            <small>Status: <%= c.status %></small> <br>
-            <% link_to '<i class="bi bi-pencil-square"></i>'.html_safe, edit_coverage_path(c), class: "btn btn-secondary btn-sm", data: { turbo_frame: "remote_modal" } %> 
-            <% link_to '<i class="bi bi-trash"></i>'.html_safe, c, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
-          </td>
-        </tr>
-        <% nstdccount = 0 %>
-        <% c.member.dependents.each do |dpndnt| %> 
-        <% nstdccount += 1 %>
-        <tr>
-          <td class="text-center"><div class="text-wrap fw-light"><small><%= c.group_certificate %></small></div></td>
-          <td><div class="text-end text-wrap fw-light"><small><%= "#{c.alpharray(nstdccount)}" %><%# "#{ccount}-"+"#{nstdccount}" %></small></div></td>
-          <td><div class="text-wrap fw-lighter"><small><i class="bi bi-person-plus-fill"></i> <%= dpndnt %></small></div></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_curr(dpndnt.dependent_coverage.group_benefit.life) %></small></div></td>
-          <td class="text-center"><div class="text-wrap fw-lighter"><small><% gcd_sum_prm += dpndnt.dependent_coverage.premium %><%= to_curr(dpndnt.dependent_coverage.premium) %></small></div></td>
-          <td></td>
+        <% sw.each do |c| %>
+            <tr>
+                <th scope="row"><%= c.id %></th>
+                <td class="text-center"><%= c.group_certificate %></td>
+                <td><%= c.member.get_cmember %> <br>
+                <small><%= to_shortdate(c.member.birth_date) %></small> | <small class="text-primary"> Age: <%= c.age %></small> |
+                <small class="text-muted">Residency: <%= c.residency %></small><br>
+                    <small><ul>
+                    <% c.dependent_coverages.each do |d| %>
+                        <li> <%= d.dependent %> - <%= d.dependent.relationship %> </li>
+                    <% end %>
+                    </ul></small>
+                </td>
+                <td class="text-end"><small>L: <%= to_curr(c.group_benefit.life) %> <br>
+                                                  AD: <%= to_curr(c.group_benefit.add) %> <br> B: <%= to_curr(c.group_benefit.burial) %></small></td>
+                <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_shortdate(c.effectivity) %></small></div></td>
+                <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_shortdate(c.expiry) %></small></div></td>
+                <td class="text-center"><div class="text-wrap fw-lighter"><%= c.term %></td>
+                <td class="text-end"><%= to_curr(c.group_premium) %></td>
+                <td class="text-end"><%= c.dependent_coverages.sum(:premium) %></td>
         </tr>
         <% end %>
-      <% end %>
-        <tr>
-          <td class="text-end" colspan="7"><div class="text-wrap fw-lighter"><strong>Total Net Premium Due</strong></div></td>
-          <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_curr(gcp_sum_prm+gcd_sum_prm) %></small></div></td>
-          <td></td>
-        </tr>
-        <tr>
-            <td class="text-end text-danger" colspan="7"><div class="text-wrap fw-lighter"><strong>Less: Service Fee</strong></div></td>
-            <td class="text-center text-danger"><%# service_fee %></td>
-            <td></td>
-        </tr>
-        <tr>
-          <td class="text-end" colspan="7"><div class="text-wrap fw-lighter"><strong>Total Net Premium Due</strong></div></td>
-          <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_curr(gcp_sum_prm+gcd_sum_prm) %></small></div></td>
-          <td></td>
-        </tr>
     </tbody>
 </table>
