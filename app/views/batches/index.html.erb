@@ -33,8 +33,7 @@
           <td class="text-center"><%= batch.coverages.count %></td>
           <td class="text-end"><%= to_curr(batch.coverages.sum(:loan_premium)) %></td>
           <td class="text-end">
-            <%# <small><% to_curr(batch.dependent_coverages.sum(:premium)) %>
-            <small><%= to_curr(batch.coverages.sum(:loan_premium)) %></small>
+            <div class="text-wrap fw-lighter"><small><%# to_curr(batch.coverages.sum(:group_premium)+(batch.batch_coverage)) %></small></div>
           </td>
           <td>
               <%= link_to 'View', batch_url(batch, s: 0), class: 'btn btn-secondary btn-sm' %>

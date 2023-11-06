@@ -18,7 +18,7 @@
         <div class="card-body">
           <dl class="row">
             <dt class="col-sm-5">Count</dt>
-            <dd class="col-sm-7"><%= @show_coverage.count %></dd>
+            <dd class="col-sm-7"><%= @show_coverage.nil? ? 0 : @show_coverage.count %></dd>
             <dt class="col-sm-5">Loan Coverage</dt>
             <dd class="col-sm-7"><%= to_curr(@show_coverage.sum(:loan_coverage)) %></dd>
             <dt class="col-sm-5">Gross Premium</dt>
@@ -35,6 +35,6 @@
     <%= link_to 'All', batch_url(batch, s: 0), class: 'btn btn-secondary btn-sm' %>
     <%= link_to '18 - 65', batch_url(batch, s: 1), class: 'btn btn-secondary btn-sm' %>
   </div>
-
-  <%= render 'coverages/show_group_coverage', sw: @show_coverage %>
+  <%== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>
+  <%= render 'coverages/show_group_coverage', sw: @records %>
 </div>

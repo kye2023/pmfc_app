@@ -60,15 +60,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_23_053854) do
   end
 
   create_table "dependent_coverages", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "coverage_id"
-    t.bigint "dependent_id"
-    t.bigint "member_id"
-    t.bigint "group_benefit_id"
-    t.bigint "batch_id"
+    t.bigint "coverage_id", null: false
+    t.bigint "dependent_id", null: false
+    t.bigint "member_id", null: false
+    t.bigint "group_benefit_id", null: false
     t.decimal "premium", precision: 10, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["batch_id"], name: "index_dependent_coverages_on_batch_id"
     t.index ["coverage_id"], name: "index_dependent_coverages_on_coverage_id"
     t.index ["dependent_id"], name: "index_dependent_coverages_on_dependent_id"
     t.index ["group_benefit_id"], name: "index_dependent_coverages_on_group_benefit_id"
@@ -162,10 +160,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_23_053854) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "approved", default: false
     t.boolean "admin", default: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "dependent_coverages", "coverages"
+  add_foreign_key "dependent_coverages", "dependents"
+  add_foreign_key "dependent_coverages", "group_benefits"
+  add_foreign_key "dependent_coverages", "members"
 end
