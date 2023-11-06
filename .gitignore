@@ -29,6 +29,8 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+/config/master.key.bak
+
 
 # Ignore uploaded files (if using Active Storage).
 /storage/*
