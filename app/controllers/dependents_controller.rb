@@ -20,7 +20,9 @@ class DependentsController < ApplicationController
     #pass member id parameter @ dependents
     @member = Member.find(params[:m])
     @dependent = @member.dependents.build
-    dummy_data
+    if Rails.env.development?
+      dummy_data
+    end
   end
 
   def dummy_data 
