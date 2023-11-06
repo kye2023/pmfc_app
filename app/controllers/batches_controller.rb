@@ -1,5 +1,5 @@
 class BatchesController < ApplicationController
-  before_action :set_batch, only: %i[ show edit update destroy ]
+  before_action :set_batch, only: %i[ show edit update destroy import_cov]
 
   # GET /batches or /batches.json
   def index
@@ -8,11 +8,13 @@ class BatchesController < ApplicationController
 
   # GET /batches/1 or /batches/1.json
   def show
+    # raise 'errors'
     case params[:s]
-    when "0"
-      @show_coverage = @batch.coverages
     when "1"
       @show_coverage = @batch.coverages.where(age: 18..40)
+    # when "0"
+    else
+      @show_coverage = @batch.coverages
     end
 
     @pagy, @records = pagy(@show_coverage, items: 5)
@@ -23,6 +25,9 @@ class BatchesController < ApplicationController
   # GET /batches/new
   def new
     @batch = Batch.new
+  end
+
+  def import_cov
   end
 
   # GET /batches/1/edit
@@ -69,6 +74,7 @@ class BatchesController < ApplicationController
   end
 
   def import
+    # raise 'errors'
     batch_id = params[:p]
     import_service = ImportService.new(:batch,params[:file],batch_id)
     import_message = import_service.import
