@@ -24,7 +24,7 @@
         <!--Upload Member-->
         <div class="col-lg-4"></div>
       </div> 
-    </div>     
+    </div> 
 </div>
 
 
@@ -45,6 +45,9 @@
         </div>
       <% end %>
     </div>
+  </div>
+  <div class="float-end">
+    <%== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>
   </div>
   <!--Search-->
   <table class="table table-striped table-bordered table-hover">
