@@ -75,7 +75,7 @@ class MembersController < ApplicationController
   end
 
   def import
-    import_service = ImportService.new(:member,params[:file])
+    import_service = ImportService.new(:member, params[:file])
     import_message = import_service.import
     redirect_to members_path, notice: import_message
   end
