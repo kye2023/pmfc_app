@@ -23,6 +23,7 @@ Rails.application.routes.draw do
   end
 
   resources :batches do
+    get :batch_submit, on: :member
     collection do
       post :import
     end

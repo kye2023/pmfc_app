@@ -1,14 +1,17 @@
 <div id="<%= dom_id batch %>">
-  <div class="row">
+  <div class="row mb-3">
     <div class="col-md-8">
       <div class="card">
         <div class="card-header">Batch</div>
         <div class="card-body">
             <!--Branch Info-->
             <div class="mb-3">
-              <div class="text-wrap fw-lighter"><strong>Title:</strong><small><%= batch.title %></small></div>
-              <div class="text-wrap fw-lighter"><strong>Branch:</strong><small><%= batch.branch %></small></div>
-              <div class="text-wrap fw-lighter"><small><%= batch.description %></small></div>
+              <strong>Title:</strong>
+              <%= batch.title %> <br>
+              <strong>Branch:</strong>
+              <%= batch.branch %> <br>
+              <p class="text-primary"> Count: <%= batch.coverages.count %> </p>
+
             </div>
         </div>
       </div>
@@ -16,14 +19,11 @@
     <div class="col-md-4">
       <div class="card">
         <div class="card-body">
-          <dl class="row">
-            <dt class="col-sm-5">Count</dt>
-            <dd class="col-sm-7"><%= @show_coverage.nil? ? 0 : @show_coverage.count %></dd>
-            <dt class="col-sm-5">Loan Coverage</dt>
-            <dd class="col-sm-7"><%= to_curr(@show_coverage.sum(:loan_coverage)) %></dd>
-            <dt class="col-sm-5">Gross Premium</dt>
-            <dd class="col-sm-7"><%= to_curr(@show_coverage.sum(:loan_premium)) %></dd>
-          </dl>
+          <% loan_premium = batch.coverages.sum(:loan_premium) %>
+            <% principal_premium = batch.coverages.sum(:group_premium) %>
+            <% dependent_premium = batch.dependent_coverages.sum(:premium) %>
+            <small> Loan Premium: <%= to_curr(loan_premium) %> <br> Principal: <%= to_curr(principal_premium) %> <br> Dependent: <%= to_curr(dependent_premium) %></small> <br>
+            <strong>Total Premium: <%= to_curr(loan_premium + principal_premium + dependent_premium) %></strong>
         </div>
       </div>
     </div>
@@ -31,10 +31,11 @@
 
   <div class="mb-3">
     <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, batches_path, class: "btn btn-secondary" %>
-    <%= link_to "New Loan", new_coverage_path(b: batch), class: "btn btn-primary", data: { turbo_frame: "remote_modal" }%>
+    <%= link_to "New Loan", new_coverage_path(b: batch), class: "btn btn-primary", data: { turbo_frame: "remote_modal" } unless batch.submit? %>
+    <%= link_to "Import Coverage", import_cov_batch_path(), class: "btn btn-outline-primary", data: {turbo_frame: "remote_modal"} unless batch.submit? %>
+    <%= link_to "Submit", batch_submit_batch_path(batch), class: "btn btn-outline-success" unless batch.submit? %>
     <%= link_to 'All', batch_url(batch, s: 0), class: 'btn btn-secondary btn-sm' %>
     <%= link_to '18 - 65', batch_url(batch, s: 1), class: 'btn btn-secondary btn-sm' %>
-    <%= link_to "import", import_cov_batch_path(), class: "btn btn-outline-primary btn-sm", data: {turbo_frame: "remote_modal"} %>
   </div>
   <%== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>
   <%= render 'coverages/show_group_coverage', sw: @records %>
