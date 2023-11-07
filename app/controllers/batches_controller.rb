@@ -11,7 +11,7 @@ class BatchesController < ApplicationController
     # raise 'errors'
     case params[:s]
     when "1"
-      @show_coverage = @batch.coverages.where(age: 18..40)
+      @show_coverage = @batch.coverages.where(age: 18..65)
     # when "0"
     else
       @show_coverage = @batch.coverages

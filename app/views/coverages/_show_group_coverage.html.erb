@@ -12,7 +12,6 @@
             <th class="text-center">Expiry</th>
             <th class="text-center">Term</th>
             <th class="text-center">Premium</th>
-            <th>Dependent</th>
         </tr>
     </thead>
     <tbody>
@@ -37,9 +36,10 @@
                 <td class="text-center"><div class="text-wrap fw-lighter"><%= c.term %></td>
                 <td class="text-end">
                     <%= content_tag :small, "Loan Premium: " %><%= to_curr(c.loan_premium) %> <br>
-                    <%= content_tag :small, "Group Premium: " %><%= to_curr(c.group_premium) %> 
+                    <%= content_tag :small, "Group Premium: " %><%= to_curr(c.group_premium) %> <br>
+                    <%= content_tag :small, "Dependent Premium: " %><%= to_curr(c.dependent_coverages.sum(:premium)) %>
                 </td>
-                <td class="text-end"><%= c.dependent_coverages.sum(:premium) %></td>
+                <!-- td class="text-end"><%= c.dependent_coverages.sum(:premium) %></!-->
         </tr>
         <% end %>
     </tbody>

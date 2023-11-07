@@ -23,7 +23,9 @@ class MembersController < ApplicationController
   # GET /members/new
   def new
     @member = Member.new
-    dummy_data
+    if Rails.env.development?
+      dummy_data
+    end
   end
 
   def dummy_data 
