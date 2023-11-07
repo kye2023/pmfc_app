@@ -28,13 +28,16 @@
       </div>
     </div>
   </div>
-
+  <% pln = params[:pln] %>
   <div class="mb-3">
-    <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, batches_path, class: "btn btn-secondary" %>
-    <%= link_to "New Loan", new_coverage_path(b: batch), class: "btn btn-primary", data: { turbo_frame: "remote_modal" }%>
-    <%= link_to 'All', batch_url(batch, s: 0), class: 'btn btn-secondary btn-sm' %>
-    <%= link_to '18 - 65', batch_url(batch, s: 1), class: 'btn btn-secondary btn-sm' %>
+    <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, batches_path, class: "btn btn-secondary btn-sm" %>
+    <%= link_to "New Loan", new_coverage_path(b: batch), class: "btn btn-primary btn-sm", data: { turbo_frame: "remote_modal" }%>
+    <%= link_to 'All', batch_url(batch, qry: 0, pln: pln), class: 'btn btn-secondary btn-sm' %>
+    <%= link_to '18 - 65', batch_url(batch, qry: 1, pln: pln), class: 'btn btn-secondary btn-sm' %>
   </div>
-
+  <% if pln == "0" %>
+  <%= render 'coverages/show_loan_coverage', sw: @show_coverage %>
+  <% else %>
   <%= render 'coverages/show_group_coverage', sw: @show_coverage %>
+  <% end %>
 </div>

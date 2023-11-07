@@ -31,12 +31,15 @@
           <td><%= batch.title %> <strong><%= batch.branch %></strong> <br>
           <%= batch.description %></td>
           <td class="text-center"><%= batch.coverages.count %></td>
-          <td class="text-end"><%= to_curr(batch.coverages.sum(:loan_premium)) %></td>
           <td class="text-end">
-            <div class="text-wrap fw-lighter"><small><%# to_curr(batch.coverages.sum(:group_premium)+(batch.batch_coverage)) %></small></div>
+            <%= link_to "#{to_curr(batch.coverages.sum(:loan_premium))}", batch_url(batch, qry: 0, pln: 0), class: 'btn btn-secondary btn-sm' %>
+          </td>
+          <td class="text-end">
+            <!--<div class="text-wrap fw-lighter"><small><%# to_curr(batch.coverages.sum(:group_premium)+(batch.batch_coverage)) %></small></div>-->
+            <%= link_to "#{to_curr(batch.coverages.sum(:group_premium)+(batch.batch_coverage))}", batch_url(batch, qry: 0, pln: 1), class: 'btn btn-secondary btn-sm' %>
           </td>
           <td>
-              <%= link_to 'View', batch_url(batch, s: 0), class: 'btn btn-secondary btn-sm' %>
+              <%# link_to 'View', batch_url(batch, s: 0), class: 'btn btn-secondary btn-sm' %>
               <%= link_to 'Edit', edit_batch_path(batch), data: { turbo_frame:"remote_modal" }, class: 'btn btn-secondary btn-sm' %>
               <%= link_to "Delete", batch, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
           </td>

@@ -98,6 +98,7 @@ class CoveragesController < ApplicationController
     # @coverage.age = @coverage.compute_age 
     # @coverage.term = @coverage.coverage_aging
     # @coverage.lppi_gross_premium = @coverage.coverage_lppi_premium
+    
     @coverage.compute_age
     respond_to do |format|
       if @coverage.update(coverage_params)

@@ -8,7 +8,10 @@ class BatchesController < ApplicationController
 
   # GET /batches/1 or /batches/1.json
   def show
-    case params[:s]
+    age = params[:qry]
+    plan = params[:pln]
+
+    case age
     when "0"
       @show_coverage = @batch.coverages
     when "1"
@@ -67,7 +70,7 @@ class BatchesController < ApplicationController
   end
 
   def import
-    batch_id = params[:p]
+    batch_id = params[:id]
     import_service = ImportService.new(:batch,params[:file],batch_id)
     import_message = import_service.import
     redirect_to batches_path, notice: import_message
