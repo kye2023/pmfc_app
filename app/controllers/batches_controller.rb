@@ -1,6 +1,12 @@
 class BatchesController < ApplicationController
-  before_action :set_batch, only: %i[ show edit update destroy import_cov]
+  before_action :set_batch, only: %i[ show edit update destroy import_cov batch_submit]
 
+  def batch_submit 
+    @batch.update(submit: 1)
+    respond_to do |format| 
+      format.html { redirect_to batch_url(@batch), notice: "Batch was successfully submitted." }
+    end
+  end
   # GET /batches or /batches.json
   def index
     @batches = Batch.all
