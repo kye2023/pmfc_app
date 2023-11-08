@@ -1,9 +1,5 @@
 
-<%= render @coverage %>
+<%= render "remote_modal", title: "#{@coverage.member}" + "#{@coverage.coverage_status}" do %>
+  <%= render @coverage %>
+<% end %>
 
-<div>
-  <%= link_to "Edit", edit_coverage_path(@coverage), class: 'btn btn-primary' %> |
-  <%= link_to "Back", coverages_path, class: 'btn btn-primary' %>
-
-  <%= button_to "Delete", @coverage, method: :delete, class: 'btn btn-danger' %>
-</div>
