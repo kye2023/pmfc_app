@@ -22,7 +22,7 @@
             <tr>
                 <th scope="row"><%= c.id %></th>
                 <td class="text-center"><%= c.group_certificate %></td>
-                <td><%= c.member.get_cmember %> <br>
+                <td><%= c.member.get_cmember %> <span class="badge bg-dark"><%= c.coverage_status %></span> <br>
                 <small><%= to_shortdate(c.member.birth_date) %></small> | <small class="text-primary"> Age: <%= c.age %></small> |
                 <small class="text-muted">Residency: <%= c.residency %></small><br>
                     <small><ul>
