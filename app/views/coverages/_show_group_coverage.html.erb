@@ -12,6 +12,9 @@
             <th class="text-center">Expiry</th>
             <th class="text-center">Term</th>
             <th class="text-center">Premium</th>
+            <% unless @batch.submit? %>
+                <th>Action</th> 
+            <% end %>
         </tr>
     </thead>
     <tbody>
@@ -35,10 +38,19 @@
                 <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_shortdate(c.expiry) %></small></div></td>
                 <td class="text-center"><div class="text-wrap fw-lighter"><%= c.term %></td>
                 <td class="text-end">
-                    <%= content_tag :small, "Loan Premium: " %><%= to_curr(c.loan_premium) %> <br>
-                    <%= content_tag :small, "Group Premium: " %><%= to_curr(c.group_premium) %> <br>
-                    <%= content_tag :small, "Dependent Premium: " %><%= to_curr(c.dependent_coverages.sum(:premium)) %>
+                    <% dependent_prem = c.dependent_coverages.sum(:premium) %>
+                    <%= content_tag :small, "Loan Premium: " +  "#{to_curr(c.loan_premium)}" %> <br>
+                    <%= content_tag :small, "Group Premium: " +  "#{to_curr(c.group_premium)}" %> <br>
+                    <%= content_tag :small, "Dependent Premium: " +  "#{to_curr(dependent_prem)}" %> <br>
+                    <%= content_tag :strong, "Total Premium: " +  "#{to_curr(dependent_prem + c.loan_premium + c.group_premium)}" %> <br>
                 </td>
+                <% unless @batch.submit? %>
+                    <td class="text-center">
+                    <%= link_to '<i class="bi bi-eye"></i>'.html_safe, coverage_path(c), class: 'btn btn-secondary btn-sm' %>
+                    <%= link_to '<i class="bi bi-pencil-square"></i>'.html_safe, edit_coverage_path(c), class: 'btn btn-secondary btn-sm', data: { turbo_frame: "remote_modal" } %>
+                    <%= link_to '<i class="bi bi-trash"></i>'.html_safe, c, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+                    </td>
+                <% end %>
                 <!-- td class="text-end"><%= c.dependent_coverages.sum(:premium) %></!-->
         </tr>
         <% end %>

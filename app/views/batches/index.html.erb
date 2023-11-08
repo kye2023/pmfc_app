@@ -12,10 +12,8 @@
       <tr>
       <th>#</th>
             <th>Batch</th>
-            <th class="text-center">Count</th>
-            <th class="text-end">LPPI Premium</th>
-            <th class="text-end">Group</th>
-            <th></th>
+            <th class="text-end">Premium</th>
+            
         </tr>
     </thead>
 
@@ -29,19 +27,19 @@
 
           <th scope="row"><%= batch.id %></th>
           <td><%= batch.title %> <strong><%= batch.branch %></strong> <br>
-          <%= batch.description %></td>
-          <td class="text-center"><%= batch.coverages.count %></td>
-          <td class="text-end"><%= to_curr(batch.coverages.sum(:loan_premium)) %></td>
-          <td class="text-end">
-            <div class="text-wrap fw-lighter"><small><%= to_curr(batch.coverages.sum(:group_premium)+(batch.batch_coverage)) %></small></div>
-            
-
-          </td>
-          <td>
-              <%= link_to 'View', batch_url(batch, s: 0), class: 'btn btn-secondary btn-sm' %>
+          <small class="text-primary"><%= batch.coverages.count %> coverage(s) <br>
+           <%= link_to 'View', batch_url(batch, s: 0), class: 'btn btn-secondary btn-sm' %>
               <%= link_to 'Edit', edit_batch_path(batch), data: { turbo_frame:"remote_modal" }, class: 'btn btn-secondary btn-sm' %>
               <%= link_to "Delete", batch, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+          </small></td>
+          <td class="text-end">
+            <% loan_premium = batch.coverages.sum(:loan_premium) %>
+            <% principal_premium = batch.coverages.sum(:group_premium) %>
+            <% dependent_premium = batch.dependent_coverages.sum(:premium) %>
+            <small> Loan Premium: <%= to_curr(loan_premium) %> <br> Principal: <%= to_curr(principal_premium) %> <br> Dependent: <%= to_curr(dependent_premium) %></small> <br>
+            <strong>Total Premium: <%= to_curr(principal_premium + dependent_premium) %></strong>
           </td>
+          
         </tr>
       <% end %>
     </tbody>
