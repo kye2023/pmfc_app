@@ -1,75 +1,54 @@
 <div id="<%= dom_id coverage %>">
-  <p>
-    <strong>Coop:</strong>
-    <% coverage.batch_id %>
-    <%=coverage.batch.title %>
-  </p>
+  <%#= content_tag :h3, coverage.member, class: "text-primary" %>
+  
+  <div class="row">
 
-  <p>
-    <strong>Member:</strong>
-    <%# coverage.member_id %>
-    <%= coverage.member.get_cmember %>
-  </p>
+    <dl class="row col-md-6">
+      <dt class="col-md-6">Loan Certificate</dt>
+      <dd class="col-md-6"><%= coverage.loan_certificate %> </dd>
+      <dt class="col-md-6">Effectivity</dt>
+      <dd class="col-md-6"><%= to_shortdate(coverage.effectivity) %> </dd>
+      <dt class="col-md-6">Terms</dt>
+      <dd class="col-md-6"><%= coverage.term %> </dd>
+    </dl>
+    <dl class="row col-md-6">
+      <dt class="col-md-6">Group Certificate</dt>
+      <dd class="col-md-6"><%= coverage.group_certificate %> </dd>
+      <dt class="col-md-6">Expiry</dt>
+      <dd class="col-md-6"><%= to_shortdate(coverage.expiry) %> </dd>
+      <dt class="col-md-6">Residency</dt>
+      <dd class="col-md-6"><%= coverage.residency %> </dd>
+    </dl>
+  </div>
 
-  <p>
-    <strong>Loan certificate:</strong>
-    <%= coverage.loan_certificate %>
-  </p>
+  <table class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <th>Details</th>
+        <th>Life</th>
+        <th>Accidental</th>
+        <th>Burial</th>
+        <th>Premium</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Principal</td>
+        <td class="text-end"><%= to_curr(coverage.group_benefit.life) %></td>
+        <td class="text-end"><%= to_curr(coverage.group_benefit.add) %></td>
+        <td class="text-end"><%= to_curr(coverage.group_benefit.burial) %></td>
+        <td class="text-end"><%= to_curr(coverage.group_premium) %></td>
+      </tr>
+      <% coverage.dependent_coverages.each do |dc| %>
+      <tr>
+        <td><small><%= dc.dependent %></small><span class="badge bg-light text-dark"><%= dc.dependent.relationship %></span></td>
+        <td class="text-end"><%= to_curr(dc.group_benefit.life) %></td>
+        <td class="text-end"><%= to_curr(dc.group_benefit.add) %></td>
+        <td class="text-end"><%= to_curr(dc.group_benefit.burial) %></td>
+        <td class="text-end"><%= to_curr(dc.premium) %></td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
 
-  <p>
-    <strong>Age:</strong>
-    <%= coverage.age %>
-  </p>
-
-  <p>
-    <strong>Effectivity:</strong>
-    <%= coverage.effectivity %>
-  </p>
-
-  <p>
-    <strong>Expiry:</strong>
-    <%= coverage.expiry %>
-  </p>
-
-  <p>
-    <strong>Term:</strong>
-    <%= coverage.term %>
-  </p>
-
-  <p>
-    <strong>Status:</strong>
-    <%= coverage.status %>
-  </p>
-
- <p>
-    <strong>Lppi gross coverage:</strong>
-    <%#= coverage.lppi_gross_coverage %>
-  </p>
-
-  <p>
-    <strong>Lppi gross premium:</strong>
-    <%# coverage.lppi_gross_premium %>
-    <%#= coverage.lppi_gross_premium.round(2) %>
-  </p>
-<!--
-  <p>
-    <strong>Group certificate:</strong>
-    <% coverage.group_certificate %>
-  </p>
-
-  <p>
-    <strong>Residency:</strong>
-    <% coverage.residency %>
-  </p>
-
-  <p>
-    <strong>Group coverage:</strong>
-    <%# coverage.group_coverage %>
-  </p>
-
-  <p>
-    <strong>Group premium:</strong>
-    <% coverage.group_premium %>
-  </p>
-  -->
 </div>
