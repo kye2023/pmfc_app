@@ -26,7 +26,7 @@
         <tr>
 
           <th scope="row"><%= batch.id %></th>
-          <td><%= batch.title %> <strong><%= batch.branch %></strong> <br>
+          <td><%= batch.title %> <strong><%= batch.branch %></strong> <%= batch_status(batch.submit) %> <br>
           <small class="text-primary"><%= batch.coverages.count %> coverage(s) <br>
            <%= link_to 'View', batch_url(batch, s: 0), class: 'btn btn-secondary btn-sm' %>
               <%= link_to 'Edit', edit_batch_path(batch), data: { turbo_frame:"remote_modal" }, class: 'btn btn-secondary btn-sm' %>
