@@ -46,7 +46,7 @@
                 </td>
                 <% unless @batch.submit? %>
                     <td class="text-center">
-                    <%= link_to '<i class="bi bi-eye"></i>'.html_safe, coverage_path(c), class: 'btn btn-secondary btn-sm' %>
+                    <%= link_to '<i class="bi bi-eye"></i>'.html_safe, c, class: 'btn btn-secondary btn-sm', data: { turbo_frame: "remote_modal" } %>
                     <%= link_to '<i class="bi bi-pencil-square"></i>'.html_safe, edit_coverage_path(c), class: 'btn btn-secondary btn-sm', data: { turbo_frame: "remote_modal" } %>
                     <%= link_to '<i class="bi bi-trash"></i>'.html_safe, c, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
                     </td>
