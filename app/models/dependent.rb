@@ -66,4 +66,8 @@ class Dependent < ApplicationRecord
 
   end
 
+  def get_age(effectivity)
+    ((effectivity - self.birth_date.to_date) / 365).round
+  end
+
 end
