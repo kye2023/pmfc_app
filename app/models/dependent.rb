@@ -52,16 +52,18 @@ class Dependent < ApplicationRecord
   end
 
   def is_dep_age_valid
+        
     age = ((Date.today - self.birth_date.to_date) / 365).round
-    case self.relationship
-    when ("spouse" || "parent") && (18..65).include?(age)
+    rel = self.relationship    
+
+    if ["spouse", "parent"].include?(rel) && (18..65).include?(age)
       return true
-    when "child" && (3..21).include?(age)
+    elsif ["child", "sibling"].include?(rel) && (3..21).include?(age)
       return true
-    else 
+    else
       return false
     end
-    
+
   end
 
 end
