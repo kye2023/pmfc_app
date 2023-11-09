@@ -27,7 +27,7 @@
                 <small class="text-muted">Residency: <%= c.residency %></small><br>
                     <small><ul>
                     <% c.dependent_coverages.each do |d| %>
-                        <li> <%= d.dependent %> - <%= d.dependent.relationship %> </li>
+                        <li> <%= d.dependent %> - <%= d.dependent.relationship %> <small>(Age: <%= d.dependent.get_age(c.effectivity)  %>)</small> </li>
                     <% end %>
                     </ul></small>
                 </td>
