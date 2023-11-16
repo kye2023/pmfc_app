@@ -10,7 +10,7 @@ class Member < ApplicationRecord
   end
 
   def to_s 
-    "#{last_name}" + ", " + "#{first_name}" + " " + "#{middle_name[0.1]}" + ". "
+     "#{first_name}" + " " + "#{middle_name[0.1]}." + " " + "#{last_name}"
   end
   
   def get_formatted_bday

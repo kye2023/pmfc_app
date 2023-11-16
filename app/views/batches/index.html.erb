@@ -26,11 +26,11 @@
         <tr>
 
           <th scope="row"><%= batch.id %></th>
-          <td><%= batch.title %> <strong><%= batch.branch %></strong> <%= batch_status(batch.submit) %> <br>
+          <td><%= batch.title %> <strong><%= batch.branch %></strong> <%= content_tag :span, 'Submitted', class: "badge rounded-pill bg-warning text-dark" if batch.submit? %> <br>
           <small class="text-primary"><%= batch.coverages.count %> coverage(s) <br>
            <%= link_to 'View', batch_url(batch, s: 0), class: 'btn btn-secondary btn-sm' %>
-              <%= link_to 'Edit', edit_batch_path(batch), data: { turbo_frame:"remote_modal" }, class: 'btn btn-secondary btn-sm' %>
-              <%= link_to "Delete", batch, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+              <%= link_to 'Edit', edit_batch_path(batch), data: { turbo_frame:"remote_modal" }, class: 'btn btn-secondary btn-sm' unless batch.submit? %>
+              <%= link_to "Delete", batch, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } unless batch.submit? %>
           </small></td>
           <td class="text-end">
             <% loan_premium = batch.coverages.sum(:loan_premium) %>

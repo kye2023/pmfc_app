@@ -1,6 +1,6 @@
 class BatchesController < ApplicationController
   before_action :set_batch, only: %i[ show edit update destroy import_cov batch_submit]
-
+  require 'csv'
   def batch_submit 
     @batch.update(submit: 1)
     respond_to do |format| 
@@ -10,6 +10,13 @@ class BatchesController < ApplicationController
   # GET /batches or /batches.json
   def index
     @batches = Batch.all
+
+    respond_to do |format|
+      format.html
+      format.csv do 
+        send_data Batch.to_csv, filename: Date.today.to_s, content_type: 'text/csv'
+      end
+    end
   end
 
   # GET /batches/1 or /batches/1.json

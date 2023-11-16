@@ -33,7 +33,8 @@
     <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, batches_path, class: "btn btn-secondary" %>
     <%= link_to "New Loan", new_coverage_path(b: batch), class: "btn btn-primary", data: { turbo_frame: "remote_modal" } unless batch.submit? %>
     <%= link_to "Import Coverage", import_cov_batch_path(), class: "btn btn-outline-primary", data: {turbo_frame: "remote_modal"} unless batch.submit? %>
-    <%= link_to "Submit", batch_submit_batch_path(batch), class: "btn btn-outline-success", onclick: "return confirm('Are you sure?')" unless batch.submit? %>
+    <%= link_to "Submit", batch_submit_batch_path(batch), class: "btn btn-outline-success" unless batch.submit? %>
+    <%= link_to 'Download'.html_safe, batches_path(format: :csv), class: 'btn btn-secondary' if batch.submit? && current_user.admin? %>
     <%= link_to 'All', batch_url(batch, s: 0), class: 'btn btn-secondary btn-sm' %>
     <%= link_to '18 - 65', batch_url(batch, s: 1), class: 'btn btn-secondary btn-sm' %>
   </div>
