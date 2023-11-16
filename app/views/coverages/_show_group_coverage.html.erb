@@ -41,7 +41,9 @@
                     <% dependent_prem = c.dependent_coverages.sum(:premium) %>
                     <%= content_tag :small, "Loan Premium: " +  "#{to_curr(c.loan_premium)}" %> <br>
                     <%= content_tag :small, "Group Premium: " +  "#{to_curr(c.group_premium)}" %> <br>
+                    <% if c.dependent_coverages.count > 0 %>
                     <%= content_tag :small, "Dependent Premium: " +  "#{to_curr(dependent_prem)}" %> <br>
+                    <% end %>
                     <%= content_tag :strong, "Total Premium: " +  "#{to_curr(dependent_prem + c.loan_premium + c.group_premium)}" %> <br>
                 </td>
                 <% unless @batch.submit? %>

@@ -34,21 +34,27 @@
     </div>
     
     <!--Nested-Cocoon-->
-    <h3>Dependents</h3>
-    <div id="dependents">
-      <% f.simple_fields_for :dependents do |dependent| %>
-        <%= render "dependent_fields", f: dependent %>
-      <% end %>
+    <div class="card">
+      <h3 class="card-header">Dependents</h3>
+      <div class="card-body">
+        <div id="dependents">
+          <% f.simple_fields_for :dependents do |dependent| %>
+            <%= render "dependent_fields", f: dependent %>
+          <% end %>
+        </div>
       <div class="links">
         <%= link_to_add_association "add dependent", f, :dependents, class:"btn btn-secondary btn-sm" %>
       </div>
     </div>
+    </div>
+    
     <!--Nested-Cocoon-->
 
   </div>
   <br>
   <br>
   <div class="form-actions">
+    <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, members_path, class: "btn btn-secondary" %>
     <%= f.button :submit, class: "btn btn-primary" %>
   </div>
 <% end %>
