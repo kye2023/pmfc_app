@@ -41,13 +41,19 @@ class DependentsController < ApplicationController
     @dependent = @member.dependents.build(dependent_params)
 
     respond_to do |format|
-      if @dependent.save
-        format.html { redirect_to @member, notice: "Dependent was successfully created." }
-        format.json { render :show, status: :created, location: @dependent }
+      if @dependent.is_dep_age_valid == true
+
+        if @dependent.save
+          format.html { redirect_to @member, notice: "Dependent was successfully created." }
+          format.json { render :show, status: :created, location: @dependent }
+        else
+          format.html { render :new, status: :unprocessable_entity }
+          format.json { render json: @dependent.errors, status: :unprocessable_entity }
+        end
       else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @dependent.errors, status: :unprocessable_entity }
+        format.html { redirect_to @member, alert: "Dependent Age is not valid." }
       end
+
     end
   end
 
