@@ -70,4 +70,9 @@ class Dependent < ApplicationRecord
     ((effectivity - self.birth_date.to_date) / 365).round
   end
 
+  def current_age
+    ((Date.today - self.birth_date.to_date) / 365).round
+  end
+
+
 end

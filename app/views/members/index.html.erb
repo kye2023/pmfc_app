@@ -69,7 +69,7 @@
           Membership: <%= to_shortdate(member.date_membership) %></small>
         </td>
         <td> <small> <ol><% member.dependents.each do |d| %>
-                <li><%= d.full_name %> (<%= d.relationship %>)</li>
+                <li><%= d.full_name %> (<%= d.relationship %>) - <%= d.current_age %> yrs. old</li>
               <% end %></ol></small>
         </td>
         <td>
