@@ -25,7 +25,7 @@ class Coverage < ApplicationRecord
     #GET EXPIRY BASED ON EFFECTIVITY AND TERM
     self.expiry = effectivity >> term
 
-    self.loan_premium = (loan_coverage/1000) * (rate * term)
+    self.loan_premium = (loan_coverage/1000) * (rate * (term + grace_period))
     self.residency = (effectivity.year * 12 + effectivity.month) - (member.date_membership.year * 12 + member.date_membership.month)
 
     gp = GroupPremium.where('? between residency_floor and residency_ceiling', self.residency)

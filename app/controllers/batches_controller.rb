@@ -31,6 +31,12 @@ class BatchesController < ApplicationController
     end
     @pagy, @records = pagy(@show_coverage, items: 5)
 
+    respond_to do |format|
+      format.html
+      format.csv do 
+        send_data @batch.batch_csv(@batch.id), filename: "#{@batch.title}-" + "#{@batch.branch.name}-" + Date.today.to_s, content_type: 'text/csv'
+      end
+    end
     # raise "errors"
   end
 

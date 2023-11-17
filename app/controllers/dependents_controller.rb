@@ -95,6 +95,6 @@ class DependentsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def dependent_params
-      params.require(:dependent).permit(:member_id, :last_name, :first_name, :middle_name, :birth_date, :civil_status, :gender, :mobile_no, :email, :relationship)
+      params.require(:dependent).permit(:member_id, :last_name, :first_name, :middle_name, :birth_date, :civil_status, :gender, :mobile_no, :email, :relationship, :suffix)
     end
 end

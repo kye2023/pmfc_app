@@ -6,11 +6,11 @@ class Member < ApplicationRecord
   accepts_nested_attributes_for :dependents, reject_if: :all_blank, allow_destroy: true
 
   def get_cmember
-    "#{last_name.capitalize}" + ", " + "#{first_name.capitalize}" + " " + "#{middle_name[0.1]}" + ". "
+    "#{last_name.capitalize}" + ", " + "#{first_name.capitalize}" + " " + "#{middle_name[0.1]}" + ". " + "#{suffix}"
   end
 
   def to_s 
-     "#{first_name}" + " " + "#{middle_name[0.1]}." + " " + "#{last_name}"
+     "#{first_name}" + " " + "#{middle_name[0.1]}." + " " + "#{last_name}" + "#{suffix}"
   end
   
   def get_formatted_bday
