@@ -21,7 +21,8 @@
         </div>
       </div>
       <div class="row">
-        <%= f.input :term, collection: [3, 4, 6, 9, 12], wrapper_html: { class: "col-md-3"} %>
+        <%#= f.input :term, collection: [3, 4, 6, 9, 12], wrapper_html: { class: "col-md-3"} %>
+        <%= f.input :term, collection: Coverage::TERMS, wrapper_html: { class: "col-md-3"} %>
         <%= f.input :grace_period, wrapper_html: { class: "col-md-3" }  %>
         <%= f.input :status, collection: [['New','N'],['Renewal','R']], include_blank: true, wrapper_html: { class: "col-md-3" } %>
         <%= f.input :loan_coverage, wrapper_html: { class: "col-md-3" } %>

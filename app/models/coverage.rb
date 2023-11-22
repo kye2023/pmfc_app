@@ -5,7 +5,12 @@ class Coverage < ApplicationRecord
   belongs_to :group_benefit, optional: true
   has_many :dependent_coverages, dependent: :destroy
 
+  TERMS = [3, 4, 5, 6, 9, 12, 18, 24, 30]
+
   def compute_age
+    
+    binding.pry
+    
     self.age = effectivity.year-member.birth_date.year
     # SET PREMIUM RATE ACCORDING TO AGE group/range
     case age 

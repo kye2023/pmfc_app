@@ -29,14 +29,27 @@
     </div>
   </div>
 
-  <div class="mb-3">
-    <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, batches_path, class: "btn btn-secondary" %>
-    <%= link_to "New Loan", new_coverage_path(b: batch), class: "btn btn-primary", data: { turbo_frame: "remote_modal" } unless batch.submit? %>
-    <%= link_to "Import Coverage", import_cov_batch_path(), class: "btn btn-outline-primary", data: {turbo_frame: "remote_modal"} unless batch.submit? %>
-    <%= link_to "Submit", batch_submit_batch_path(batch), class: "btn btn-outline-success" unless batch.submit? %>
-    <%= link_to 'Download'.html_safe, batch_path(batch, format: :csv), class: 'btn btn-secondary' if batch.submit? %>
-    <%= link_to 'All', batch_url(batch, s: 0), class: 'btn btn-secondary btn-sm' %>
-    <%= link_to '18 - 65', batch_url(batch, s: 1), class: 'btn btn-secondary btn-sm' %>
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="mb-3">
+        <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, batches_path, class: "btn btn-secondary" %>
+        <%= link_to "New Loan", new_coverage_path(b: batch), class: "btn btn-primary", data: { turbo_frame: "remote_modal" } unless batch.submit? %>
+        <%= link_to "Import Coverage", import_cov_batch_path(), class: "btn btn-outline-primary", data: {turbo_frame: "remote_modal"} unless batch.submit? %>
+        <%= link_to "Submit", batch_submit_batch_path(batch), class: "btn btn-outline-success" unless batch.submit? %>
+        <%= link_to 'Download'.html_safe, batch_path(batch, format: :csv), class: 'btn btn-secondary' if batch.submit? %>
+        <%= link_to 'All', batch_url(batch, s: 0), class: 'btn btn-secondary btn-sm' %>
+        <%= link_to '18 - 65', batch_url(batch, s: 1), class: 'btn btn-secondary btn-sm' %>
+      </div>
+    </div>
+    <!-- SEARCH -->
+    <div class="col-lg-6">
+      <%= form_with( url: batch, method: :get, data: {turbo_frame: "search_member"} ) do |form| %>
+        <div class="input-group mb-3">
+          <%= form.text_field :query, placeholder: 'Search by last name...', class: "form-control" %>
+          <%= form.submit 'Search', class: "btn btn-success" %>
+        </div>
+      <% end %>
+    </div>
   </div>
   <%== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>
   <%= render 'coverages/show_group_coverage', sw: @records %>
