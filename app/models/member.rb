@@ -37,6 +37,11 @@ class Member < ApplicationRecord
     cdpndnt = Dependent.where(member_id: mmbr_id).count
   end
 
+  def alpharray(val)
+    numalpha = Array["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
+    return numalpha[val-1]
+  end
+  
   def self.get_members_index(admin, query, current_user)
     if query.present?
       if admin == true

@@ -1,0 +1,38 @@
+<%# raise "errors" %>
+<%# t_head_prcpl = sw.find_by(member_type: "principal", residency_floor: rf, residency_ceiling: rc).member_type %>
+<%# t_head_sps = sw.find_by(member_type: "spouse", residency_floor: rf, residency_ceiling: rc).member_type %>
+<%# t_head_chld = sw.find_by(member_type: "child", residency_floor: rf, residency_ceiling: rc).member_type %>
+<%# t_head_sblng = sw.find_by(member_type: "sibling", residency_floor: rf, residency_ceiling: rc).member_type %>
+
+<table class="table table-striped table-bordered table-hover">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Member Type</th>
+      <th>Residency Floor</th>
+      <th>Residency Ceiling</th>
+      <th>Life</th>
+      <th>Add</th>
+      <th>Burial</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+  <% sw.each do |gb| %>
+    <tr>
+      <th scope="row"><%= gb.id %></th>
+      <td><%= gb.member_type %></td>
+      <td><%= gb.residency_floor %></td>
+      <td><%= gb.residency_ceiling %></td>
+      <td><%= gb.life %></td>
+      <td><%= gb.add %></td>
+      <td><%= gb.burial %></td>
+      <td>
+        <%= link_to 'View', gb, class: 'btn btn-secondary btn-sm' %>
+        <%= link_to 'Edit', edit_group_benefit_path(gb), class: 'btn btn-secondary btn-sm' %>
+        <%= link_to "Delete", gb, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

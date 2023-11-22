@@ -1,12 +1,46 @@
-<%= content_tag :h1, "List of Group Premia" %>
+<%= content_tag :h1, "List of Group Premium" %>
+<% query = params[:qry] %>
+<%# res_flr = params[:rflr] %>
+<%# res_ceil = params[:rceil] %>
 
-
-<div class="text-end mb-3">
-  <%= link_to new_group_premium_path, class: 'btn btn-primary' do %>
-    New Group Premium
-  <% end %>
+<div class="text-start mb-3">
+  <%= link_to new_group_premium_path, class: 'btn btn-primary' do %> New Group Premium <% end %>
+  <%= link_to 'All', group_premia_url(@group_premium, qry: 0), class: 'btn btn-secondary btn-sm' %>
+  <%= link_to '0 - 89', group_premia_url(@group_premium, qry: 89), class: 'btn btn-secondary btn-sm' %>
+  <%= link_to '90 - 119', group_premia_url(@group_premium, qry: 90), class: 'btn btn-secondary btn-sm' %>
+  <%= link_to '120 & above', group_premia_url(@group_premium, qry: 120), class: 'btn btn-secondary btn-sm' %>
 </div>
 
+<%
+case query 
+  when "0"
+    gp = @group_premia
+%>
+  <%= render 'group_premia/group_premium_all', sw: gp %>
+<%
+  when "89"
+    gp = @group_premia.where(residency_floor: 0, residency_ceiling: 89)
+%>
+    <%= render 'group_premia/group_premium_enine', sw: gp %>
+<%  
+  when "90"
+    gp = @group_premia.where(residency_floor: 90, residency_ceiling: 119)
+%>
+  <%= render 'group_premia/group_premium_ninety', sw: gp %>
+<%
+  when "120"
+    gp = @group_premia.where(residency_floor: 120, residency_ceiling: 999)
+%>
+  <%= render 'group_premia/group_premium_onetwenty', sw: gp %>
+<%
+  else
+    gp = @group_premia
+%>
+  <%= render 'group_premia/group_premium_all', sw: gp %>
+<%    
+  end
+%>
+<!--
 <div class="row">
   <% @grouped_gp.each do |member_type, gps| %>
     <div class="col-xl-6 mb-3">
@@ -44,4 +78,4 @@
 
     </div>
   <% end %>
-</div>
+</div> -->

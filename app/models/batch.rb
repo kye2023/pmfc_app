@@ -18,8 +18,11 @@ class Batch < ApplicationRecord
     dc_prm = 0
     coverages.each do |cvg|
       cvg.member.dependents.each do |dpndnt|
-        dpndnt.dependent_coverage.premium
-        dc_prm += dpndnt.dependent_coverage.premium
+        if dpndnt.dependent_coverage.nil?
+          dc_prm  
+        else
+          dc_prm += dpndnt.dependent_coverage.premium
+        end
       end
     end
     return dc_prm

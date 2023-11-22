@@ -9,6 +9,17 @@ class GroupPremiaController < ApplicationController
 
   # GET /group_premia/1 or /group_premia/1.json
   def show
+    query = params[:qry]
+    # res_flr = params[:rflr]
+    # res_ceil = params[:rceil]
+
+    # case query
+    # when "0"
+    #   @sgp = group_premia.all
+    # when "89"
+    #   @sgp = GroupPremium.where(residency_floor: 0, residency_ceiling: 89)
+    # end
+
   end
 
   # GET /group_premia/new

@@ -1,27 +1,37 @@
 <div id="<%= dom_id branch %>">
-  <p>
-    <strong>Name:</strong>
-    <%= branch.name %>
-  </p>
 
-  <p>
-    <strong>Description:</strong>
-    <%= branch.description %>
-  </p>
-
-  <p>
-    <strong>Address:</strong>
-    <%= branch.address %>
-  </p>
-
-  <p>
-    <strong>Contact no:</strong>
-    <%= branch.contact_no %>
-  </p>
-
-  <p>
-    <strong>Email:</strong>
-    <%= branch.email %>
-  </p>
+<div class="row">
+  <div class="col-lg-6">
+    <p>
+      <strong>Name:</strong><%= branch.name %>
+    </p>
+    <p>
+      <strong>Description:</strong><%= branch.description %>
+    </p>
+    <p>
+      <strong>Address:</strong><%= branch.address %>
+    </p>
+    <p>
+      <strong>Contact no:</strong><%= branch.contact_no %>
+    </p>
+    <p>
+      <strong>Email:</strong><%= branch.email %>
+    </p>
+  </div>
+  <div class="col-lg-6">
+    <p>
+      <strong>Remittance:</strong>
+      <%= branch.count_branch_id(branch.id) %>
+    </p>
+    <p>
+      <strong>Total Premium:</strong>
+      <% 
+        iplan = branch.branch_premium("lppi")
+        gplan = branch.branch_premium("gyrt")
+      %>
+      <%= total_premium = to_curr(iplan+gplan) %>
+    </p>
+  </div>
+</div>
 
 </div>

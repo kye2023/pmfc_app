@@ -1,46 +1,57 @@
 <%= content_tag :h1, "List of Group Benefits" %>
-
-
-<div class="text-end mb-3">
-  <%= link_to new_group_benefit_path, class: 'btn btn-primary' do %>
-    New Group Benefit
-  <% end %>
+<% query = params[:qry] %>
+<% res_flr = params[:rflr] %>
+<% res_ceil = params[:rceil] %>
+<div class="text-start mb-3">
+  <%= link_to new_group_benefit_path, class: 'btn btn-primary' do %> New Group Benefit <% end %>
+  <%= link_to 'All', group_benefits_url(@group_benefit, qry: 0, rflr: 0, rceil: 0), class: 'btn btn-secondary btn-sm' %>
+  <%= link_to '0 - 6', group_benefits_url(@group_benefit, qry: 6, rflr: 0, rceil: 6), class: 'btn btn-secondary btn-sm' %>
+  <%= link_to '7 - 12', group_benefits_url(@group_benefit, qry: 7, rflr: 7, rceil: 12), class: 'btn btn-secondary btn-sm' %>
+  <%= link_to '13 - 54', group_benefits_url(@group_benefit, qry: 13, rflr: 13, rceil: 54), class: 'btn btn-secondary btn-sm' %>
+  <%= link_to '55 - 89', group_benefits_url(@group_benefit, qry: 55, rflr: 55, rceil: 89), class: 'btn btn-secondary btn-sm' %>
+  <%= link_to '90 - 119', group_benefits_url(@group_benefit, qry: 90, rflr: 90, rceil: 119), class: 'btn btn-secondary btn-sm' %>
+  <%= link_to '120 & above', group_benefits_url(@group_benefit, qry: 120, rflr: 120, rceil: 999), class: 'btn btn-secondary btn-sm' %>
 </div>
 
-
-  <table class="table table-striped table-bordered table-hover">
-    <thead>
-      <tr>
-      <th>#</th>
-            <th>Member Type</th>
-            <th>Residency Floor</th>
-            <th>Residency Ceiling</th>
-            <th>Life</th>
-            <th>Add</th>
-            <th>Burial</th>
-            <th></th>
-        </tr>
-    </thead>
-
-    <tbody>
-      <% @group_benefits.each do |group_benefit| %>
-        <tr>
-
-        <th scope="row"><%= group_benefit.id %></th>
-        <td><%= group_benefit.member_type %></td>
-        <td><%= group_benefit.residency_floor %></td>
-        <td><%= group_benefit.residency_ceiling %></td>
-        <td><%= group_benefit.life %></td>
-        <td><%= group_benefit.add %></td>
-        <td><%= group_benefit.burial %></td>
-    
-          <td>
-            <%= link_to 'View', group_benefit, class: 'btn btn-secondary btn-sm' %>
-            <%= link_to 'Edit', edit_group_benefit_path(group_benefit), class: 'btn btn-secondary btn-sm' %>
-            <%= link_to "Delete", group_benefit, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
-          </td>
-
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+<%
+case query 
+  when "0"
+    gb = @group_benefits
+%>
+  <%= render 'group_benefits/group_benefit_all', sw: gb %>
+<%
+  when "6"
+    gb = @group_benefits.where(residency_floor: res_flr, residency_ceiling: res_ceil)
+%>
+  <%= render 'group_benefits/group_benefit_tab', sw: gb, rf: res_flr, rc: res_ceil  %>
+<%
+  when "7"
+    gb = @group_benefits.where(residency_floor: res_flr, residency_ceiling: res_ceil)
+%>
+  <%= render 'group_benefits/group_benefit_tab', sw: gb, rf: res_flr, rc: res_ceil  %>
+<%
+  when "13"
+    gb = @group_benefits.where(residency_floor: res_flr, residency_ceiling: res_ceil)
+%>
+  <%= render 'group_benefits/group_benefit_tab', sw: gb, rf: res_flr, rc: res_ceil  %>
+<%
+  when "55"
+    gb = @group_benefits.where(residency_floor: res_flr, residency_ceiling: res_ceil)
+%>
+  <%= render 'group_benefits/group_benefit_tab', sw: gb, rf: res_flr, rc: res_ceil  %>
+<%
+  when "90"
+    gb = @group_benefits.where(residency_floor: res_flr, residency_ceiling: res_ceil)
+%>
+  <%= render 'group_benefits/group_benefit_tab', sw: gb, rf: res_flr, rc: res_ceil  %>
+<%
+  when "120"
+    gb = @group_benefits.where(residency_floor: res_flr, residency_ceiling: res_ceil)
+%>
+  <%= render 'group_benefits/group_benefit_tab', sw: gb, rf: res_flr, rc: res_ceil  %>
+<%
+  else
+    gb = @group_benefits
+%>
+  <%= render 'group_benefits/group_benefit_all', sw: gb %>
+<% end %>

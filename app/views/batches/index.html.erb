@@ -26,6 +26,38 @@
         <tr>
 
           <th scope="row"><%= batch.id %></th>
+          <td><%= batch.title %> <strong><%= batch.branch %></strong> <br>
+          <%= batch.description %></td>
+          <td class="text-center"><%= batch.coverages.count %></td>
+          <td class="text-end">
+            <% 
+              lppi = 0
+              lppi = batch.coverages.sum(:loan_premium)
+            %>
+            <% if lppi == 0 %>
+              <%= link_to '<i class="bi bi-file-plus"></i>'.html_safe+" Add Coverage", batch_url(batch, qry: 0, pln: 0, pth: "br1"), class: 'btn btn-secondary btn-sm' %>
+            <% else %>
+              <%= link_to '<i class="bi bi-eye-fill"></i>'.html_safe+" #{to_curr(lppi)}", batch_url(batch, qry: 0, pln: 0, pth: "br1"), class: 'btn btn-secondary btn-sm' %>
+            <% end %>
+          </td>
+          <td class="text-end">
+            <!--<div class="text-wrap fw-lighter"><small><%# to_curr(batch.coverages.sum(:group_premium)+(batch.batch_coverage)) %></small></div>-->
+            <%
+              gyrt = 0
+              gyrt = batch.coverages.sum(:group_premium)+(batch.batch_coverage)
+            %>
+            <% if gyrt == 0 %>
+              <%= link_to '<i class="bi bi-file-plus"></i>'.html_safe+" Add Coverage", batch_url(batch, qry: 0, pln: 1, pth: "br1"), class: 'btn btn-secondary btn-sm' %>
+            <% else %>
+              <%= link_to '<i class="bi bi-eye-fill"></i>'.html_safe+" #{to_curr(gyrt)}", batch_url(batch, qry: 0, pln: 1, pth: "br1"), class: 'btn btn-secondary btn-sm' %>
+            <% end %>
+          </td>
+          <td>
+              <%# link_to 'View', batch_url(batch, s: 0), class: 'btn btn-secondary btn-sm' %>
+              <%= link_to '<i class="bi bi-pencil-square"></i>'.html_safe, edit_batch_path(batch), data: { turbo_frame:"remote_modal" }, class: 'btn btn-secondary btn-sm' %>
+              <%= link_to '<i class="bi bi-trash"></i>'.html_safe, batch, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+
+            <!--
           <td><%= batch.title %> <strong><%= batch.branch %></strong> <%= content_tag :span, 'Submitted', class: "badge rounded-pill bg-warning text-dark" if batch.submit? %> <br>
           <small class="text-primary"><%= batch.coverages.count %> coverage(s) <br>
            <%= link_to 'View', batch_url(batch, s: 0), class: 'btn btn-secondary btn-sm' %>
@@ -38,9 +70,11 @@
             <% dependent_premium = batch.dependent_coverages.sum(:premium) %>
             <small> Loan Premium: <%= to_curr(loan_premium) %> <br> Principal: <%= to_curr(principal_premium) %> <br> Dependent: <%= to_curr(dependent_premium) %></small> <br>
             <strong>Total Premium: <%= to_curr(principal_premium + dependent_premium) %></strong>
+ -->
           </td>
           
         </tr>
+        <%# raise "errors" %>
       <% end %>
     </tbody>
   </table>

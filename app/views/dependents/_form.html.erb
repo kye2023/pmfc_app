@@ -9,16 +9,26 @@
     <%# f.association :member, label_method: :get_cmember, include_blank: true %>
     <div class="row">
       <%= f.input :first_name, wrapper_html: { class: "col-md-4" } %>
-      <%= f.input :middle_name, wrapper_html: { class: "col-md-3" } %>
-      <%= f.input :last_name, wrapper_html: { class: "col-md-3" } %>
-      <%= f.input :suffix, wrapper_html: { class: "col-md-2" } %>
-    <%= f.label :birth_date %>
-    <%= f.date_field :birth_date %>
-    <%= f.input :relationship, collection: ['spouse', 'child', 'parent', 'sibling'], wrapper_html: { class: "col-md-4" } %>
-    <%= f.input :civil_status , collection: ['Single', 'Married', 'Widowed', 'Divorced'], include_blank: true, wrapper_html: { class: "col-md-4" } %>
-    <%= f.input :gender , collection: [['Male','M'],['Female','F']], include_blank: true, wrapper_html: { class: "col-md-4" } %>
-    <%= f.input :mobile_no, wrapper_html: { class: "col-md-6" } %>
-    <%= f.input :email, wrapper_html: { class: "col-md-6" } %>
+      <%= f.input :middle_name, wrapper_html: { class: "col-md-4" } %>
+      <div>
+        <%= f.label :birth_date %>
+        <%= f.date_field :birth_date %>
+      </div>
+      <%= f.input :relationship, collection: ['spouse', 'child', 'parent', 'sibling'], wrapper_html: { class: "col-md-4" } %>
+      <%= f.input :civil_status , collection: ['Single', 'Married', 'Widowed', 'Divorced'], include_blank: true, wrapper_html: { class: "col-md-4" } %>
+      <%= f.input :gender , collection: [['Male','M'],['Female','F']], include_blank: true, wrapper_html: { class: "col-md-4" } %>
+      <%= f.input :mobile_no, wrapper_html: { class: "col-md-6" } %>
+      <%= f.input :email, wrapper_html: { class: "col-md-6" } %>
+      <%#= f.input :middle_name, wrapper_html: { class: "col-md-3" } %>
+      <%#= f.input :last_name, wrapper_html: { class: "col-md-3" } %>
+      <%#= f.input :suffix, wrapper_html: { class: "col-md-2" } %>
+    <%#= f.label :birth_date %>
+    <%#= f.date_field :birth_date %>
+    <%#= f.input :relationship, collection: ['spouse', 'child', 'parent', 'sibling'], wrapper_html: { class: "col-md-4" } %>
+    <%#= f.input :civil_status , collection: ['Single', 'Married', 'Widowed', 'Divorced'], include_blank: true, wrapper_html: { class: "col-md-4" } %>
+    <%#= f.input :gender , collection: [['Male','M'],['Female','F']], include_blank: true, wrapper_html: { class: "col-md-4" } %>
+    <%#= f.input :mobile_no, wrapper_html: { class: "col-md-6" } %>
+    <%#= f.input :email, wrapper_html: { class: "col-md-6" } %>
     </div>
   </div>
 

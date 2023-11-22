@@ -8,6 +8,9 @@ class GroupBenefitsController < ApplicationController
 
   # GET /group_benefits/1 or /group_benefits/1.json
   def show
+    query = params[:qry]
+    res_flr = params[:rflr]
+    res_ceil = params[:rceil]
   end
 
   # GET /group_benefits/new
