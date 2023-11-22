@@ -29,6 +29,12 @@ class BatchesController < ApplicationController
     else
       @show_coverage = @batch.coverages
     end
+
+    if params[:query].present?
+      @show_coverage = @show_coverage.joins(:member).where("members.last_name LIKE ? OR members.first_name LIKE ?", "#{params[:query]}", "#{params[:query]}")
+    else
+      @show_coverage
+    end
     @pagy, @records = pagy(@show_coverage, items: 5)
 
     respond_to do |format|

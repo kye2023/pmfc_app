@@ -3,7 +3,8 @@ class GroupPremiaController < ApplicationController
 
   # GET /group_premia or /group_premia.json
   def index
-    @group_premia = GroupPremium.all
+    @group_premia = GroupPremium.order(:term).all
+    @grouped_gp = @group_premia.group_by(&:member_type)
   end
 
   # GET /group_premia/1 or /group_premia/1.json
