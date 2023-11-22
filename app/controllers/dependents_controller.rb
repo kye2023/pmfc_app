@@ -20,7 +20,9 @@ class DependentsController < ApplicationController
     #pass member id parameter @ dependents
     @member = Member.find(params[:m])
     @dependent = @member.dependents.build
-    dummy_data
+    if Rails.env.development?
+      dummy_data
+    end
   end
 
   def dummy_data 
@@ -39,13 +41,19 @@ class DependentsController < ApplicationController
     @dependent = @member.dependents.build(dependent_params)
 
     respond_to do |format|
-      if @dependent.save
-        format.html { redirect_to @member, notice: "Dependent was successfully created." }
-        format.json { render :show, status: :created, location: @dependent }
+      if @dependent.is_dep_age_valid == true
+
+        if @dependent.save
+          format.html { redirect_to @member, notice: "Dependent was successfully created." }
+          format.json { render :show, status: :created, location: @dependent }
+        else
+          format.html { render :new, status: :unprocessable_entity }
+          format.json { render json: @dependent.errors, status: :unprocessable_entity }
+        end
       else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @dependent.errors, status: :unprocessable_entity }
+        format.html { redirect_to @member, alert: "Dependent Age is not valid." }
       end
+
     end
   end
 
@@ -87,6 +95,6 @@ class DependentsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def dependent_params
-      params.require(:dependent).permit(:member_id, :last_name, :first_name, :middle_name, :birth_date, :civil_status, :gender, :mobile_no, :email, :relationship)
+      params.require(:dependent).permit(:member_id, :last_name, :first_name, :middle_name, :birth_date, :civil_status, :gender, :mobile_no, :email, :relationship, :suffix)
     end
 end

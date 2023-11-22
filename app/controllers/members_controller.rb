@@ -6,14 +6,16 @@ class MembersController < ApplicationController
   def index
     require 'pagy/extras/bootstrap'
     
-    if params[:query].present?
-      @members = Member.where("last_name LIKE ?", "%#{params[:query]}%")
-    else
-      @members = Member.all
-    end
+    # if params[:query].present?
+    #   # @members = Member.where(branch: current_user.user_detail.branch).where("last_name LIKE ?", "%#{params[:query]}%")
+    #   @members = Member.get_members_index(current_user.admin, params[:query], current_user)
+    # else
+    #   @members = Member.where(branch: current_user.user_detail.branch)
+    # end
+    @members = Member.get_members_index(current_user.admin, params[:query], current_user)
 
     #set pagination
-    @pagy, @members = pagy(@members)
+    @pagy, @members = pagy(@members, items: 10)
   end
 
   # GET /members/1 or /members/1.json
@@ -23,7 +25,9 @@ class MembersController < ApplicationController
   # GET /members/new
   def new
     @member = Member.new
-    dummy_data
+    if Rails.env.development?
+      dummy_data
+    end
   end
 
   def dummy_data 
@@ -75,7 +79,7 @@ class MembersController < ApplicationController
   end
 
   def import
-    import_service = ImportService.new(:member,params[:file])
+    import_service = ImportService.new(:member, params[:file])
     import_message = import_service.import
     redirect_to members_path, notice: import_message
   end
@@ -88,7 +92,7 @@ class MembersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def member_params
-      params.require(:member).permit(:last_name, :first_name, :middle_name, :birth_date, :date_membership, :civil_status, :gender, :mobile_no, :email, dependents_attributes: [:id, :member_id, :last_name, :first_name, :middle_name, :birth_date, :relationship, :_destroy] )
+      params.require(:member).permit(:last_name, :first_name, :middle_name, :suffix, :birth_date, :date_membership, :civil_status, :gender, :mobile_no, :email, dependents_attributes: [:id, :member_id, :last_name, :first_name, :middle_name, :birth_date, :relationship, :_destroy] )
     end
 
 end

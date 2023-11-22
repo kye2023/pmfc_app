@@ -74,8 +74,8 @@ class BatchImportCoverage
             term: coverage_hash[:term],status: coverage_hash[:status],residency: gresidency,loan_premium: gloanpremium,group_premium: g_gpremium,
             group_certificate: coverage_hash[:loan_certificate],group_benefit_id: g_gbenefits,rate: gprate
           )
-          
           coverage.assign_attributes(coverage_hash)
+          coverage.compute_age
           coverage.save!
           scoverage = Coverage.find_by(batch_id: @batch_id, member_id: mmbr_data.id)
           cdpndnt = dependent_coverage_save(scoverage.id, mmbr_data.id, scoverage.residency, scoverage.term)

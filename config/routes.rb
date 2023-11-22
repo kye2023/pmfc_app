@@ -23,9 +23,14 @@ Rails.application.routes.draw do
   end
 
   resources :batches do
+    get :batch_submit, on: :member
     collection do
       post :import
     end
+    member do 
+      get :import_cov
+    end
+    # post :import_coverages, on: :member
   end
 
 

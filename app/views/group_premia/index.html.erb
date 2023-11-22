@@ -40,3 +40,42 @@ case query
 <%    
   end
 %>
+<!--
+<div class="row">
+  <% @grouped_gp.each do |member_type, gps| %>
+    <div class="col-xl-6 mb-3">
+   
+      <div class="card">
+        <div class="card-header">
+          <h2><%= member_type.titleize %></h2>
+        </div>
+        <div class="card-body">
+          <table class="table">
+            <thead>
+              <th>Term</th>
+              <th>Residency</th>
+              <th>Premium</th>
+              <th></th>
+            </thead>
+            <tbody>
+              <% gps.each do |premium| %>
+              <%# pagy_each(gps, pagy: pagy) do |premium| %>
+                <tr>
+                  <td><%= premium.term %></td>
+                  <td><%= premium.residency_floor %> - <%= premium.residency_ceiling %></td>
+                  <td><%= premium.premium %></td>
+                  <td>
+                    <%= link_to "Edit", edit_group_premium_path(premium), class: "btn btn-sm btn-success" %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+          <ul>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  <% end %>
+</div> -->

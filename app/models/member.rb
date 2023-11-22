@@ -3,14 +3,15 @@ class Member < ApplicationRecord
   has_many :coverages
   has_many :batches, through: :coverages
   has_many :dependents, dependent: :destroy
+  belongs_to :branch
   accepts_nested_attributes_for :dependents, reject_if: :all_blank, allow_destroy: true
 
   def get_cmember
-    "#{last_name.capitalize}" + ", " + "#{first_name.capitalize}" + " " + "#{middle_name[0.1]}" + ". "
+    "#{last_name.capitalize}" + ", " + "#{first_name.capitalize}" + " " + "#{middle_name[0.1]}" + ". " + "#{suffix}"
   end
 
   def to_s 
-    "#{last_name}" + ", " + "#{first_name}" + " " + "#{middle_name[0.1]}" + ". "
+     "#{first_name}" + " " + "#{middle_name[0.1]}." + " " + "#{last_name}" + "#{suffix}"
   end
   
   def get_formatted_bday
@@ -40,6 +41,23 @@ class Member < ApplicationRecord
     numalpha = Array["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
     return numalpha[val-1]
   end
+  
+  def self.get_members_index(admin, query, current_user)
+    if query.present?
+      if admin == true
+        where("last_name LIKE ?", "%#{params[:query]}%")
+      else
+        where(branch: current_user.user_detail.branch).where("last_name LIKE ? OR first_name LIKE ?", "%#{query}%", "%#{query}%")
+      end
+    else
+      if admin == true
+        all
+      else
+        where(branch: current_user.user_detail.branch)
+      end
+    end
+  end
+
 
 end
 

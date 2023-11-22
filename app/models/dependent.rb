@@ -51,4 +51,28 @@ class Dependent < ApplicationRecord
     #return dependent.dependent_coverage.group_benefit.life
   end
 
+  def is_dep_age_valid
+        
+    age = ((Date.today - self.birth_date.to_date) / 365).round
+    rel = self.relationship    
+
+    if ["spouse", "parent"].include?(rel) && (18..65).include?(age)
+      return true
+    elsif ["child", "sibling"].include?(rel) && (3..21).include?(age)
+      return true
+    else
+      return false
+    end
+
+  end
+
+  def get_age(effectivity)
+    ((effectivity - self.birth_date.to_date) / 365).round
+  end
+
+  def current_age
+    ((Date.today - self.birth_date.to_date) / 365).round
+  end
+
+
 end

@@ -1,5 +1,5 @@
 class ImportService
-  def initialize (type, file, id)
+  def initialize (type, file, id=nil)
     @type = type
     @file = file
     @bid = id
@@ -21,6 +21,8 @@ class ImportService
                       DependentImportService.new(spreadsheet)
                     when :batch
                       BatchImportCoverage.new(spreadsheet,@bid)   
+                    # when :coverage
+                      
                     end
     import_result = import_service.import                
                     import_result

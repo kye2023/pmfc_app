@@ -23,7 +23,11 @@
 
   <div class="form-inputs">
     <%#= f.association :member, label_method: :get_cmember, {}, {data: { controller: "select" }} %>
-    <%= f.association :member, label: "Member", input_html: { data: { controller: 'ts--select' } } %>
+    <% if current_user.admin? %>
+      <%= f.association :member, label: "Member", input_html: { data: { controller: 'ts--select' } } %>
+    <% else %>
+      <%= f.association :member, collection: Member.where(branch: current_user.user_detail.branch), label: "Member", input_html: { data: { controller: 'ts--select' } } %>
+    <% end %>
       <div class="row">
         <%= f.input :loan_certificate, wrapper_html: { class: "col-md-6" }  %>
         <%= f.input :group_certificate, wrapper_html: { class: "col-md-6" }  %>
@@ -39,9 +43,11 @@
         </div>
       </div>
       <div class="row">
-        <%= f.input :term, collection: [3, 4, 6, 9, 12], wrapper_html: { class: "col-md-4"} %>
-        <%= f.input :status, collection: [['New','N'],['Renewal','R']], include_blank: true, wrapper_html: { class: "col-md-4" } %>
-        <%= f.input :loan_coverage, wrapper_html: { class: "col-md-4" } %>
+        <%#= f.input :term, collection: [3, 4, 6, 9, 12], wrapper_html: { class: "col-md-3"} %>
+        <%= f.input :term, collection: Coverage::TERMS, wrapper_html: { class: "col-md-3"} %>
+        <%= f.input :grace_period, wrapper_html: { class: "col-md-3" }  %>
+        <%= f.input :status, collection: [['New','N'],['Renewal','R']], include_blank: true, wrapper_html: { class: "col-md-3" } %>
+        <%= f.input :loan_coverage, wrapper_html: { class: "col-md-3" } %>
       </div>
   </div>
 

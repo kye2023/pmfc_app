@@ -5,7 +5,12 @@ class Coverage < ApplicationRecord
   belongs_to :group_benefit, optional: true
   has_many :dependent_coverages, dependent: :destroy
 
+  TERMS = [3, 4, 5, 6, 9, 12, 18, 24, 30]
+
   def compute_age
+    
+    binding.pry
+    
     self.age = effectivity.year-member.birth_date.year
     # SET PREMIUM RATE ACCORDING TO AGE group/range
     case age 
@@ -24,8 +29,9 @@ class Coverage < ApplicationRecord
     
     #GET EXPIRY BASED ON EFFECTIVITY AND TERM
     self.expiry = effectivity >> term
+    self.expiry = expiry + grace_period
 
-    self.loan_premium = (loan_coverage/1000) * (rate * term)
+    self.loan_premium = (loan_coverage/1000) * (rate * (term + grace_period))
     self.residency = (effectivity.year * 12 + effectivity.month) - (member.date_membership.year * 12 + member.date_membership.month)
 
     gp = GroupPremium.where('? between residency_floor and residency_ceiling', self.residency)
