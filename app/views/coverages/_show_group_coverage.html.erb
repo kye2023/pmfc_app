@@ -36,7 +36,7 @@
                 <td class="text-center"><%= to_curr(c.loan_coverage) %></td>
                 <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_shortdate(c.effectivity) %></small></div></td>
                 <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_shortdate(c.expiry) %></small></div></td>
-                <td class="text-center"><div class="text-wrap fw-lighter"><%= c.term %></td>
+                <td class="text-center"><div class="text-wrap fw-lighter"><%= c.term %> <br> <%= content_tag :small, "(GP:" + "#{c.grace_period})" unless c.grace_period.nil? %> </td>
                 <td class="text-end">
                     <% dependent_prem = c.dependent_coverages.sum(:premium) %>
                     <%= content_tag :small, "Loan Premium: " +  "#{to_curr(c.loan_premium)}" %> <br>
