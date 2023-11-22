@@ -10,6 +10,7 @@ class BatchesController < ApplicationController
   def show
     age = params[:qry]
     plan = params[:pln]
+    path = params[:bth]
 
     case age
     when "0"
@@ -17,8 +18,6 @@ class BatchesController < ApplicationController
     when "1"
       @show_coverage = @batch.coverages.where(age: 18..40)
     end
-
-    # raise "errors"
   end
 
   # GET /batches/new
@@ -36,7 +35,7 @@ class BatchesController < ApplicationController
 
     respond_to do |format|
       if @batch.save
-        format.html { redirect_to batch_url(@batch), notice: "Batch was successfully created." }
+        format.html { redirect_to batch_url(@batch, qry: 0, pln: 0), notice: "Batch was successfully created." }
         format.json { render :show, status: :created, location: @batch }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -50,7 +49,7 @@ class BatchesController < ApplicationController
   def update
     respond_to do |format|
       if @batch.update(batch_params)
-        format.html { redirect_to batch_url(@batch), notice: "Batch was successfully updated." }
+        format.html { redirect_to batch_url(@batch, qry: 0, pln: 0), notice: "Batch was successfully updated." }
         format.json { render :show, status: :ok, location: @batch }
       else
         format.html { render :edit, status: :unprocessable_entity }

@@ -1,3 +1,5 @@
+<% pln = params[:pln] %>
+<% pth = params[:pth] %>
 <div id="<%= dom_id batch %>">
   <div class="row">
     <div class="col-md-8">
@@ -19,21 +21,42 @@
           <dl class="row">
             <dt class="col-sm-5">Count</dt>
             <dd class="col-sm-7"><%= @show_coverage.count %></dd>
+            <% 
+              lppi = 0
+              gyrt = 0
+              if pln == "0" 
+                lppi = batch.coverages.sum(:loan_premium)
+            %>
+            <dt class="col-sm-5">Plan Type</dt>
+            <dd class="col-sm-7">LPPI</dd>
             <dt class="col-sm-5">Loan Coverage</dt>
             <dd class="col-sm-7"><%= to_curr(@show_coverage.sum(:loan_coverage)) %></dd>
             <dt class="col-sm-5">Gross Premium</dt>
-            <dd class="col-sm-7"><%= to_curr(@show_coverage.sum(:loan_premium)) %></dd>
+            <dd class="col-sm-7"><%= to_curr(lppi) %></dd>
+            <% 
+              else 
+                gyrt = batch.coverages.sum(:group_premium)+(batch.batch_coverage)
+            %>
+            <dt class="col-sm-5">Plan Type</dt>
+            <dd class="col-sm-7">GYRT/SGYRT</dd>
+            <dt class="col-sm-5">Gross Premium</dt>
+            <dd class="col-sm-7"><%= to_curr(gyrt) %></dd> 
+            <% end %>
           </dl>
         </div>
       </div>
     </div>
   </div>
-  <% pln = params[:pln] %>
   <div class="mb-3">
-    <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, batches_path, class: "btn btn-secondary btn-sm" %>
-    <%= link_to "New Loan", new_coverage_path(b: batch), class: "btn btn-primary btn-sm", data: { turbo_frame: "remote_modal" }%>
-    <%= link_to 'All', batch_url(batch, qry: 0, pln: pln), class: 'btn btn-secondary btn-sm' %>
-    <%= link_to '18 - 65', batch_url(batch, qry: 1, pln: pln), class: 'btn btn-secondary btn-sm' %>
+    <% case pth %>
+    <% when "b1" %>
+      <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, branch_path, class: "btn btn-secondary btn-sm" %>
+    <% when "br1" %>
+      <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, batches_path, class: "btn btn-secondary btn-sm" %>
+      <%= link_to "New Loan", new_coverage_path(b: batch), class: "btn btn-primary btn-sm", data: { turbo_frame: "remote_modal" }%>
+      <%= link_to 'All', batch_url(batch, qry: 0, pln: pln, pth: pth), class: 'btn btn-secondary btn-sm' %>
+      <%= link_to '18 - 65', batch_url(batch, qry: 1, pln: pln, pth: pth), class: 'btn btn-secondary btn-sm' %>
+    <% end %>
   </div>
   <% if pln == "0" %>
   <%= render 'coverages/show_loan_coverage', sw: @show_coverage %>

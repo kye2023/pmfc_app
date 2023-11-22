@@ -32,18 +32,35 @@
           <%= batch.description %></td>
           <td class="text-center"><%= batch.coverages.count %></td>
           <td class="text-end">
-            <%= link_to "#{to_curr(batch.coverages.sum(:loan_premium))}", batch_url(batch, qry: 0, pln: 0), class: 'btn btn-secondary btn-sm' %>
+            <% 
+              lppi = 0
+              lppi = batch.coverages.sum(:loan_premium)
+            %>
+            <% if lppi == 0 %>
+              <%= link_to '<i class="bi bi-file-plus"></i>'.html_safe+" Add Coverage", batch_url(batch, qry: 0, pln: 0, pth: "br1"), class: 'btn btn-secondary btn-sm' %>
+            <% else %>
+              <%= link_to '<i class="bi bi-eye-fill"></i>'.html_safe+" #{to_curr(lppi)}", batch_url(batch, qry: 0, pln: 0, pth: "br1"), class: 'btn btn-secondary btn-sm' %>
+            <% end %>
           </td>
           <td class="text-end">
             <!--<div class="text-wrap fw-lighter"><small><%# to_curr(batch.coverages.sum(:group_premium)+(batch.batch_coverage)) %></small></div>-->
-            <%= link_to "#{to_curr(batch.coverages.sum(:group_premium)+(batch.batch_coverage))}", batch_url(batch, qry: 0, pln: 1), class: 'btn btn-secondary btn-sm' %>
+            <%
+              gyrt = 0
+              gyrt = batch.coverages.sum(:group_premium)+(batch.batch_coverage)
+            %>
+            <% if gyrt == 0 %>
+              <%= link_to '<i class="bi bi-file-plus"></i>'.html_safe+" Add Coverage", batch_url(batch, qry: 0, pln: 1, pth: "br1"), class: 'btn btn-secondary btn-sm' %>
+            <% else %>
+              <%= link_to '<i class="bi bi-eye-fill"></i>'.html_safe+" #{to_curr(gyrt)}", batch_url(batch, qry: 0, pln: 1, pth: "br1"), class: 'btn btn-secondary btn-sm' %>
+            <% end %>
           </td>
           <td>
               <%# link_to 'View', batch_url(batch, s: 0), class: 'btn btn-secondary btn-sm' %>
-              <%= link_to 'Edit', edit_batch_path(batch), data: { turbo_frame:"remote_modal" }, class: 'btn btn-secondary btn-sm' %>
-              <%= link_to "Delete", batch, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+              <%= link_to '<i class="bi bi-pencil-square"></i>'.html_safe, edit_batch_path(batch), data: { turbo_frame:"remote_modal" }, class: 'btn btn-secondary btn-sm' %>
+              <%= link_to '<i class="bi bi-trash"></i>'.html_safe, batch, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
           </td>
         </tr>
+        <%# raise "errors" %>
       <% end %>
     </tbody>
   </table>

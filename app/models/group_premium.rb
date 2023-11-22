@@ -1,2 +1,3 @@
 class GroupPremium < ApplicationRecord
+
 end
