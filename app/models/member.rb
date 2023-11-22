@@ -3,6 +3,7 @@ class Member < ApplicationRecord
   has_many :coverages
   has_many :batches, through: :coverages
   has_many :dependents, dependent: :destroy
+  belongs_to :branch
   accepts_nested_attributes_for :dependents, reject_if: :all_blank, allow_destroy: true
 
   def get_cmember
@@ -34,6 +35,22 @@ class Member < ApplicationRecord
   def count_dependent
     mmbr_id = id
     cdpndnt = Dependent.where(member_id: mmbr_id).count
+  end
+
+  def self.get_members_index(admin, query, current_user)
+    if query.present?
+      if admin == true
+        where("last_name LIKE ?", "%#{params[:query]}%")
+      else
+        where(branch: current_user.user_detail.branch).where("last_name LIKE ? OR first_name LIKE ?", "%#{query}%", "%#{query}%")
+      end
+    else
+      if admin == true
+        all
+      else
+        where(branch: current_user.user_detail.branch)
+      end
+    end
   end
 
 
