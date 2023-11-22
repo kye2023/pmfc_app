@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_16_030826) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_22_034932) do
   create_table "batches", charset: "utf8mb4", force: :cascade do |t|
     t.string "title"
     t.text "description"
@@ -127,6 +127,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_16_030826) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "suffix"
+    t.bigint "branch_id"
+    t.index ["branch_id"], name: "index_members_on_branch_id"
   end
 
   create_table "posts", charset: "utf8mb4", force: :cascade do |t|
