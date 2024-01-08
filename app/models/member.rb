@@ -45,7 +45,8 @@ class Member < ApplicationRecord
   def self.get_members_index(admin, query, current_user)
     if query.present?
       if admin == true
-        where("last_name LIKE ?", "%#{params[:query]}%")
+        # where("last_name LIKE ?", "%#{params[:query]}%")
+        where("last_name LIKE ?", "%#{query}%")
       else
         where(branch: current_user.user_detail.branch).where("last_name LIKE ? OR first_name LIKE ?", "%#{query}%", "%#{query}%")
       end
