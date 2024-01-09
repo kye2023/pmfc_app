@@ -31,9 +31,9 @@
           lppi = batch.coverages.sum(:loan_premium)
         %>
         <% if lppi == 0 %>
-          <%= link_to '<i class="bi bi-file-plus"></i>'.html_safe+" Add Coverage", batch_url(batch, qry: 0, pln: 0, pth: "br1"), class: 'btn btn-secondary btn-sm' %>
+          <%= link_to '<i class="bi bi-file-plus"></i>'.html_safe+" Add Coverage", batch_url(batch, qry: 0, pln: 0, pth: "b1"), class: 'btn btn-secondary btn-sm' %>
         <% else %>
-          <%= link_to '<i class="bi bi-eye-fill"></i>'.html_safe+" #{to_curr(lppi)}", batch_url(batch, qry: 0, pln: 0, pth: "br1"), class: 'btn btn-secondary btn-sm' %>
+          <%= link_to '<i class="bi bi-eye-fill"></i>'.html_safe+" #{to_curr(lppi)}", batch_url(batch, qry: 0, pln: 0, pth: "b1"), class: 'btn btn-secondary btn-sm' %>
         <% end %>
       </td>
       <td class="text-end">
@@ -43,9 +43,9 @@
           gyrt = batch.coverages.sum(:group_premium)+(batch.batch_coverage)
         %>
         <% if gyrt == 0 %>
-          <%= link_to '<i class="bi bi-file-plus"></i>'.html_safe+" Add Coverage", batch_url(batch, qry: 0, pln: 1, pth: "br1"), class: 'btn btn-secondary btn-sm' %>
+          <%= link_to '<i class="bi bi-file-plus"></i>'.html_safe+" Add Coverage", batch_url(batch, qry: 0, pln: 1, pth: "b1"), class: 'btn btn-secondary btn-sm' %>
         <% else %>
-          <%= link_to '<i class="bi bi-eye-fill"></i>'.html_safe+" #{to_curr(gyrt)}", batch_url(batch, qry: 0, pln: 1, pth: "br1"), class: 'btn btn-secondary btn-sm' %>
+          <%= link_to '<i class="bi bi-eye-fill"></i>'.html_safe+" #{to_curr(gyrt)}", batch_url(batch, qry: 0, pln: 1, pth: "b1"), class: 'btn btn-secondary btn-sm' %>
         <% end %>
       </td>
       <td>
@@ -53,8 +53,8 @@
         <%= link_to '<i class="bi bi-pencil-square"></i>'.html_safe, edit_batch_path(batch), data: { turbo_frame:"remote_modal" }, class: 'btn btn-secondary btn-sm' %>
         <%= link_to '<i class="bi bi-trash"></i>'.html_safe, batch, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
       </td>
-      </tr>
+    </tr>
       <%# raise "errors" %>
-      <% end %>
+    <% end %>
   </tbody>
 </table>

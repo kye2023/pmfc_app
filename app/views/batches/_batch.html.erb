@@ -1,5 +1,7 @@
-<% pln = params[:pln] %>
-<% pth = params[:pth] %>
+<%= pln = params[:pln] %>
+<%= pth = params[:pth] %>
+<% psubs = params[:pth].split("-") %>
+<%= psubs.size %>
 <div id="<%= dom_id batch %>">
   <div class="row mb-3">
     <div class="col-md-8">
@@ -60,9 +62,9 @@
     <div class="col-lg-6">
       <div class="mb-3">
         <% case pth %>
-        <% when "b1" %>
-          <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, branch_path, class: "btn btn-secondary btn-sm" %>
         <% when "br1" %>
+          <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, branch_path, class: "btn btn-secondary btn-sm" %>
+        <% when "b1" %>
           <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, batches_path, class: "btn btn-secondary" %>
           <%= link_to "New Loan", new_coverage_path(b: batch), class: "btn btn-primary", data: { turbo_frame: "remote_modal" } unless batch.submit? %>
           <%= link_to "Import Coverage", import_cov_batch_path(), class: "btn btn-outline-primary", data: {turbo_frame: "remote_modal"} unless batch.submit? %>

@@ -11,11 +11,11 @@
 =end
 %>
 
-<%#= render "remote_modal", title: "New Member" do %>
+<%= render "remote_modal", title: "New Member" do %>
 <div class="card">
   <h5 class="card-header">Edit member</h5>
   <div class="card-body">
-  <%= render "form", item: @item %>
+    <%= render "form", item: @item %>
+  </div>
 </div>
-</div>
-<%# end %>
+<% end %>

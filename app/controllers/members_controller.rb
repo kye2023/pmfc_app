@@ -45,6 +45,7 @@ class MembersController < ApplicationController
     @member = Member.new(member_params)
 
     respond_to do |format|
+      #raise "errors"
       if @member.save
         format.html { redirect_to member_url(@member), notice: "Member was successfully created." }
         format.json { render :show, status: :created, location: @member }
