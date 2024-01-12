@@ -15,7 +15,6 @@
               <strong>Branch:</strong>
               <%= batch.branch %> <br>
               <p class="text-primary"> Count: <%= batch.coverages.count %> </p>
-
             </div>
         </div>
       </div>
@@ -49,11 +48,13 @@
             <dd class="col-sm-7"><%= to_curr(gyrt) %></dd> 
             <% end %>
           </dl>
+          
           <%# loan_premium = batch.coverages.sum(:loan_premium) %>
             <%# principal_premium = batch.coverages.sum(:group_premium) %>
             <%# dependent_premium = batch.dependent_coverages.sum(:premium) %>
             <!-- <small> Loan Premium: <%#= to_curr(loan_premium) %> <br> Principal: <%#= to_curr(principal_premium) %> <br> Dependent: <%#= to_curr(dependent_premium) %></small> <br>
             <strong>Total Premium: <%#= to_curr(loan_premium + principal_premium + dependent_premium) %></strong> -->
+            
         </div>
       </div>
     </div>
@@ -61,7 +62,8 @@
   <div class="row">
     <div class="col-lg-6">
       <div class="mb-3">
-        <% case pth %>
+        <% spath = psubs[0] %>
+        <% case spath %>
         <% when "br1" %>
           <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, branch_path, class: "btn btn-secondary btn-sm" %>
         <% when "b1" %>
@@ -70,8 +72,10 @@
           <%= link_to "Import Coverage", import_cov_batch_path(), class: "btn btn-outline-primary", data: {turbo_frame: "remote_modal"} unless batch.submit? %>
           <%= link_to "Submit", batch_submit_batch_path(batch), class: "btn btn-outline-success" unless batch.submit? %>
           <%= link_to 'Download'.html_safe, batch_path(batch, format: :csv), class: 'btn btn-secondary' if batch.submit? %>
-          <%= link_to 'All', batch_url(batch, s: 0), class: 'btn btn-secondary btn-sm' %>
-          <%= link_to '18 - 65', batch_url(batch, s: 1), class: 'btn btn-secondary btn-sm' %>
+          <%# link_to 'All', batch_url(batch, s: 0), class: 'btn btn-secondary btn-sm' %>
+          <%= link_to 'All', batch_url(batch, qry: 0, pln: pln, pth: "b1"), class: 'btn btn-secondary btn-sm' %>
+          <%# link_to '18 - 65', batch_url(batch, s: 1), class: 'btn btn-secondary btn-sm' %>
+          <%= link_to '18 - 65', batch_url(batch, qry: 1, pln: pln, pth: "b1"), class: 'btn btn-secondary btn-sm' %>
         <% end %>
       </div>
     </div>
