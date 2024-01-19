@@ -5,8 +5,7 @@ class Member < ApplicationRecord
 
   has_many :coverages
   has_many :batches, through: :coverages
-  
-  #belongs_to :branch
+  belongs_to :branch
 
   def get_cmember
     "#{last_name.capitalize}" + ", " + "#{first_name.capitalize}" + " " + "#{middle_name[0.1]}" + ". " + "#{suffix}"
@@ -50,13 +49,13 @@ class Member < ApplicationRecord
         #where("last_name LIKE ?", "%#{params[:query]}%")
         where("last_name LIKE ?", "%#{query}%") #kyestrella
       else
-        where(branch: current_user.user_detail.branch).where("last_name LIKE ? OR first_name LIKE ?", "%#{query}%", "%#{query}%")
+        where(branch_id: current_user.user_detail.branch_id).where("last_name LIKE ? OR first_name LIKE ?", "%#{query}%", "%#{query}%")
       end
     else
       if admin == true
         all
       else
-        where(branch: current_user.user_detail.branch)
+        where(branch_id: current_user.user_detail.branch_id) #kyestrella
       end
     end
   end

@@ -59,7 +59,8 @@ class CoveragesController < ApplicationController
       respond_to do |format|
       if @coverage.save
         dependent_coverage_save
-        format.html { redirect_to @batch, notice: "Coverage was successfully created." }
+        #format.html { redirect_to @batch, notice: "Coverage was successfully created." }
+        format.html { redirect_to batch_url(@batch, qry: 0, pln: 0, pth: "b1"), notice: "Coverage was successfully created." }
         format.json { render :show, status: :created, location: @coverage }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -75,14 +76,17 @@ class CoveragesController < ApplicationController
       dep_coverage.coverage_id = @coverage.id
       dep_coverage.dependent_id = dependent.id
       dep_coverage.member_id = @coverage.member_id
-      dep_coverage.batch_id = @coverage.batch_id
+      
+      #dep_coverage.batch_id = @coverage.batch_id
       #search data from group benefit
       #dependent.compute_dependent_benefit(@coverage)
+      
       gp = GroupPremium.where('? between residency_floor and residency_ceiling', @coverage.residency)
       dep_coverage.premium = gp.find_by(member_type: dependent.relationship, term: @coverage.term).premium unless gp.nil?
 
       gb = GroupBenefit.where('? between residency_floor and residency_ceiling', @coverage.residency)
       dep_coverage.group_benefit_id = gb.find_by(member_type: dependent.relationship).id
+      
       # dep_coverage.group_benefit_id = dependent.compute_dependent_benefit(@coverage, "gb")
       # dep_coverage.premium = dependent.compute_dependent_benefit(@coverage, "gp")
       
@@ -102,7 +106,7 @@ class CoveragesController < ApplicationController
     @coverage.compute_age
     respond_to do |format|
       if @coverage.update(coverage_params)
-        format.html { redirect_to @batch, notice: "Coverage was successfully updated." }
+        format.html { redirect_to batch_url(@batch, qry: 0, pln: 0, pth: "b1"), notice: "Coverage was successfully updated." }
         format.json { render :show, status: :ok, location: @coverage }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -115,7 +119,7 @@ class CoveragesController < ApplicationController
   def destroy
     @coverage.destroy
     respond_to do |format|
-      format.html { redirect_to @batch, notice: "Coverage was successfully destroyed." }
+      format.html { redirect_to batch_url(@batch, qry: 0, pln: 0, pth: "b1"), notice: "Coverage was successfully destroyed." }
       format.json { head :no_content }
     end
   end

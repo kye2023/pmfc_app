@@ -8,6 +8,14 @@
     <%# else %>
     <%#= f.input :member_id, input_html: { :value => generate_member_id } %>
     <%# end %>
+    
+    <!--Select-->
+    <% if current_user.admin? %>
+      <%= f.association :branch, label: "Branch", input_html: { data: { controller: 'ts--select' } } %>
+    <% else %>
+      <%= f.association :branch, collection: Branch.where(id: current_user.user_detail.branch_id), label: "Branch", input_html: { data: { controller: 'ts--select' } } %>
+    <% end %>
+    <!--Select-->
 
     <div class="row">
       <%= f.input :last_name, wrapper_html: { class: "col-md-4" } %>

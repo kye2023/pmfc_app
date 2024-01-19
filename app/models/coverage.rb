@@ -9,7 +9,7 @@ class Coverage < ApplicationRecord
 
   def compute_age
     
-    binding.pry
+    #binding.pry
     
     self.age = effectivity.year-member.birth_date.year
     # SET PREMIUM RATE ACCORDING TO AGE group/range

@@ -7,7 +7,7 @@
             <th class="text-center">Certificate</th>
             <th>Name</th>
             <th class="text-center">Coverage</th>
-            <th class="text-center">Loan Amount</th>
+            <!--<th class="text-center">Loan Amount</th>-->
             <th class="text-center">Effectivity</th>
             <th class="text-center">Expiry</th>
             <th class="text-center">Term</th>
@@ -23,17 +23,16 @@
                 <th scope="row"><%= c.id %></th>
                 <td class="text-center"><%= c.group_certificate %></td>
                 <td><%= c.member.get_cmember %> <span class="badge bg-dark"><%= c.coverage_status %></span> <br>
-                <small><%= to_shortdate(c.member.birth_date) %></small> | <small class="text-primary"> Age: <%= c.age %></small> |
+                <small><%= to_shortdate(c.member.birth_date) %></small> | <small class="text-primary"><%= c.age %> y/o</small> |
                 <small class="text-muted">Residency: <%= c.residency %></small><br>
                     <small><ul>
                     <% c.dependent_coverages.each do |d| %>
-                        <li> <%= d.dependent %> - <%= d.dependent.relationship %> <small>(Age: <%= d.dependent.get_age(c.effectivity)  %>)</small> </li>
+                        <li> <%= d.dependent %> - <%= d.dependent.relationship %> <small>(<%= d.dependent.get_age(c.effectivity)  %> y/o)</small> </li>
                     <% end %>
                     </ul></small>
                 </td>
-                <td class="text-end"><small>L: <%= to_curr(c.group_benefit.life) %> <br>
-                                                  AD: <%= to_curr(c.group_benefit.add) %> <br> B: <%= to_curr(c.group_benefit.burial) %></small></td>
-                <td class="text-center"><%= to_curr(c.loan_coverage) %></td>
+                <td class="text-end"><small>L: <%= to_curr(c.group_benefit.life) %> <br> AD: <%= to_curr(c.group_benefit.add) %> <br> B: <%= to_curr(c.group_benefit.burial) %></small></td>
+                <!--<td class="text-center"><%# to_curr(c.loan_coverage) %></td>-->
                 <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_shortdate(c.effectivity) %></small></div></td>
                 <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_shortdate(c.expiry) %></small></div></td>
                 <td class="text-center"><div class="text-wrap fw-lighter"><%= c.term %> <br> <%= content_tag :small, "(GP:" + "#{c.grace_period})" unless c.grace_period.nil? %> </td>

@@ -13,7 +13,7 @@
 
 <%= render "remote_modal", title: "New Member" do %>
 <div class="card">
-  <h5 class="card-header">Edit member</h5>
+  <h5 class="card-header">Edit member <%= current_user.user_detail.last_name %> | Branch ID: <%= current_user.user_detail.branch_id %></h5>
   <div class="card-body">
     <%= render "form", item: @item %>
   </div>

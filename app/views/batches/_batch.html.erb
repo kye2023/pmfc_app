@@ -1,7 +1,9 @@
-<%= pln = params[:pln] %>
-<%= pth = params[:pth] %>
-<% psubs = params[:pth].split("-") %>
-<%= psubs.size %>
+<% age_r = params[:qry] %>
+<% pln = params[:pln] %>
+<% pth = params[:pth] %>
+<% psubs = pth.split("-") %>
+<% psubs.size %>
+
 <div id="<%= dom_id batch %>">
   <div class="row mb-3">
     <div class="col-md-8">
@@ -14,7 +16,9 @@
               <%= batch.title %> <br>
               <strong>Branch:</strong>
               <%= batch.branch %> <br>
-              <p class="text-primary"> Count: <%= batch.coverages.count %> </p>
+              <strong>Description:</strong>
+              <%= batch.description %> <br>
+              <!--<p class="text-primary"> Count: <%# batch.coverages.count %> </p>-->
             </div>
         </div>
       </div>
@@ -25,7 +29,7 @@
 
           <dl class="row">
             <dt class="col-sm-5">Count</dt>
-            <dd class="col-sm-7"><%= @show_coverage.count %></dd>
+            <dd class="col-sm-7"><%= batch.coverages.count %></dd>
             <% 
               lppi = 0
               gyrt = 0
@@ -35,7 +39,7 @@
             <dt class="col-sm-5">Plan Type</dt>
             <dd class="col-sm-7">LPPI</dd>
             <dt class="col-sm-5">Loan Coverage</dt>
-            <dd class="col-sm-7"><%= to_curr(@show_coverage.sum(:loan_coverage)) %></dd>
+            <dd class="col-sm-7"><%= to_curr(batch.coverages.sum(:loan_coverage)) %></dd>
             <dt class="col-sm-5">Gross Premium</dt>
             <dd class="col-sm-7"><%= to_curr(lppi) %></dd>
             <% 
@@ -60,7 +64,7 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-lg-6">
+    <div class="col-lg-12">
       <div class="mb-3">
         <% spath = psubs[0] %>
         <% case spath %>
@@ -73,27 +77,39 @@
           <%= link_to "Submit", batch_submit_batch_path(batch), class: "btn btn-outline-success" unless batch.submit? %>
           <%= link_to 'Download'.html_safe, batch_path(batch, format: :csv), class: 'btn btn-secondary' if batch.submit? %>
           <%# link_to 'All', batch_url(batch, s: 0), class: 'btn btn-secondary btn-sm' %>
-          <%= link_to 'All', batch_url(batch, qry: 0, pln: pln, pth: "b1"), class: 'btn btn-secondary btn-sm' %>
+          <%= link_to 'All', batch_url(batch, qry: "0", pln: pln, pth: "b1"), class: 'btn btn-secondary btn-sm' %>
           <%# link_to '18 - 65', batch_url(batch, s: 1), class: 'btn btn-secondary btn-sm' %>
-          <%= link_to '18 - 65', batch_url(batch, qry: 1, pln: pln, pth: "b1"), class: 'btn btn-secondary btn-sm' %>
+          <%= link_to '18-65', batch_url(batch, qry: "1865", pln: pln, pth: "b1"), class: 'btn btn-secondary btn-sm' %>
+          <%= link_to '66-70 350,000 and below', batch_url(batch, qry: "6670b", pln: pln, pth: "b1"), class: 'btn btn-secondary btn-sm' %>
+          <%= link_to '66-70 350,001 and above', batch_url(batch, qry: "6670a", pln: pln, pth: "b1"), class: 'btn btn-secondary btn-sm' %>
+          <%= link_to '71-75 350,000 and below', batch_url(batch, qry: "7175b", pln: pln, pth: "b1"), class: 'btn btn-secondary btn-sm' %>
+          <%= link_to '71-75 350,001 and above', batch_url(batch, qry: "7175a", pln: pln, pth: "b1"), class: 'btn btn-secondary btn-sm' %>
+          <%= link_to '76-80 350,000 and below', batch_url(batch, qry: "7680b", pln: pln, pth: "b1"), class: 'btn btn-secondary btn-sm' %>
+          <%= link_to '75-80 350,001 and above', batch_url(batch, qry: "7680a", pln: pln, pth: "b1"), class: 'btn btn-secondary btn-sm' %>
         <% end %>
       </div>
     </div>
-    <!-- SEARCH -->
+
+    <!-- SEARCH --
     <div class="col-lg-6">
-      <%= form_with( url: batch, method: :get, data: {turbo_frame: "search_member"} ) do |form| %>
+      <%#= form_with( url: batch, method: :get, data: {turbo_frame: "search_member"} ) do |form| %>
         <div class="input-group mb-3">
-          <%= form.text_field :query, placeholder: 'Search by last name...', class: "form-control" %>
-          <%= form.submit 'Search', class: "btn btn-success" %>
+          <%#= form.text_field :query, placeholder: 'Search by last name...', class: "form-control" %>
+          <%#= form.submit 'Search', class: "btn btn-success" %>
         </div>
-      <% end %>
+      <%# end %>
     </div>
+    -- SEARCH -->
+
   </div>
+
   <%== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>
   <%#= render 'coverages/show_group_coverage', sw: @records %>
+  
   <% if pln == "0" %>
     <%= render 'coverages/show_loan_coverage', sw: @show_coverage %>
   <% else %>
     <%= render 'coverages/show_group_coverage', sw: @show_coverage %>
   <% end %>
+  
 </div>

@@ -1,6 +1,5 @@
 <%= content_tag :h1, "List of Batches" %>
 
-
 <div class="text-start mb-3">
   <%= link_to new_batch_path, data: { turbo_frame:"remote_modal" }, class: 'btn btn-primary' do %>
     New Batch
@@ -54,7 +53,6 @@
         <%= link_to '<i class="bi bi-trash"></i>'.html_safe, batch, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
       </td>
     </tr>
-      <%# raise "errors" %>
     <% end %>
   </tbody>
 </table>
