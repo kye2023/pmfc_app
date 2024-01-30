@@ -24,6 +24,8 @@ Rails.application.routes.draw do
 
   resources :batches do
     get :batch_submit, on: :member
+    get :batch_download, on: :member
+    get :batch_preview, on: :member
     collection do
       post :import
     end

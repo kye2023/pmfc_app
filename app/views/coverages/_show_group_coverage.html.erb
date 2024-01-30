@@ -18,42 +18,44 @@
         </tr>
     </thead>
     <tbody>
-        <% sw.each do |c| %>
-            <tr>
-                <th scope="row"><%= c.id %></th>
-                <td class="text-center"><%= c.group_certificate %></td>
-                <td><%= c.member.get_cmember %> <span class="badge bg-dark"><%= c.coverage_status %></span> <br>
+    <% sw.each do |c| %>
+        <tr>
+            <th scope="row"><%= c.id %></th>
+            <td class="text-center"><%= c.group_certificate %></td>
+            <td><%= c.member.get_cmember %> <span class="badge bg-dark"><%= c.coverage_status %></span> <br>
                 <small><%= to_shortdate(c.member.birth_date) %></small> | <small class="text-primary"><%= c.age %> y/o</small> |
                 <small class="text-muted">Residency: <%= c.residency %></small><br>
-                    <small><ul>
+                <small>
+                    <ul>
                     <% c.dependent_coverages.each do |d| %>
                         <li> <%= d.dependent %> - <%= d.dependent.relationship %> <small>(<%= d.dependent.get_age(c.effectivity)  %> y/o)</small> </li>
                     <% end %>
-                    </ul></small>
-                </td>
-                <td class="text-end"><small>L: <%= to_curr(c.group_benefit.life) %> <br> AD: <%= to_curr(c.group_benefit.add) %> <br> B: <%= to_curr(c.group_benefit.burial) %></small></td>
-                <!--<td class="text-center"><%# to_curr(c.loan_coverage) %></td>-->
-                <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_shortdate(c.effectivity) %></small></div></td>
-                <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_shortdate(c.expiry) %></small></div></td>
-                <td class="text-center"><div class="text-wrap fw-lighter"><%= c.term %> <br> <%= content_tag :small, "(GP:" + "#{c.grace_period})" unless c.grace_period.nil? %> </td>
-                <td class="text-end">
-                    <% dependent_prem = c.dependent_coverages.sum(:premium) %>
-                    <%= content_tag :small, "Loan Premium: " +  "#{to_curr(c.loan_premium)}" %> <br>
-                    <%= content_tag :small, "Group Premium: " +  "#{to_curr(c.group_premium)}" %> <br>
-                    <% if c.dependent_coverages.count > 0 %>
-                    <%= content_tag :small, "Dependent Premium: " +  "#{to_curr(dependent_prem)}" %> <br>
-                    <% end %>
-                    <%= content_tag :strong, "Total Premium: " +  "#{to_curr(dependent_prem + c.loan_premium + c.group_premium)}" %> <br>
-                </td>
-                <% unless @batch.submit? %>
-                    <td class="text-center">
-                    <%= link_to '<i class="bi bi-eye"></i>'.html_safe, c, class: 'btn btn-secondary btn-sm', data: { turbo_frame: "remote_modal" } %>
-                    <%= link_to '<i class="bi bi-pencil-square"></i>'.html_safe, edit_coverage_path(c), class: 'btn btn-secondary btn-sm', data: { turbo_frame: "remote_modal" } %>
-                    <%= link_to '<i class="bi bi-trash"></i>'.html_safe, c, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
-                    </td>
+                    </ul>
+                </small>
+            </td>
+            <td class="text-end"><small>L: <%= to_curr(c.group_benefit.life) %> <br> AD: <%= to_curr(c.group_benefit.add) %> <br> B: <%= to_curr(c.group_benefit.burial) %></small></td>
+            <!--<td class="text-center"><%# to_curr(c.loan_coverage) %></td>-->
+            <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_shortdate(c.effectivity) %></small></div></td>
+            <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_shortdate(c.expiry) %></small></div></td>
+            <td class="text-center"><div class="text-wrap fw-lighter"><%= c.term %> <br> <%= content_tag :small, "(GP:" + "#{c.grace_period})" unless c.grace_period.nil? %> </td>
+            <td class="text-end">
+                <% dependent_prem = c.dependent_coverages.sum(:premium) %>
+                <%= content_tag :small, "Loan Premium: " +  "#{to_curr(c.loan_premium)}" %> <br>
+                <%= content_tag :small, "Group Premium: " +  "#{to_curr(c.group_premium)}" %> <br>
+                <% if c.dependent_coverages.count > 0 %>
+                <%= content_tag :small, "Dependent Premium: " +  "#{to_curr(dependent_prem)}" %> <br>
                 <% end %>
-                <!-- td class="text-end"><%= c.dependent_coverages.sum(:premium) %></!-->
+                <%= content_tag :strong, "Total Premium: " +  "#{to_curr(dependent_prem + c.loan_premium + c.group_premium)}" %> <br>
+            </td>
+            <% unless @batch.submit? %>
+            <td class="text-center">
+                <%= link_to '<i class="bi bi-eye"></i>'.html_safe, c, class: 'btn btn-secondary btn-sm', data: { turbo_frame: "remote_modal" } %>
+                <%= link_to '<i class="bi bi-pencil-square"></i>'.html_safe, edit_coverage_path(c), class: 'btn btn-secondary btn-sm', data: { turbo_frame: "remote_modal" } %>
+                <%= link_to '<i class="bi bi-trash"></i>'.html_safe, c, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+            </td>
+            <% end %>
+        <!-- td class="text-end"><%= c.dependent_coverages.sum(:premium) %></!-->
         </tr>
-        <% end %>
+    <% end %>
     </tbody>
 </table>

@@ -16,7 +16,7 @@ class ImportService
 
     import_service = case @type
                     when :member
-                      MemberImportService.new(spreadsheet)
+                      MemberImportService.new(spreadsheet,@bid)
                     when :dependent
                       DependentImportService.new(spreadsheet)
                     when :batch

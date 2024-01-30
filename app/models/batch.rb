@@ -6,6 +6,7 @@ class Batch < ApplicationRecord
   belongs_to :branch
   validates_presence_of :title
   require 'csv'
+  
   def batch_info
     "#{description}" + " ("+ "#{title}" + ")"
   end

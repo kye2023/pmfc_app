@@ -1,6 +1,7 @@
 class MemberImportService
-  def initialize(spreadsheet)
+  def initialize(spreadsheet,bid)
     @spreadsheet = spreadsheet
+    @branch_id = bid
   end
   
   def import
@@ -35,7 +36,8 @@ class MemberImportService
         civil_status: row["CIVILSTATUS"] == nil ? nil : row["CIVILSTATUS"].strip,
         gender: row["GENDER"] == nil ? nil : row["GENDER"],
         mobile_no: row["MOBILENO"] == nil ? nil : row["MOBILENO"],
-        email: row["EMAIL"] == nil ? nil : row["EMAIL"]
+        email: row["EMAIL"] == nil ? nil : row["EMAIL"],
+        branch_id: @branch_id
       }
     
 
@@ -43,7 +45,8 @@ class MemberImportService
         last_name: member_hash[:last_name],
         first_name: member_hash[:first_name],
         middle_name: member_hash[:middle_name],
-        birth_date: member_hash[:birth_date]
+        birth_date: member_hash[:birth_date],
+        branch_id: member_hash[:branch_id]
       )
 
       member.assign_attributes(member_hash)

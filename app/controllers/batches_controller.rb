@@ -1,13 +1,15 @@
 class BatchesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_batch, only: %i[ show edit update destroy import_cov batch_submit]
+  before_action :set_batch, only: %i[ show edit update destroy import_cov batch_submit batch_preview]
   require 'csv'
+  
   def batch_submit 
     @batch.update(submit: 1)
     respond_to do |format| 
-      format.html { redirect_to batch_url(@batch), notice: "Batch was successfully submitted." }
+      format.html { redirect_to batch_url(@batch, qry: 0, pln: 0, pth: "b1"), notice: "Batch was successfully submitted." }
     end
   end
+  
   # GET /batches or /batches.json
   def index
     if current_user.admin == true
@@ -60,6 +62,7 @@ class BatchesController < ApplicationController
     
     @pagy, @records = pagy(@show_coverage, items: 5)
 
+    #download CSV
     respond_to do |format|
       format.html
       format.csv do 
@@ -67,6 +70,7 @@ class BatchesController < ApplicationController
       end
     end
     # raise "errors"
+   
   end
 
   # GET /batches/new
@@ -133,6 +137,66 @@ class BatchesController < ApplicationController
     # import_service = ImportService.new(:coverage, params[:file], batch_id)
     # import_message = import_service.import
     # redirect_to batches_path, notice: import_message
+  end
+
+  def batch_download
+    
+  end
+
+  def batch_preview
+
+    #Initialize PDF
+    pdf = Prawn::Document.new
+    pdf.image "#{Prawn::DATADIR}/pmfc.png", scale: 0.15
+    pdf.text "PEOPLE'S MICRO FINANCE COOPERATIVE"
+    pdf.move_down 20
+
+    data_zero = [ ["#{"Title :"+@batch.title+"\n Branch :"+@batch.branch.name+"\n Description :"+@batch.description}"] ]
+    pdf.table(data_zero, :cell_style => { :font => "Times-Roman", :size => 12}, :width => 540 )
+    pdf.move_down 20
+
+    #THeader
+    data_one = [["#","Certificate", "Name", "Coverage", "Effectiity", "Expiry", "Term","Premium"]]
+    
+    #TBody Active Record
+    total_prem = 0
+    @batch.coverages.each do |c|
+      count_dpnt = c.dependent_coverages.count(:id).to_s
+      s_age = c.age.to_s
+      s_rcdncy=c.residency.to_s
+     
+      loan_prem = c.loan_premium
+      dependent_prem = c.dependent_coverages.sum(:premium)
+      group_prem = c.group_premium
+
+      data_one +=[
+          ["#{c.id}",
+          "#{c.group_certificate}",
+          "#{c.member.get_cmember+" ("+c.coverage_status+")"+"\n"+helpers.to_shortdate(c.member.birth_date)+" | "+s_age+" y/o \n\n"+"Residency: "+s_rcdncy+"\n Dependent(s): "+count_dpnt}",
+          "#{"Loan: "+helpers.to_curr(c.loan_coverage)+"\n\n L: "+helpers.to_curr(c.group_benefit.life)+"\n AD :"+helpers.to_curr(c.group_benefit.add)+"\n B :"+helpers.to_curr(c.group_benefit.burial) }",
+          "#{helpers.to_shortdate(c.effectivity)}",
+          "#{helpers.to_shortdate(c.expiry)}",
+          "#{c.term}",
+          "#{helpers.to_curr(loan_prem+dependent_prem+group_prem)}"
+          ]
+        ]
+        total_prem += loan_prem+dependent_prem+group_prem
+    end  
+    
+    data_one +=[[{:content => "Total Premium :", :colspan => 7, align: :right },"#{helpers.to_curr(total_prem)}"]]
+
+    #Table Format
+    pdf.table(data_one, :cell_style => { :font => "Times-Roman", :size => 10 }, :row_colors => ["F0F0F0", "FFFFCC"] ) do
+      rows(0).border_width = 2
+      columns(2).width = 150
+      columns(3).width = 100
+    end  
+
+    #Render PDF
+    send_data(pdf.render,
+        filename: 'hello.pdf', 
+        type: 'application/pdf', 
+        disposition: 'inline')
   end
 
   private

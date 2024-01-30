@@ -50,12 +50,21 @@
         <tr class="table-secondary" id="members">
           <th><%= member.id %></th>
           <td>
-            <% dpcount = member.count_dependent %>
-              <% if dpcount > 0 %>
-            <div class="text-wrap fw-bold"><strong><%= member.get_cmember.upcase %></strong><span class="badge bg-secondary">Principal</span></div>
-              <% else %>
-            <div class="text-wrap fw-bold"><strong><%= member.get_cmember.upcase %></strong></div>
+          <% 
+            dpcount = member.count_dependent
+            hstatus = member.health_declaration
+          %>
+            <% if dpcount > 0 %>
+            <div class="text-wrap fw-bold">
+              <strong><%= member.get_cmember.upcase %></strong>
+              <span class="badge bg-secondary">Principal</span>
+              <% if !hstatus.nil? && hstatus.size > 3 %>
+                <span class="bi bi-clipboard2-pulse-fill"></span>
               <% end %>
+            </div>
+            <% else %>
+            <div class="text-wrap fw-bold"><strong><%= member.get_cmember.upcase %></strong></div>
+            <% end %>
             <div class="text-wrap fw-light">
               <small> Birth Date: <%= to_shortdate(member.birth_date) %> | Membership: <%= to_shortdate(member.date_membership) %></small>
             </div>

@@ -13,7 +13,7 @@
     <% if current_user.admin? %>
       <%= f.association :branch, label: "Branch", input_html: { data: { controller: 'ts--select' } } %>
     <% else %>
-      <%= f.association :branch, collection: Branch.where(id: current_user.user_detail.branch_id), label: "Branch", input_html: { data: { controller: 'ts--select' } } %>
+      <%= f.association :branch, collection: Branch.where(id: current_user.user_detail.branch_id), label: "Branch", input_html: { data: { controller: 'ts--select' } }, selected: Branch.where(id: current_user.user_detail.branch_id)  %>
     <% end %>
     <!--Select-->
 
@@ -43,7 +43,10 @@
       <%= f.input :mobile_no, wrapper_html: { class: "col-md-6" } %>
       <%= f.input :email, wrapper_html: { class: "col-md-6" } %>
     </div>
-    
+    <div class="row">
+      <%= f.input :health_declaration, wrapper_html: { class: "col-md-12" } %>
+    </div>
+
     <!--Nested-Cocoon-->
     <div class="card">
       <h3 class="card-header">Dependents</h3>
