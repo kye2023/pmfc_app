@@ -48,6 +48,7 @@ class Member < ApplicationRecord
       if admin == true
         #where("last_name LIKE ?", "%#{params[:query]}%")
         where("last_name LIKE ?", "%#{query}%") #kyestrella
+
       else
         where(branch_id: current_user.user_detail.branch_id).where("last_name LIKE ? OR first_name LIKE ?", "%#{query}%", "%#{query}%")
       end

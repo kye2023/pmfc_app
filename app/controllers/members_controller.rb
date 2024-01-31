@@ -43,6 +43,7 @@ class MembersController < ApplicationController
   # POST /members or /members.json
   def create
     @member = Member.new(member_params)
+    @member.branch = current_user.user_detail.branch
 
     respond_to do |format|
       #raise "errors"
