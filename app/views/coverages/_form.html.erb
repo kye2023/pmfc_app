@@ -23,11 +23,15 @@
 
   <div class="form-inputs">
     <%#= f.association :member, label_method: :get_cmember, {}, {data: { controller: "select" }} %>
+    
+    <!--Select-->
     <% if current_user.admin? %>
       <%= f.association :member, label: "Member", input_html: { data: { controller: 'ts--select' } } %>
     <% else %>
-      <%= f.association :member, collection: Member.where(branch: current_user.user_detail.branch), label: "Member", input_html: { data: { controller: 'ts--select' } } %>
+      <%= f.association :member, collection: Member.where(branch_id: current_user.user_detail.branch_id), label: "Member", input_html: { data: { controller: 'ts--select' } } %>
     <% end %>
+    <!--Select-->
+
       <div class="row">
         <%= f.input :loan_certificate, wrapper_html: { class: "col-md-6" }  %>
         <%= f.input :group_certificate, wrapper_html: { class: "col-md-6" }  %>

@@ -8,15 +8,24 @@
     <%# else %>
     <%#= f.input :member_id, input_html: { :value => generate_member_id } %>
     <%# end %>
+    
+    <!--Select-->
+    <% if current_user.admin? %>
+      <%= f.association :branch, label: "Branch", input_html: { data: { controller: 'ts--select' } } %>
+    <% else %>
+      <%= f.association :branch, collection: Branch.where(id: current_user.user_detail.branch_id), label: "Branch", input_html: { data: { controller: 'ts--select' } }, selected: Branch.where(id: current_user.user_detail.branch_id)  %>
+    <% end %>
+    <!--Select-->
 
     <div class="row">
+      <%= f.input :last_name, wrapper_html: { class: "col-md-4" } %>
       <%= f.input :first_name, wrapper_html: { class: "col-md-4" } %>
-      <%= f.input :middle_name, wrapper_html: { class: "col-md-3" } %>
-      <%= f.input :last_name, wrapper_html: { class: "col-md-3" } %>
+      <%= f.input :middle_name, wrapper_html: { class: "col-md-2" } %>
       <%= f.input :suffix, wrapper_html: { class: "col-md-2" } %>
     </div>
+    <!--Date-Picker-->
     <div class="row">
-      <div class="col-md-6"> 
+      <div class="col-md-6">
         <%= f.label :birth_date %>
         <%= f.date_field :birth_date, class: "#date_pick" %>
       </div>
@@ -25,6 +34,7 @@
         <%= f.date_field :date_membership, class: "#date_pick" %>
      </div>
     </div><br>
+    <!--Date-Picker-->
     <div class="row">
       <%= f.input :civil_status , collection: ['Single', 'Married', 'Widowed', 'Divorced'], include_blank: true, wrapper_html: { class: "col-md-6" } %>
       <%= f.input :gender , collection: [['Male','M'],['Female','F']], include_blank: true, wrapper_html: { class: "col-md-6" } %>
@@ -33,7 +43,10 @@
       <%= f.input :mobile_no, wrapper_html: { class: "col-md-6" } %>
       <%= f.input :email, wrapper_html: { class: "col-md-6" } %>
     </div>
-    
+    <div class="row">
+      <%= f.input :health_declaration, wrapper_html: { class: "col-md-12" } %>
+    </div>
+
     <!--Nested-Cocoon-->
     <div class="card">
       <h3 class="card-header">Dependents</h3>
@@ -58,4 +71,5 @@
     <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, members_path, class: "btn btn-secondary" %>
     <%= f.button :submit, class: "btn btn-primary" %>
   </div>
+  <%# raise "errors"%>
 <% end %>

@@ -3,12 +3,17 @@
     <div class="mt-4 p-5 bg-secondary text-white rounded" id="<%= dom_id member %>">
       <h1 class="text-truncate"><%= member.get_cmember %></h1>
       <div class="text-wrap fw-lighter"><strong>Birth date: </strong><%= "#{member.get_formatted_bday} | ("+"#{member.compute_member_age(member.birth_date)})" %></div>
-
       <div class="text-wrap fw-lighter"><strong>Date membership: </strong><%= member.get_formatted_membership %></div>
       <div class="text-wrap fw-lighter"><strong>Civil status: </strong><%= member.civil_status %></div>
       <div class="text-wrap fw-lighter"><strong>Gender: </strong><%= member.gender %></div>
       <div class="text-wrap fw-lighter"><strong>Mobile no: </strong><%= member.mobile_no %></div>
       <div class="text-wrap fw-lighter"><strong>Email: </strong><%= member.email %></div>
+      <% 
+        hstatus = member.health_declaration
+        if !hstatus.nil? && hstatus.size > 3  
+      %>
+          <div class="text-wrap fw-lighter">Health Declaration: <strong>(<%= member.health_declaration %>)</strong></div>
+      <% end %>
     </div>
   </div>  
   <div class="col-lg-12">
@@ -34,7 +39,52 @@
         <% member.coverages.each do |mcb| %>
         <tr>
           <th><%= mcb.id %></th>
-          <td><div class="text-wrap fw-light text-muted"><strong><span class="badge bg-muted text-dark"><%= mcb.batch.title %></span></strong></div></td>
+          <td>
+            <div class="text-wrap fw-light text-muted">
+              <strong>
+                <span class="badge bg-muted text-dark"><%= "#{mcb.batch.title} "+" (#{mcb.batch.created_at.strftime("%Y")})"+" (#{mcb.coverage_status})" %></span>
+              </strong>
+            </div>
+          </td>
+          <td>
+            <div class="text-wrap fw-light text-muted">
+              <span class="badge bg-muted text-dark">Loan Coverage: <%= to_curr(mcb.loan_coverage) %></span>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <% 
+              loan_prem = mcb.loan_premium 
+              group_prem = mcb.group_premium 
+              dependent_prem = mcb.dependent_coverages.sum(:premium) 
+            %> 
+            
+            <div class="text-wrap fw-light text-muted">
+              <small>
+                LIFE: <%= to_curr(mcb.group_benefit.life) %> <br> 
+                ADD: <%= to_curr(mcb.group_benefit.add) %> <br> 
+                BURIAL: <%= to_curr(mcb.group_benefit.burial) %>
+              </small>
+            </div>
+          </td>
+          <td>
+            <div class="text-wrap fw-light text-muted">
+              <span class="badge bg-muted text-dark">  <small>Loan Premium: <%= to_curr(loan_prem) %></small></span>
+            </div>
+            <div class="text-wrap fw-light text-muted">
+              <span class="badge bg-muted text-dark"><small>Group Premium: <%= to_curr(group_prem) %></small></span>  
+            </div>
+            <div class="text-wrap fw-light text-muted">
+              <span class="badge bg-muted text-dark"><small>Dependent Premium: <%= to_curr(dependent_prem) %></small></span> 
+            </div>
+            <div class="text-wrap fw-light text-muted">
+              <strong>
+                <span class="badge bg-muted text-dark">Total Premium: <%= to_curr(dependent_prem+loan_prem+group_prem) %></span>
+              </strong>
+            </div>
+          </td>
         </tr>
         <% end %>
       </tbody>

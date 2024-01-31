@@ -1,10 +1,11 @@
 class Member < ApplicationRecord
   validates_presence_of :last_name, :first_name, :middle_name, :birth_date, :date_membership
+  has_many :dependents, dependent: :destroy
+  accepts_nested_attributes_for :dependents, reject_if: :all_blank, allow_destroy: true
+
   has_many :coverages
   has_many :batches, through: :coverages
-  has_many :dependents, dependent: :destroy
   belongs_to :branch
-  accepts_nested_attributes_for :dependents, reject_if: :all_blank, allow_destroy: true
 
   def get_cmember
     "#{last_name.capitalize}" + ", " + "#{first_name.capitalize}" + " " + "#{middle_name[0.1]}" + ". " + "#{suffix}"
@@ -45,16 +46,17 @@ class Member < ApplicationRecord
   def self.get_members_index(admin, query, current_user)
     if query.present?
       if admin == true
-        # where("last_name LIKE ?", "%#{params[:query]}%")
-        where("last_name LIKE ?", "%#{query}%")
+        #where("last_name LIKE ?", "%#{params[:query]}%")
+        where("last_name LIKE ?", "%#{query}%") #kyestrella
+
       else
-        where(branch: current_user.user_detail.branch).where("last_name LIKE ? OR first_name LIKE ?", "%#{query}%", "%#{query}%")
+        where(branch_id: current_user.user_detail.branch_id).where("last_name LIKE ? OR first_name LIKE ?", "%#{query}%", "%#{query}%")
       end
     else
       if admin == true
         all
       else
-        where(branch: current_user.user_detail.branch)
+        where(branch_id: current_user.user_detail.branch_id) #kyestrella
       end
     end
   end

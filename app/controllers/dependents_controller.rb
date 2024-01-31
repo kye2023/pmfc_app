@@ -26,7 +26,8 @@ class DependentsController < ApplicationController
   end
 
   def dummy_data 
-    @dependent.last_name = FFaker::Name.last_name
+    #@dependent.last_name = FFaker::Name.last_name
+    @dependent.last_name = @member.last_name
     @dependent.first_name = FFaker::Name.first_name
     @dependent.middle_name = FFaker::Name.first_name[0]
   end
