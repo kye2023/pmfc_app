@@ -321,6 +321,7 @@ DEPENDENCIES
   importmap-rails
   jbuilder
   jquery-rails
+  matrix (~> 0.4.2)
   mysql2 (~> 0.5)
   pagy
   prawn-rails
