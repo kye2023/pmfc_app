@@ -16,8 +16,9 @@ class Batch < ApplicationRecord
   end
   
   def batch_coverage
+        
     dc_prm = 0
-    coverages.each do |cvg|
+    coverages.each do |cvg|      
       cvg.member.dependents.each do |dpndnt|
         if dpndnt.dependent_coverage.nil?
           dc_prm  
