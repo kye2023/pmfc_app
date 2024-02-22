@@ -1,6 +1,6 @@
 class Coverage < ApplicationRecord
   validates_presence_of :loan_certificate, :effectivity, :loan_coverage, :term
-  belongs_to :member, optional: true
+  belongs_to :member
   belongs_to :batch
   belongs_to :group_benefit, optional: true
   has_many :dependent_coverages, dependent: :destroy
