@@ -45,6 +45,7 @@ class BatchImportCoverage
         loan_coverage: row["AMOUNTOFLOAN"] == nil ? nil : row["AMOUNTOFLOAN"],
         effectivity: formatted_efdate,
         expiry: formatted_exdate,
+        grace_period: row["GRACEPERIOD"] == nil ? nil : row["GRACEPERIOD"],
         term: row["TERM"] == nil ? nil : row["TERM"],
         status: row["STATUS"] == nil ? nil : row["STATUS"]
       }
@@ -60,7 +61,7 @@ class BatchImportCoverage
         mmbr_dom = mmbr_data.date_membership
         if coverage_id.nil?
           #CHECK for EXISTING coverage, ADD NEW IF NIL
-            #METHOD calling for (loan premium, rate, residency, group benefits)
+          #METHOD calling for (loan premium, rate, residency, group benefits)
           gloanpremium = get_loan_premium(coverage_hash[:age],coverage_hash[:loan_coverage],coverage_hash[:term])
           gprate = get_premium_rate(coverage_hash[:age])  
 
@@ -69,13 +70,27 @@ class BatchImportCoverage
           g_gbenefits = get_gpremium_gbenefits(gresidency,coverage_hash[:term],"gb") 
 
           coverage = Coverage.find_or_initialize_by(
-            batch_id: @batch_id,member_id: mmbr_data.id,loan_certificate: coverage_hash[:loan_certificate],
-            loan_coverage: coverage_hash[:loan_coverage],age: coverage_hash[:age],effectivity: formatted_efdate,expiry: formatted_exdate,
-            term: coverage_hash[:term],status: coverage_hash[:status],residency: gresidency,loan_premium: gloanpremium,group_premium: g_gpremium,
-            group_certificate: coverage_hash[:loan_certificate],group_benefit_id: g_gbenefits,rate: gprate
+            batch_id: @batch_id,
+            member_id: mmbr_data.id,
+            loan_certificate: coverage_hash[:loan_certificate],
+            loan_coverage: coverage_hash[:loan_coverage],
+            age: coverage_hash[:age],
+            effectivity: formatted_efdate,
+            expiry: formatted_exdate,
+            term: coverage_hash[:term],
+            status: coverage_hash[:status],
+            residency: gresidency,
+            loan_premium: gloanpremium,
+            group_premium: g_gpremium,
+            group_certificate: coverage_hash[:loan_certificate],
+            group_benefit_id: g_gbenefits,
+            rate: gprate, 
+            grace_period: coverage_hash[:grace_period]
           )
           coverage.assign_attributes(coverage_hash)
+          #Calls method from coverage model
           coverage.compute_age
+          #raise "errors"
           coverage.save!
           scoverage = Coverage.find_by(batch_id: @batch_id, member_id: mmbr_data.id)
           cdpndnt = dependent_coverage_save(scoverage.id, mmbr_data.id, scoverage.residency, scoverage.term)

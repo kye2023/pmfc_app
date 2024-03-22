@@ -1,5 +1,5 @@
 class ImportService
-  def initialize (type, file, id=nil)
+  def initialize (type, file, id)
     @type = type
     @file = file
     @bid = id

@@ -1,7 +1,7 @@
 <%#= simple_form_for(coverage, data: { controller: "flatpickr" }) do |f| %>
-<div class="row">
+<!--<div class="row">
   <div class="col-lg-3"><% bid = params[:b] %></div>
-<!--Upload Member-->
+--Upload Member--
   <div class="col-lg-6">
   <%= form_with url: import_batches_path(id: bid), method: :post do |form| %>
   <%= form.label :file, "For coverage enrollment upload your csv file.", class: "form-text" %>
@@ -11,19 +11,18 @@
     </div>
   <% end %>
   </div>
-<!--Upload Member-->
+--Upload Member--
   <div class="col-lg-3"></div>
 </div>
-
-<hr>
+<hr>-->
 
 <%= simple_form_for(@coverage, url: url, method: meth) do |f| %>
   <%= f.error_notification %>
   <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
-
+  
+  <!--Form Field-->
   <div class="form-inputs">
     <%#= f.association :member, label_method: :get_cmember, {}, {data: { controller: "select" }} %>
-    
     <!--Select-->
     <% if current_user.admin? %>
       <%= f.association :member, label: "Member", input_html: { data: { controller: 'ts--select' } } %>
@@ -54,7 +53,15 @@
         <%= f.input :loan_coverage, wrapper_html: { class: "col-md-3" } %>
       </div>
   </div>
-
+  <!--Form Field-->
+  <%# @coverage.id? %>
+  <% if @coverage.id? == true %>
+  <% hstatus = @coverage.member.health_declaration %>
+    <% if !hstatus.nil? && hstatus.size > 3 %>
+  <div class="col-md-6"><%= f.input :substandard_rate %></div>
+    <% end %>
+  <% end %>
+    
   <div class="form-actions">
     <%= f.button :submit, class: "btn btn-primary" %>
     <%# console %>

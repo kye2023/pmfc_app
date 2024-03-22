@@ -8,7 +8,7 @@ class Dependent < ApplicationRecord
   end
 
   def full_name 
-    "#{last_name}" + ", " + "#{first_name}" + " " + "#{middle_name[0.1]}" + ". "
+    "#{last_name.capitalize}" + ", " + "#{first_name.capitalize}" + " " + "#{middle_name[0.1]}" + ". "
   end
 
   def get_formatted_dbday

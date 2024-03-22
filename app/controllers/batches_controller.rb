@@ -2,7 +2,7 @@ class BatchesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_batch, only: %i[ show edit update destroy import_cov batch_submit batch_preview]
   require 'csv'
-  
+
   def batch_submit 
     @batch.update(submit: 1)
     respond_to do |format| 
@@ -125,9 +125,8 @@ class BatchesController < ApplicationController
   end
 
   def import
-    batch_id = params[:id]
-
-    import_service = ImportService.new(:batch,params[:file],batch_id)
+    batch_id = params[:p]
+    import_service = ImportService.new(:batch, params[:file], batch_id)
     import_message = import_service.import
     redirect_to batches_path, notice: import_message
   end
@@ -140,63 +139,297 @@ class BatchesController < ApplicationController
   end
 
   def batch_download
-    
+   # require 'prawn/manual_builder'
+
+    Prawn::ManualBuilder::Chapter.new do
+      title 'Print Scaling'
+
+      text do
+        prose <<~TEXT
+          (Optional; PDF 1.6) The page scaling option to be selected when a print
+          dialog is displayed for this document.  Valid values are
+          <code>None</code>, which indicates that the print dialog should reflect
+          no page scaling, and <code>AppDefault</code>, which indicates that
+          applications should use the current print scaling.  If this entry has an
+          unrecognized value, applications should use the current print scaling.
+          Default value: <code>AppDefault</code>.
+
+          Note: If the print dialog is suppressed and its parameters are provided
+          directly by the application, the value of this entry should still be
+          used.
+        TEXT
+      end
+
+      example eval: false, standalone: true do
+        Prawn::Document.generate(
+          'example.pdf',
+          page_layout: :landscape,
+          print_scaling: :none
+        ) do
+          text 'When you print this document, the scale to fit in print preview '\
+            'should be disabled by default.'
+        end
+      end
+    end
+
   end
 
   def batch_preview
-
-    #Initialize PDF
-    pdf = Prawn::Document.new
-    pdf.image "#{Prawn::DATADIR}/pmfc.png", scale: 0.15
-    pdf.text "PEOPLE'S MICRO FINANCE COOPERATIVE"
-    pdf.move_down 20
-
-    data_zero = [ ["#{"Title :"+@batch.title+"\n Branch :"+@batch.branch.name+"\n Description :"+@batch.description}"] ]
-    pdf.table(data_zero, :cell_style => { :font => "Times-Roman", :size => 12}, :width => 540 )
-    pdf.move_down 20
-
-    #THeader
-    data_one = [["#","Certificate", "Name", "Coverage", "Effectiity", "Expiry", "Term","Premium"]]
     
-    #TBody Active Record
-    total_prem = 0
-    @batch.coverages.each do |c|
-      count_dpnt = c.dependent_coverages.count(:id).to_s
-      s_age = c.age.to_s
-      s_rcdncy=c.residency.to_s
-     
-      loan_prem = c.loan_premium
-      dependent_prem = c.dependent_coverages.sum(:premium)
-      group_prem = c.group_premium
+    #plan parameter
+    plan = ""
+    ppln = params[:pln]
+    if ppln == "0"
+      plan = "LPPI"
+    else
+      plan = "SGYRT"
+    end
 
-      data_one +=[
-          ["#{c.id}",
+    if plan == "LPPI"
+# for LPPI      
+      #Initialize PDF
+      #pdf = Prawn::Document.new(page_layout: :landscape)
+      pdf = Prawn::Document.new
+      pdf.image "#{Prawn::DATADIR}/pmfc.png", scale: 0.15
+      pdf.move_down 5
+      pdf.text "PEOPLE'S MICRO FINANCE COOPERATIVE"
+      pdf.move_down 5
+
+      #Block/Border Title
+      data_zero = [ ["#{"Title :"+@batch.title+"\n Branch :"+@batch.branch.name+"\n Description :"+@batch.description+"\n Plan :"+plan}"] ]
+      pdf.table(data_zero, :cell_style => { :font => "Times-Roman", :size => 12}, :width => 540 )
+      pdf.move_down 20
+
+      #Table Header
+      datazero = [["#","Certificate", "Name", "Sum Insured", "Effectiity", "Expiry", "Term","Status","Premium"]]
+      
+      #Table Body (Active Record)
+      total_sumi = 0
+      total_prem = 0
+
+      @batch.coverages.each do |c|
+        count_dpnt = c.dependent_coverages.count(:id).to_s
+        s_age = c.age.to_s
+        s_rcdncy=c.residency.to_s
+       
+        loan_prem = c.loan_premium
+        total_prem += loan_prem
+
+        dependent_prem = c.dependent_coverages.sum(:premium)
+        group_prem = c.group_premium
+  
+        datazero +=
+        [[
+          "#{c.id}",
           "#{c.group_certificate}",
-          "#{c.member.get_cmember+" ("+c.coverage_status+")"+"\n"+helpers.to_shortdate(c.member.birth_date)+" | "+s_age+" y/o \n\n"+"Residency: "+s_rcdncy+"\n Dependent(s): "+count_dpnt}",
-          "#{"Loan: "+helpers.to_curr(c.loan_coverage)+"\n\n L: "+helpers.to_curr(c.group_benefit.life)+"\n AD :"+helpers.to_curr(c.group_benefit.add)+"\n B :"+helpers.to_curr(c.group_benefit.burial) }",
+          "#{c.member.get_cmember}",
+          "#{helpers.to_curr(c.loan_coverage)}",
           "#{helpers.to_shortdate(c.effectivity)}",
           "#{helpers.to_shortdate(c.expiry)}",
           "#{c.term}",
-          "#{helpers.to_curr(loan_prem+dependent_prem+group_prem)}"
-          ]
-        ]
-        total_prem += loan_prem+dependent_prem+group_prem
-    end  
+          "#{c.status}",
+          "#{helpers.to_curr(loan_prem)}"
+        ]]
+        total_sumi += c.loan_coverage
+        
+      end  
+      
+      #Table Footer
+      datazero +=[[
+        {:content => "Grand Total :", :colspan => 3, align: :right },"#{helpers.to_curr(total_sumi)}",
+        {:content => "Total Gross Premium Due :", :colspan => 4, align: :right },"#{helpers.to_curr(total_prem)}"
+      ]]
+      datazero += [[{:content => "Less Service Fee :", :colspan => 8, align: :right },"-"]]
+      datazero += [[{:content => "Total Net Premium Due :", :colspan => 8, align: :right },"#{helpers.to_curr(total_prem)}"]]
+  
+      #Table Format
+      pdf.table(datazero, :cell_style => { :font => "Times-Roman", :size => 10 } ) do
+        columns(2).width = 130
+        columns(3).width = 80
+      end  
+      pdf.move_down 20
+  
+      #Certification
+      data_subzero = [[
+        "I/We hereby certify that the above listed members who do not have any health problem/declaration are not bedridden, and are able to perform the 5 activities of daily living (eating/feeding, toileting, mobility/ transferring, bathing, dressing) and not hospitalized within six (6) months prior to the application for insurance and therefore are eligible for insurance coverage."
+      ]]
+      pdf.table(data_subzero, :cell_style => { :font => "Times-Roman", :size => 10}, :width => 540 )
+      pdf.move_down 5
+      pdf.text "Certified by:"
+      pdf.move_down 20   
+  
+      data_botone = [["Full Name, Date & Signature","Full Name, Date & Signature"]]    
+      data_bottwo = [["Title/Position","Title/Position"]]    
+      pdf.table(data_botone, :cell_style => { :font => "Times-Roman", :size => 10, align: :center, :borders => [] }, :width => 540 )
+      pdf.move_down 20 
+      pdf.table(data_bottwo, :cell_style => { :font => "Times-Roman", :size => 10, align: :center, :borders => [] }, :width => 540 )
+    else
+# for SGYRT
+      #Initialize PDF
+      pdf = Prawn::Document.new(page_layout: :landscape)
+      pdf.image "#{Prawn::DATADIR}/pmfc.png", scale: 0.15
+      pdf.move_down 5
+      pdf.text "PEOPLE'S MICRO FINANCE COOPERATIVE"
+      pdf.move_down 5
+
+      #Block/Border Title
+      data_zero = [ ["#{"Title :"+@batch.title+"\n Branch :"+@batch.branch.name+"\n Description :"+@batch.description+"\n Plan :"+plan}"] ]
+      pdf.table(data_zero, :cell_style => { :font => "Times-Roman", :size => 12}, :width => 720 )
+      pdf.move_down 20
+
+      #Table Header
+      datazero = [[
+        "Certificate",
+        "#",
+        "",
+        "Name", 
+        "Age",
+        {:content => "Relationship", :rotate => -30},
+        {:content => "Residency", :rotate => -30}, 
+        {:content => "Sum Insured", :rotate => -30}, 
+        "Effectivity", 
+        "Expiry", 
+        "Term",
+        "Coverage\nstatus\n(New/\nRenewal)",
+        "Premium"
+      ]]
+      
+      #Table Body (Active Record)
+      
+      msum_life = 0
+      dsum_life = 0
+
+      msum_prem = 0
+      dsum_prem = 0
+
+      total_sumi = 0
+      total_prem = 0
+      mcount = 0
+
+      @batch.coverages.each do |c|
+        
+        count_dpnt = c.dependent_coverages.count(:id).to_s
+        s_age = c.age.to_s
+        s_rcdncy=c.residency.to_s
+       
+        mbr_gprem = c.group_premium
+        msum_prem += mbr_gprem
+        #dsum_prem = c.dependent_coverages.sum(:premium)
+        
+        mgb_life = c.group_benefit.life
+        msum_life += mgb_life
+
+        effdate = helpers.to_shortdate(c.effectivity)
+        expdate = helpers.to_shortdate(c.expiry)
+        mterm = c.term
+        mstatus = c.status
+
+        mcount += 1
+
+        datazero +=
+        [[
+          "#{c.group_certificate}",
+          "#{mcount}",
+          "",
+          "#{c.member.get_cmember}",
+          "#{s_age+" y/o"}",
+          "Principal",
+          "#{c.residency}",
+          "#{helpers.to_curr(mgb_life)}",
+          "#{effdate}",
+          "#{expdate}",
+          "#{mterm}",
+          "#{mstatus}",
+          "#{helpers.to_curr(mbr_gprem)}"
+        ]]
+
+        dcount = 0
+        mresidency = c.residency
+
+        c.dependent_coverages.each do |d|
+
+          dname = d.dependent.full_name
+          dage = c.member.compute_cmmbrage(c.effectivity,d.dependent.birth_date)
+          drelation = d.dependent.relationship.capitalize()
+          
+          dpremium = d.premium
+          dsum_prem += dpremium
+          dgb_life = d.group_benefit.life
+          dsum_life += dgb_life
+
+          dcount += 1
+
+          datazero +=
+          [[
+            "",
+            "",
+            "#{c.member.alpharray(dcount)}",
+            "#{dname}",
+            "#{dage}",
+            "#{drelation}",
+            "#{mresidency}",
+            "#{helpers.to_curr(dgb_life)}",
+            "#{effdate}",
+            "#{expdate}",
+            "#{mterm}",
+            "#{mstatus}",
+            "#{dpremium}"
+            ]]
+        end  
+
+        total_sumi = ((msum_life)+(dsum_life))
+        total_prem = ((msum_prem)+(dsum_prem))
+        
+      end  
+
+       #Table Footer
+       datazero +=[[
+        {:content => "Grand Total :", :colspan => 7, align: :right },"#{helpers.to_curr(total_sumi)}",
+        {:content => "Total Gross Premium Due :", :colspan => 4, align: :right },"#{helpers.to_curr(total_prem)}"
+      ]]
+      datazero += [[{:content => "Less Service Fee :", :colspan => 12, align: :right },"..."]]
+      datazero += [[{:content => "Total Net Premium Due :", :colspan => 12, align: :right },"#{helpers.to_curr(total_prem)}"]]
+
+      #Table Format
+      pdf.table(datazero, :cell_style => { :font => "Times-Roman", :size => 10 } ) do
+        columns(3).width = 130
+        columns(4).width = 35
+        columns(5).width = 60
+        columns(11).width = 50
+      end   
+      pdf.move_down 20
+      
+       #Certification
+      data_subzero = [[
+        "I/We hereby certify that the listed members in this Summary Report/List of Persons to be Insured do not have any health problems, not bedridden, and are able to perform the five (5) activities of daily living (eating/feeding, toileting, mobility/ transferring, bathing, dressing) and not hospitalized within six (6) months prior to the application for insurance and therefore are eligible for insurance coverage. 
+
+        I/We hereby certify that the statements in this Summary Report/List of Persons to be Insured are "'true and correct'" to the best of my/our knowledge. I/We understand and agree that any "'false statement'", "'misrepresentation'", or "'omission of facts'" in this report shall render the insurance “contestable” or "'voidable'" at the instance of 1CISP."
+      ]]
+      pdf.table(data_subzero, :cell_style => { :font => "Times-Roman", :size => 10}, :width => 720 )
+      pdf.move_down 10
+      pdf.text "Certified by:"
+      pdf.move_down 20
+
+      data_botone = [
+        [{:content => "Full Name, Date & Signature", align: :center},{:content => "Noted by:", align: :left}],
+        [{:content => "", :rowspan => 3},""],
+        [""],
+        [""],
+        [{:content =>"Title/Position", align: :center},""]
+      ]
+      
+      # pdf.table(data_botone, :cell_style => { :font => "Times-Roman", :size => 10, align: :center, :borders => [:bottom] }, :width => 720 )
+      pdf.table(data_botone, :cell_style => { :font => "Times-Roman", :size => 10, :borders => [] }, :width => 720 ) do
+        row(2).borders = [:bottom]
+        row(3).borders = [:bottom]
+        row(3).padding = 10
+      end
     
-    data_one +=[[{:content => "Total Premium :", :colspan => 7, align: :right },"#{helpers.to_curr(total_prem)}"]]
-
-    #Table Format
-    pdf.table(data_one, :cell_style => { :font => "Times-Roman", :size => 10 }, :row_colors => ["F0F0F0", "FFFFCC"] ) do
-      rows(0).border_width = 2
-      columns(2).width = 150
-      columns(3).width = 100
-    end  
-
+    end
+    
     #Render PDF
-    send_data(pdf.render,
-        filename: 'hello.pdf', 
-        type: 'application/pdf', 
-        disposition: 'inline')
+    send_data(pdf.render, filename: 'hello.pdf', type: 'application/pdf', disposition: 'inline')
+
   end
 
   private

@@ -3,7 +3,7 @@ class Member < ApplicationRecord
   has_many :dependents, dependent: :destroy
   accepts_nested_attributes_for :dependents, reject_if: :all_blank, allow_destroy: true
 
-  has_many :coverages
+  has_many :coverages, dependent: :destroy
   has_many :batches, through: :coverages
   belongs_to :branch
 
@@ -31,6 +31,11 @@ class Member < ApplicationRecord
     today = Date.today
     cm_age = ((today - bday.to_date) / 365).round
     "#{cm_age}" + " y/o"
+  end
+
+  def compute_cmmbrage(efdate,bday)
+    cc_mage = ((efdate.year - bday.year)).round
+    "#{cc_mage}" + " y/o"
   end
 
   def count_dependent

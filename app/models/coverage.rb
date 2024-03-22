@@ -1,5 +1,5 @@
 class Coverage < ApplicationRecord
-  validates_presence_of :loan_certificate, :effectivity, :loan_coverage, :term
+  validates_presence_of :member_id, :loan_certificate, :effectivity, :term, :grace_period, :status, :loan_coverage
   belongs_to :member, optional: true
   belongs_to :batch
   belongs_to :group_benefit, optional: true

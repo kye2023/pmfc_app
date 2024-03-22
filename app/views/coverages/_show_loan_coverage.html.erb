@@ -15,19 +15,38 @@
         </tr>
     </thead>
     <tbody>
-    <% sw.each do |c| %>
+    <% 
+        msum_loan = 0
+        mgt_loan = 0
+        msum_prem = 0
+        mgt_prem = 0
+        sw.each do |c| 
+            m_loan = c.loan_coverage
+            m_prem = c.loan_premium
+    %>
         <tr>
             <th scope="row"><%= c.id %></th>
             <td class="text-center"><%= c.loan_certificate %></td>
-            <td><%= c.member.get_cmember %> <br>
+            <td>
+                <%= c.member.get_cmember %> 
+                <% hstatus = c.member.health_declaration %>
+                <!--Health declaration status-->
+                <% if !hstatus.nil? && hstatus.size > 3 %>
+                    <span class="bi bi-clipboard2-pulse-fill"></span>
+                <% end %>
+                <!--Health declaration status-->
+                <br>
                 <small><%= to_shortdate(c.member.birth_date) %></small> | <small class="text-primary"> Age: <%= c.age %></small> |
                 <small class="text-muted">Residency: <%= c.residency %></small></td>
-                <td class="text-center text-end"><div class="text-wrap fw-lighter"><small><%# csum_si += c.loan_coverage %><%= to_curr(c.loan_coverage) %></small></div>
-            </td>
+                <td class="text-center">
+                    <div class="text-wrap fw-lighter">
+                        <small><%= to_curr(m_loan) %><% msum_loan += m_loan %></small>
+                    </div>
+                </td>
             <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_shortdate(c.effectivity) %></small></div></td>
             <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_shortdate(c.expiry) %></small></div></td>
             <td class="text-center"><div class="text-wrap fw-lighter"><small><%= c.term %></small></div></td>
-            <td class="text-end"><small><%# csum_prm+= c.loan_premium %><%= to_curr(c.loan_premium) %></small></td>
+            <td class="text-center"><small><%= to_curr(m_prem) %><% msum_prem+= m_prem %></small></td>
             <% unless @batch.submit? %>
             <td class="text-center">
                 <small>Status: <%= c.status %></small> <br>
@@ -36,6 +55,39 @@
             </td>
             <% end %>
         </tr>
-    <% end %>
+    <% 
+        end 
+    %>
     </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="3" class="text-end">Grand Total :</td>
+            <td class="text-center">
+                <div class="text-wrap fw-lighter">
+                    <% mgt_loan = msum_loan %>
+                    <small><%= to_curr(mgt_loan) %></small>
+                </div>
+            </td>
+            <td colspan="3" class="text-end">Total Gross Premium Due :</td>
+            <td class="text-center">
+                <div class="text-wrap fw-lighter">
+                   <% mgt_prem = msum_prem %>
+                    <small><%= to_curr(mgt_prem) %></small>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="7" class="text-end">Less Service Fee :</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td colspan="7" class="text-end">Total Net Premium Due :</td>
+            <td class="text-center">
+                 <div class="text-wrap fw-lighter">
+                   <% mgt_prem = msum_prem %>
+                    <small><%= to_curr(mgt_prem) %></small>
+                </div>
+            </td>
+        </tr>
+    </tfoot>
 </table>

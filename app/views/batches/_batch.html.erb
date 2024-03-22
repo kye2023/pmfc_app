@@ -76,7 +76,7 @@
           <%= link_to "Import Coverage", import_cov_batch_path(), class: "btn btn-outline-primary", data: {turbo_frame: "remote_modal"} unless batch.submit? %>
           <%= link_to "Submit", batch_submit_batch_path(batch), class: "btn btn-outline-success" unless batch.submit? %>
           <%= link_to 'Download'.html_safe, batch_path(batch, format: :csv), class: 'btn btn-secondary' if batch.submit? %>
-          <%= link_to 'Preview'.html_safe, batch_preview_batch_path(batch), class: 'btn btn-primary', :target => '_blank' if batch.submit? %>
+          <%= link_to 'Preview'.html_safe, batch_preview_batch_path(batch, pln: pln), class: 'btn btn-primary', :target => '_blank' if batch.submit? %>
           <%# link_to 'All', batch_url(batch, s: 0), class: 'btn btn-secondary btn-sm' %>
           <%= link_to 'All', batch_url(batch, qry: "0", pln: pln, pth: "b1"), class: 'btn btn-secondary btn-sm' %>
           <%# link_to '18 - 65', batch_url(batch, s: 1), class: 'btn btn-secondary btn-sm' %>

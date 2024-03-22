@@ -58,9 +58,11 @@
             <div class="text-wrap fw-bold">
               <strong><%= member.get_cmember.upcase %></strong>
               <span class="badge bg-secondary">Principal</span>
+              <!--Health declaration status-->
               <% if !hstatus.nil? && hstatus.size > 3 %>
                 <span class="bi bi-clipboard2-pulse-fill"></span>
               <% end %>
+              <!--Health declaration status-->
             </div>
             <% else %>
             <div class="text-wrap fw-bold"><strong><%= member.get_cmember.upcase %></strong></div>
@@ -75,9 +77,15 @@
             <% end %>
           </td>
           <td>
-            <%= link_to '<i class="bi bi-eye-fill"></i>'.html_safe, member, class: 'btn btn-secondary btn-sm ' %>
-            <%= link_to '<i class="bi bi-pencil-square"></i>'.html_safe, edit_member_path(member), class: 'btn btn-secondary btn-sm' %>
-            <%= link_to '<i class="bi bi-trash"></i>'.html_safe, member, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+            <% if current_user.admin == true %>
+              <%= link_to '<i class="bi bi-eye-fill"></i>'.html_safe, member, class: 'btn btn-secondary btn-sm ' %>
+              <%= link_to '<i class="bi bi-pencil-square"></i>'.html_safe, edit_member_path(member), class: 'btn btn-secondary btn-sm' %>
+              <%= link_to '<i class="bi bi-trash"></i>'.html_safe, member, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+            <% else %>
+              <%= link_to '<i class="bi bi-eye-fill"></i>'.html_safe, member, class: 'btn btn-secondary btn-sm ' %>
+              <%= link_to '<i class="bi bi-pencil-square"></i>'.html_safe, edit_member_path(member), class: 'btn btn-secondary btn-sm' %>
+              <% link_to '<i class="bi bi-trash"></i>'.html_safe, member, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+            <% end %>
           </td>
         </tr>
         <%
@@ -87,7 +95,11 @@
         %> 
         <tr class="table-info">
           <td></td>
-          <td colspan="3"><div class="text-wrap fw-light text-muted"><small><%= "#{member.alpharray(mdcount)}. "+md.full_name %><span class="badge bg-muted text-dark">Dependent</span></small></div></td>
+          <td colspan="3">
+            <div class="text-wrap fw-light text-muted">
+              <small><%= "#{member.alpharray(mdcount)}. "+md.full_name %><span class="badge bg-muted text-dark">Dependent</span></small>
+            </div>
+          </td>
         </tr>
         <% end %>
       <% end %>
