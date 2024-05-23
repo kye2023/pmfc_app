@@ -108,6 +108,9 @@
                     <small><%= to_curr(gt_prem) %></small>
                 </div>
             </td>
+            <% unless @batch.submit? %>
+            <td></td>
+            <% end %>
         </tr>
     </tfoot>
 </table>

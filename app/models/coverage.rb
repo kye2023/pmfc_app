@@ -1,17 +1,19 @@
 class Coverage < ApplicationRecord
-  validates_presence_of :member_id, :loan_certificate, :effectivity, :term, :grace_period, :status, :loan_coverage
-  belongs_to :member, optional: true
   belongs_to :batch
+  # belongs_to :member, optional: true
+  belongs_to :member
   belongs_to :group_benefit, optional: true
   has_many :dependent_coverages, dependent: :destroy
 
-  TERMS = [3, 4, 5, 6, 9, 12, 18, 24, 30]
+  validates_presence_of :member_id, :loan_certificate, :effectivity, :term, :grace_period, :status, :loan_coverage
+
+  TERMS = [3, 4, 5, 6, 9, 12, 18, 24, 30, 36]
 
   def compute_age
     
     #binding.pry
     
-    self.age = effectivity.year-member.birth_date.year
+    self.age = effectivity.year - member.birth_date.year
     # SET PREMIUM RATE ACCORDING TO AGE group/range
     case age 
     when 18..65 
@@ -39,10 +41,7 @@ class Coverage < ApplicationRecord
 
     gb = GroupBenefit.where('? between residency_floor and residency_ceiling', self.residency)
     self.group_benefit_id = gb.find_by(member_type: 'principal').id
-
-    #SEARCH GROUP BENEFIT
-    # g_bnft = GroupBenefit.where('? between residency_floor and residency_ceiling', self.residency)
-    # self.group_benefit_id = g_bnft.find_by(member_type: 'principal').id
+    
   end
   
   def coverage_aging

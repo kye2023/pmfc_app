@@ -67,9 +67,10 @@
     <div class="col-lg-12">
       <div class="mb-3">
         <% spath = psubs[0] %>
+        <% surl = psubs[1] %>
         <% case spath %>
         <% when "br1" %>
-          <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, branch_path, class: "btn btn-secondary btn-sm" %>
+          <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, branch_url(surl), class: "btn btn-secondary btn-sm" %>
         <% when "b1" %>
           <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, batches_path, class: "btn btn-secondary" %>
           <%= link_to "New Loan", new_coverage_path(b: batch), class: "btn btn-primary", data: { turbo_frame: "remote_modal" } unless batch.submit? %>

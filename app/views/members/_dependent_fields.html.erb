@@ -6,14 +6,19 @@
     </div>
     <br>
     <div class="row">
-        <div class="col-md-6">
+        <div>
             <%= f.label :birth_date %>
             <%= f.date_field :birth_date %>
         </div>
-        <div class="col-md-6">
-            <%= f.input :relationship %>
-        </div>
+        
+        <!--<div class="col-md-6"><%# f.input :relationship %></div>-->
+       
+        <%= f.input :relationship, collection: ['Spouse', 'Child', 'Parent', 'Sibling'], wrapper_html: { class: "col-md-4" } %>
+        <%= f.input :civil_status , collection: ['Single', 'Married', 'Widowed', 'Divorced'], include_blank: true, wrapper_html: { class: "col-md-4" } %>
+        <%= f.input :gender , collection: [['Male','M'],['Female','F']], include_blank: true, wrapper_html: { class: "col-md-4" } %>
+        
     </div>
+
     <br>
     <br>
     <%= link_to_remove_association "remove dependent", f, class:"btn btn-secondary btn-sm" %>

@@ -10,7 +10,7 @@
             <th class="text-center">Term</th>
             <th class="text-center">Premium</th>
             <% unless @batch.submit? %>
-            <th></th>
+            <th>Action</th>
             <% end %>
         </tr>
     </thead>
@@ -75,10 +75,16 @@
                     <small><%= to_curr(mgt_prem) %></small>
                 </div>
             </td>
+            <% unless @batch.submit? %>
+            <td></td>
+            <% end %>
         </tr>
         <tr>
             <td colspan="7" class="text-end">Less Service Fee :</td>
             <td></td>
+            <% unless @batch.submit? %>
+            <td></td>
+            <% end %>
         </tr>
         <tr>
             <td colspan="7" class="text-end">Total Net Premium Due :</td>
@@ -88,6 +94,9 @@
                     <small><%= to_curr(mgt_prem) %></small>
                 </div>
             </td>
+            <% unless @batch.submit? %>
+            <td></td>
+            <% end %>
         </tr>
     </tfoot>
 </table>

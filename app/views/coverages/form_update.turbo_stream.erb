@@ -1,0 +1,4 @@
+<%= turbo_stream.update "remote_modal_body" do %>
+  <%= render "form", url: coverages_path(b: @batch), meth: 'post' %> 
+  <%# render "form", item: @item %>
+<% end %>
