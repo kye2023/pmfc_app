@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_26_034325) do
+ActiveRecord::Schema[7.0].define(version: 2024_06_04_060216) do
   create_table "batches", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "title"
     t.text "description"
@@ -38,6 +38,14 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_26_034325) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "center_names", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "branch_id", null: false
+    t.index ["branch_id"], name: "index_center_names_on_branch_id"
+  end
+
   create_table "coverages", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "batch_id"
     t.string "member_id"
@@ -59,6 +67,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_26_034325) do
     t.decimal "dependent_premium", precision: 10, scale: 2
     t.integer "grace_period"
     t.decimal "substandard_rate", precision: 10, scale: 2
+    t.bigint "center_name_id"
+    t.index ["center_name_id"], name: "index_coverages_on_center_name_id"
     t.index ["group_benefit_id"], name: "index_coverages_on_group_benefit_id"
   end
 
@@ -179,4 +189,5 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_26_034325) do
     t.index ["user_detail_id"], name: "index_users_on_user_detail_id"
   end
 
+  add_foreign_key "center_names", "branches"
 end

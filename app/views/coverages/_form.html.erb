@@ -12,7 +12,8 @@
       <%= f.association :member, collection: Member.where(branch_id: current_user.user_detail.branch_id), label: "Member", input_html: { data: { controller: 'ts--select' } } %>
     <% end %>
     <!--Select-->
-
+    <%= f.association :center_name, collection: CenterName.all, label: "Center Name", label_method: :description, input_html: { data: { controller: 'ts--select' } }  %>
+      
       <div class="row">
         <%= f.input :loan_certificate, wrapper_html: { class: "col-md-6" }  %>
         <%= f.input :group_certificate, wrapper_html: { class: "col-md-6" }  %>

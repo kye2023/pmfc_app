@@ -1,9 +1,15 @@
 class BranchesController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_branch, only: %i[ show edit update destroy ]
 
   # GET /branches or /branches.json
   def index
-    @branches = Branch.all
+    # @branches = Branch.all
+    if current_user.admin? 
+      @branches = Branch.all
+    else
+      @branches = Branch.where(id: current_user.user_detail.branch_id)
+    end
   end
 
   # GET /branches/1 or /branches/1.json

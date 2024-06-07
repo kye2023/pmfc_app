@@ -4,7 +4,7 @@ class Coverage < ApplicationRecord
   belongs_to :member
   belongs_to :group_benefit, optional: true
   has_many :dependent_coverages, dependent: :destroy
-
+  belongs_to :center_name
   validates_presence_of :member_id, :loan_certificate, :effectivity, :term, :grace_period, :status, :loan_coverage
 
   TERMS = [3, 4, 5, 6, 9, 12, 18, 24, 30, 36]
@@ -30,9 +30,9 @@ class Coverage < ApplicationRecord
     end
     
     #GET EXPIRY BASED ON EFFECTIVITY AND TERM
-    self.expiry = effectivity >> term
+    self.expiry = effectivity >> term # Shift (forward) selected date by the no. of terms 
     self.expiry = expiry + grace_period
-
+    #raise "error"
     self.loan_premium = (loan_coverage/1000) * (rate * (term + grace_period))
     self.residency = (effectivity.year * 12 + effectivity.month) - (member.date_membership.year * 12 + member.date_membership.month)
 
@@ -50,7 +50,8 @@ class Coverage < ApplicationRecord
     #self.term = c_aging
 
     if expiry.present? && effectivity.present?
-      ((expiry.to_date - effectivity.to_date) / 31).round
+      # ((expiry.to_date - effectivity.to_date) / 31).round? Month
+      ((expiry - Date.today)).round
     end
     
   end

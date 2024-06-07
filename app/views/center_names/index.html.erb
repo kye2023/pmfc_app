@@ -1,0 +1,43 @@
+<%= content_tag :h1, "List of Center Names" %>
+
+
+<div class="text-start mb-3">
+  <%= link_to new_center_name_path, data: { turbo_frame:"remote_modal" }, class: 'btn btn-primary' do %>
+    New Center Name
+  <% end %>
+</div>
+
+
+  <table class="table table-striped table-bordered table-hover">
+    <thead>
+      <tr>
+      <th>#</th>
+            <th>Description</th>
+            <th>No. of Member(s)</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+      <% @center_names.each do |center_name| %>
+      <tr>
+        <th scope="row"><%= center_name.id %></th>
+        <td>
+          <div class="text-wrap fw-bold">
+            <span class="badge bg-secondary"><%= center_name.branch %></span> <strong><%= center_name.description %></strong>
+          </div>
+        </td>
+        <td>
+          <div class="text-wrap fw-bold">
+            <small><%= center_name.coverages.count %></small>
+          </div>
+        </td>
+        <td>
+          <%= link_to 'View', center_name, class: 'btn btn-secondary btn-sm' %>
+          <%= link_to 'Edit', edit_center_name_path(center_name), data: { turbo_frame:"remote_modal" }, class: 'btn btn-secondary btn-sm' %>
+          <%= link_to "Delete", center_name, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>

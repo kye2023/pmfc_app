@@ -23,18 +23,26 @@
         sw.each do |c| 
             m_loan = c.loan_coverage
             m_prem = c.loan_premium
+            hstatus = c.member.health_declaration
+            cncvg = c.center_name_id
     %>
         <tr>
             <th scope="row"><%= c.id %></th>
             <td class="text-center"><%= c.loan_certificate %></td>
             <td>
-                <%= c.member.get_cmember %> 
-                <% hstatus = c.member.health_declaration %>
+                <%= c.member.get_cmember %>
+                <span class="badge bg-dark"><%= c.coverage_status %></span>
+                <%# hstatus = c.member.health_declaration %>
                 <!--Health declaration status-->
                 <% if !hstatus.nil? && hstatus.size > 3 %>
                     <span class="bi bi-clipboard2-pulse-fill"></span>
                 <% end %>
                 <!--Health declaration status-->
+                <!--Center Name status-->
+                <% if !cncvg.nil? && !c.center_name.id.nil? %>
+                    <span class="badge bg-primary"><%= c.center_name.description %></span>
+                <% end %>
+                <!--Center Name status-->
                 <br>
                 <small><%= to_shortdate(c.member.birth_date) %></small> | <small class="text-primary"> Age: <%= c.age %></small> |
                 <small class="text-muted">Residency: <%= c.residency %></small></td>
@@ -49,7 +57,7 @@
             <td class="text-center"><small><%= to_curr(m_prem) %><% msum_prem+= m_prem %></small></td>
             <% unless @batch.submit? %>
             <td class="text-center">
-                <small>Status: <%= c.status %></small> <br>
+                <!--<small>Status: <%#= c.status %></small> <br>-->
                 <%= link_to '<i class="bi bi-pencil-square"></i>'.html_safe, edit_coverage_path(c), class: "btn btn-secondary btn-sm", data: { turbo_frame: "remote_modal" } %> 
                 <%= link_to '<i class="bi bi-trash"></i>'.html_safe, c, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
             </td>
@@ -100,3 +108,4 @@
         </tr>
     </tfoot>
 </table>
+<%= console %>

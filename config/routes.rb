@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :center_names
   resources :user_details do 
     get :approve_user, on: :member
   end

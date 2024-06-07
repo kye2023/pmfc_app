@@ -13,7 +13,10 @@
       <tr>
         <th>#</th>
         <th>Branch</th>
-        <th></th>
+        <th>
+          <%= current_user.admin? %><br>
+          <%= current_user.user_detail.branch_id %>
+        </th>
       </tr>
     </thead>
 
@@ -29,7 +32,7 @@
               group_plan = branch.branch_premium("gyrt") 
               total_premium = (individual_plan+group_plan)
             %>
-            <small class="text-muted"><%= "Remittance: "+"#{branch.count_branch_id(branch.id)}"+" | Premium: "+"#{to_curr(total_premium)}" %> </small>
+            <small class="text-muted"><%= "Centers: "+"#{branch.center_names.count(:id)}"+" | Remittance: "+"#{branch.count_branch_id(branch.id)}"+" | Premium: "+"#{to_curr(total_premium)}" %> </small>
           </div>
         </td>
         <td>

@@ -25,7 +25,8 @@
         gsum_prem = 0
         gt_prem = 0
         sw.each do |c| 
-            
+            hstatus = c.member.health_declaration
+            cncvg = c.center_name_id
     %>
         <tr>
             <th scope="row"><%= c.id %></th>
@@ -33,12 +34,16 @@
             <td>
                 <%= c.member.get_cmember %> 
                 <span class="badge bg-dark"><%= c.coverage_status %></span>
-                <% hstatus = c.member.health_declaration %>
                 <!--Health declaration status-->
                 <% if !hstatus.nil? && hstatus.size > 3 %>
                     <span class="bi bi-clipboard2-pulse-fill"></span>
                 <% end %>
                 <!--Health declaration status-->
+                <!--Center Name status-->
+                <% if !cncvg.nil? && !c.center_name.id.nil? %>
+                    <span class="badge bg-primary"><%= c.center_name.description %></span>
+                <% end %>
+                <!--Center Name status-->
                 <br>
                 <small><%= to_shortdate(c.member.birth_date) %></small> | <small class="text-primary"><%= c.age %> y/o</small> |
                 <small class="text-muted">Residency: <%= c.residency %></small><br>
