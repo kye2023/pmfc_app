@@ -1,0 +1,35 @@
+<%= turbo_stream.update @target do %>
+    <% if @rtrCoverage.blank? %>   
+    <div class="card">
+        <div class="card-body">No record found...</div>
+    </div> 
+    <% else %>
+    <!--Member-Info Field-->
+    <div class="card">
+        <div class="card-header">Previous Coverage</div>
+        <div class="card-body">
+            <div class="text-wrap fw-light"><i class="bi bi-person-lines-fill"></i> <small><%= @rtrCoverage.member %></small></div>
+            <div class="text-wrap fw-light"><i class="bi bi-receipt-cutoff"></i> <small><%= @rtrCoverage.batch.title %></small></div>
+            <% 
+                efdate = @rtrCoverage.effectivity 
+                exdate = @rtrCoverage.expiry
+            %>
+            <div class="text-wrap fw-light"><i class="bi bi-calendar"></i> <small><%= "#{to_shortdate(efdate)+" - "+to_shortdate(exdate)}" %></small></div>
+            <div class="text-wrap fw-light"><i class="bi bi-calendar3"></i> 
+                <small>
+                  <% cvg_aging = @rtrCoverage.coverage_aging %>
+                  <%= @rtrCoverage.coverage_aging_status(cvg_aging) %>
+                </small>
+            </div>
+        </div>
+    </div>
+    <!--Member-Info Field-->
+    <% end %>
+<% end %>
+<!--<%#= turbo_stream.append @target_premium do %>
+    <div>
+        <div class="card">
+            <div class="card-body">Premium & Benefits</div>
+        </div>
+    </div>    
+<%# end %>-->

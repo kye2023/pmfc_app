@@ -11,7 +11,7 @@
         <% if user_signed_in? %> 
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item"><a class="nav-link active" aria-current="page" href="/">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="<%= batches_url %>">Batch</a></li>
+          <li class="nav-item"><a class="nav-link" href="<%= batches_url %>">Loans</a></li>
             <li class="nav-item"><a class="nav-link" href="<%= members_url %>">Members</a></li>
           <% if current_user.admin? %>
             <li class="nav-item dropdown">

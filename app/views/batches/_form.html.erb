@@ -6,7 +6,15 @@
   <div class="form-inputs">
     <%= f.input :title %>
     <%= f.input :description %>
-    <%= f.association :branch %>
+
+    <%# current_user.admin? %><br>
+    <%# current_user.user_detail.branch_id %>
+
+    <% if current_user.admin? %>
+      <%= f.association :branch %>
+    <% else %>
+      <%= f.association :branch, collection: Branch.where(id: current_user.user_detail.branch_id), selected: current_user.user_detail.branch_id, wrapper_html: { hidden: true } %>
+    <% end %>
   </div>
 
   <div class="form-actions">

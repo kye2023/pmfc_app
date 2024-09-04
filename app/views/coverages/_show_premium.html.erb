@@ -1,0 +1,23 @@
+<% if sCvg.blank? %>   
+  <div class="card">
+    <div class="card-header">Premium & Benefits</div>
+    <div class="card-body text-center">No record found...</div>
+  </div> 
+<% else %>
+<!--Member-Info Field-->
+  <div class="card">
+      <div class="card-header">Premium & Benefits</div>
+      <div class="card-body">
+        <div class="text-wrap fw-light"><i class="bi bi-wallet"></i> <small>Loan Premium : &#8369; <%= sCvg.loan_premium %></small></div>
+        <hr>
+        <div class="text-wrap fw-light"><i class="bi bi-wallet"></i> <small>Group Premium : &#8369; <%= sCvg.group_premium %></small></div>
+        <hr>
+        <% sgb = GroupBenefit.find(sCvg.group_benefit_id) %>
+        <div class="text-wrap fw-light"><i class="bi bi-card-checklist"></i> <small><%= sgb.member_type %></small></div>
+        <div class="text-wrap fw-light"><i class="bi bi-card-checklist"></i> <small><%= sgb.life %></small></div>
+        <div class="text-wrap fw-light"><i class="bi bi-card-checklist"></i> <small><%= sgb.add %></small></div>
+        <div class="text-wrap fw-light"><i class="bi bi-card-checklist"></i> <small><%= sgb.burial %></small></div>
+      </div>
+  </div>
+<!--Member-Info Field-->
+<% end %>

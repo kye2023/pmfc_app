@@ -32,18 +32,19 @@ class CoveragesController < ApplicationController
   end
 
   def selected
-    # @target = params[:target]
     # @members = Member.where(id: params[:id])
-    # respond_to do |format|
-    # format.turbo_stream
-    # end
+    @target = params[:categoryId]
+    respond_to do |format|
+    format.turbo_stream
+    # format.json { render json: @coverage.errors, status: :unprocessable_entity }
+    end
   end
 
   # POST /coverages or /coverages.json
   def create
     @batch = Batch.find(params[:b])
     @coverage = @batch.coverages.build(coverage_params)
-    
+    # raise "error"
     if @coverage.valid?
       @coverage.compute_age
       respond_to do |format|
@@ -112,7 +113,7 @@ class CoveragesController < ApplicationController
       end
     end
   end
-
+  
   # DELETE /coverages/1 or /coverages/1.json
   def destroy
     @coverage.destroy
@@ -120,6 +121,91 @@ class CoveragesController < ApplicationController
       format.html { redirect_to batch_url(@batch, qry: 0, pln: 0, pth: "b1"), notice: "Coverage was successfully destroyed." }
       format.json { head :no_content }
     end
+  end
+
+  def check_residency
+    @mmbrID = params[:Id]
+    
+    @check_coverage = Coverage.where(member_id: @mmbrID)
+    
+    if @check_coverage.empty? == true
+        render json: {
+          mmbrID: @mmbrID,
+          residency: 0,
+          status: 0,
+          count_id: 0,
+          coverage: 0,
+          redirecto: member_path(@mmbrID)
+        }
+    else
+      @count_coverage = @check_coverage.where(member_id: @mmbrID).count
+      @sum_residency = @check_coverage.sum(:term)
+    
+      # Sort record base on terms and retrieve the latest record (1 record)
+      @retrieve_coverage = @check_coverage.order(:effectivity,:expiry).last
+      @cov_aging = @retrieve_coverage.coverage_aging
+
+      @cov_status = @retrieve_coverage.status
+      @member_link = member_path(@mmbrID)
+
+      render json: { 
+        mmbrID: @mmbrID, 
+        residency: @sum_residency, 
+        status: @cov_status, 
+        count_id: @count_coverage, 
+        coverage: @cov_aging, 
+        redirecto: @member_link 
+      }
+       
+    end
+
+    # respond_to do |format|
+    #   format.json { 
+    #     render json: { 
+    #       mmbrID: @mmbrID, 
+    #       residency: @sum_residency, 
+    #       status: @cov_status, 
+    #       count_id: @count_coverage, 
+    #       coverage: @cov_aging, 
+    #       redirecto: @member_link 
+    #     } 
+    #   }
+    # end
+
+  end
+
+  def coverage_history
+    
+    @target = params[:target]
+    @chkCoverage = Coverage.where(member_id: params[:Id])
+    # raise "errors"
+
+    if @chkCoverage.empty? == true
+      render turbo_stream: [ turbo_stream.update(@target, partial: "coverages/show_prev_loan", locals: { rCvg: nil }) ]
+    else
+      @rtrCoverage = @chkCoverage.order(:effectivity, :expiry).last
+      # format.turbo_stream show output to "coverage_history.turbo_stream.erb"
+      render turbo_stream: [ turbo_stream.update(@target, partial: "coverages/show_prev_loan", locals: { rCvg: @rtrCoverage }) ]
+    end
+
+  end
+
+  def coverage_premium_benefits
+    @ptarget = params[:ptarget]
+    @pId = params[:Id]
+    @eDate = params[:efdate]
+    @pterm = params[:term]
+    @rsdncy = params[:residency]
+    @pgp = params[:gperiod]
+    @ploans = params[:loans]
+
+    # @getMember = Member.find(@pId)
+    @coveragePremiumBenefits = Coverage.new(member_id: @pId, effectivity: @eDate, term: @pterm, residency: @rsdncy, grace_period: @pgp, loan_coverage: @ploans)
+    @coveragePremiumBenefits.compute_age
+    # raise "error"
+
+    render turbo_stream: [ turbo_stream.update(@ptarget, partial: "coverages/show_premium", locals: { sCvg: @coveragePremiumBenefits }) ]
+
   end
 
   private

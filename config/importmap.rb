@@ -11,3 +11,4 @@ pin "@nathanvda/cocoon", to: "https://ga.jspm.io/npm:@nathanvda/cocoon@1.2.14/co
 pin "flatpickr", to: "https://ga.jspm.io/npm:flatpickr@4.6.13/dist/esm/index.js"
 pin "slim-select", to: "https://ga.jspm.io/npm:slim-select@2.6.0/dist/slimselect.es.js"
 pin "tom-select", to: "https://ga.jspm.io/npm:tom-select@2.2.3/dist/js/tom-select.complete.js"
+pin "sweetalert2", to: "https://ga.jspm.io/npm:sweetalert2@11.12.4/dist/sweetalert2.all.js"

@@ -1,5 +1,5 @@
 class Dependent < ApplicationRecord
-  validates_presence_of :last_name, :first_name, :middle_name, :birth_date
+  validates_presence_of :last_name, :first_name, :middle_name, :birth_date, :relationship, :civil_status, :gender
   belongs_to :member
   has_one :dependent_coverage
 
@@ -54,11 +54,13 @@ class Dependent < ApplicationRecord
   def is_dep_age_valid
         
     age = ((Date.today - self.birth_date.to_date) / 365).round
-    rel = self.relationship    
+    rel = self.relationship
 
-    if ["spouse", "parent"].include?(rel) && (18..65).include?(age)
+    #raise "error"
+    
+    if ["spouse", "parent"].include?(rel.downcase) && (18..65).include?(age)
       return true
-    elsif ["child", "sibling"].include?(rel) && (3..21).include?(age)
+    elsif ["child", "sibling"].include?(rel.downcase) && (3..21).include?(age)
       return true
     else
       return false

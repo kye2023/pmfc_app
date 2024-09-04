@@ -15,15 +15,22 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :coverages
+  resources :coverages do
+    get :selected, on: :member
+    get :check_residency
+    get :coverage_history
+    get :coverage_premium_benefits
+  end
   
   resources :dependents do
+    get :age_validation
     collection do
       post :import
     end
   end
 
   resources :batches do
+    get :unlisted_preview, on: :member
     get :batch_submit, on: :member
     get :batch_download, on: :member
     get :batch_preview, on: :member
@@ -40,9 +47,9 @@ Rails.application.routes.draw do
   resources :benefits
   resources :posts
 
-  resources :coverages do
-    get :selected, on: :member
-  end
+  # resources :coverages do
+  #   get :selected, on: :member
+  # end
 
   #get 'pages/home'
   #get 'pages/about'

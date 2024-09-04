@@ -128,7 +128,41 @@ class BatchesController < ApplicationController
     batch_id = params[:p]
     import_service = ImportService.new(:batch, params[:file], batch_id)
     import_message = import_service.import
-    redirect_to batches_path, notice: import_message
+    # redirect_to batches_path, notice: import_message
+    if import_message.present? && import_message == "No file uploaded"
+      flash[:notice] = "No file uploaded"
+      redirect_to batches_path
+    else
+      scounter = 0
+      status_names = import_message.map do |r|
+        lname = r["LASTNAME"].upcase
+        fname = r["FIRSTNAME"].upcase
+        mname = r["MI"].upcase
+        if r["STATUS"] == "Unlisted"
+          scounter+=1
+          scounter.to_s+". "+lname+", "+fname+" "+mname+" - "+r["STATUS"]
+        end
+      end.compact 
+
+      status_count = import_message.group_by { |message| message["STATUS"] }.map { |status, messages| [status, messages.size] }.to_h
+      
+      # raise "errors"
+
+      flash_existing = status_count["Existing"]
+      flash_uploaded = status_count["Uploaded"]
+      flash_unlisted = status_count["Unlisted"]
+
+      flash_names = status_names.map { |status_names| "#{status_names}<br>" }.join
+    
+      flash[:notice] = "Import successful. <br><br> Existing :"+flash_existing.to_s+"<br> Uploaded :"+flash_uploaded.to_s+"<br> Unlisted :"+flash_unlisted.to_s+"<br>"
+      if flash_unlisted > 0
+        flash[:notice] += "Please enroll the following member(s) :<br>"
+        # flash[:notice] += flash_names
+        flash[:notice] += "<br>#{view_context.link_to('View Unlisted', unlisted_preview_batch_path(batch_id, unlisted: flash_names), data: {turbo_frame: "remote_modal"})}"
+      end
+      redirect_to batches_path
+    end
+    
   end
 
   def import_coverages
@@ -141,36 +175,36 @@ class BatchesController < ApplicationController
   def batch_download
    # require 'prawn/manual_builder'
 
-    Prawn::ManualBuilder::Chapter.new do
-      title 'Print Scaling'
+    # Prawn::ManualBuilder::Chapter.new do
+    #   title 'Print Scaling'
 
-      text do
-        prose <<~TEXT
-          (Optional; PDF 1.6) The page scaling option to be selected when a print
-          dialog is displayed for this document.  Valid values are
-          <code>None</code>, which indicates that the print dialog should reflect
-          no page scaling, and <code>AppDefault</code>, which indicates that
-          applications should use the current print scaling.  If this entry has an
-          unrecognized value, applications should use the current print scaling.
-          Default value: <code>AppDefault</code>.
+    #   text do
+    #     prose <<~TEXT
+    #       (Optional; PDF 1.6) The page scaling option to be selected when a print
+    #       dialog is displayed for this document.  Valid values are
+    #       <code>None</code>, which indicates that the print dialog should reflect
+    #       no page scaling, and <code>AppDefault</code>, which indicates that
+    #       applications should use the current print scaling.  If this entry has an
+    #       unrecognized value, applications should use the current print scaling.
+    #       Default value: <code>AppDefault</code>.
 
-          Note: If the print dialog is suppressed and its parameters are provided
-          directly by the application, the value of this entry should still be
-          used.
-        TEXT
-      end
+    #       Note: If the print dialog is suppressed and its parameters are provided
+    #       directly by the application, the value of this entry should still be
+    #       used.
+    #     TEXT
+    #   end
 
-      example eval: false, standalone: true do
-        Prawn::Document.generate(
-          'example.pdf',
-          page_layout: :landscape,
-          print_scaling: :none
-        ) do
-          text 'When you print this document, the scale to fit in print preview '\
-            'should be disabled by default.'
-        end
-      end
-    end
+    #   example eval: false, standalone: true do
+    #     Prawn::Document.generate(
+    #       'example.pdf',
+    #       page_layout: :landscape,
+    #       print_scaling: :none
+    #     ) do
+    #       text 'When you print this document, the scale to fit in print preview '\
+    #         'should be disabled by default.'
+    #     end
+    #   end
+    # end
 
   end
 

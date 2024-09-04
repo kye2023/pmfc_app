@@ -46,7 +46,11 @@
         </tr>
       </thead>
       <tbody>
-        <% @members.each do |member| %>
+        <% 
+        if @members.present?
+          @members.each do |member| 
+        
+        %>
         <tr class="table-secondary" id="members">
           <th><%= member.id %></th>
           <td>
@@ -68,12 +72,23 @@
             <div class="text-wrap fw-bold"><strong><%= member.get_cmember.upcase %></strong></div>
             <% end %>
             <div class="text-wrap fw-light">
-              <small> Birth Date: <%= to_shortdate(member.birth_date) %> | Membership: <%= to_shortdate(member.date_membership) %></small>
+              <!--<small> Birth Date: <%# to_shortdate(member.birth_date) %> | Membership: <%# to_shortdate(member.date_membership) %></small>-->
+              <small>Coverage availed: <%= member.coverages.count %> | Residency: <%= member.coverages.sum(:term) %></small>
             </div>
           </td>
           <td>
-            <% member.coverages.each do |mcb| %>
-              <div class="text-wrap fw-light"><small><%= mcb.batch.title %></small></div>
+            <%# member.coverages.each do |mcb| %>
+            <% member.coverages.order(created_at: :desc).limit(1).each do |mcb| %>
+              <div class="text-wrap fw-light"><i class="bi bi-receipt-cutoff"></i> <small><%= mcb.batch.title %></small></div>
+              <div class="text-wrap fw-light"><i class="bi bi-calendar"></i> 
+                <small><%=  "#{to_shortdate(mcb.effectivity)+" - "+to_shortdate(mcb.expiry)}" %></small>
+              </div>
+              <div class="text-wrap fw-light"><i class="bi bi-calendar3"></i> 
+                <small>
+                  <% cvg_aging = mcb.coverage_aging %>
+                  <%= mcb.coverage_aging_status(cvg_aging) %>
+                </small>
+              </div>
             <% end %>
           </td>
           <td>
@@ -102,6 +117,14 @@
           </td>
         </tr>
         <% end %>
+      <% end %>
+
+      <% else %>
+
+        <tr>
+          <td colspan="4">No record(s) found...</td>
+        </tr>
+
       <% end %>
       </tbody>
     </table>

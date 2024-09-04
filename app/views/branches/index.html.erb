@@ -1,12 +1,12 @@
 <%= content_tag :h1, "List of Branches" %>
 
-
+<% if current_user.admin? %>
 <div class="text-end mb-3">
   <%= link_to new_branch_path, class: 'btn btn-primary' do %>
     New Branch
   <% end %>
 </div>
-
+<% end %>
 
   <table class="table table-striped table-bordered table-hover">
     <thead>
@@ -14,8 +14,10 @@
         <th>#</th>
         <th>Branch</th>
         <th>
-          <%= current_user.admin? %><br>
-          <%= current_user.user_detail.branch_id %>
+          Action
+          <%# current_user.admin? %>
+          <%# current_user.user_detail.branch_id %>
+          <%# current_user.user_detail.branch.name %>
         </th>
       </tr>
     </thead>
