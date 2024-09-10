@@ -1,11 +1,4 @@
-
-<%# <div class="card">
-  <h5 class="card-header">New coverage</h5>
-  <div class="card-body"> %>
-    <%#= render "form", coverage: @coverage %>
-  <%# </div> %>
-<%# </div> %>
-
+<%# render "remote_modal", title: "New Loan"+"(#{current_user.user_detail.last_name}"+" | #{current_user.email})" do %>
 <%= render "remote_modal", title: "New Loan" do %>
 
   <%= render "form", url: coverages_path(b: @batch), meth: 'post' %>

@@ -5,8 +5,8 @@
         <strong class="me-auto"><%= flash_type == 'notice' ? 'Notice' : 'Alert' %></strong>
         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
       </div>
-      <div class="toast-body text-center">
-            <%= message %>
+      <div class="toast-body">
+            <%= message.html_safe %>
       </div>
     </div>
   </div>

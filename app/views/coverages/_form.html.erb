@@ -1,62 +1,88 @@
-<%#= simple_form_for(coverage, data: { controller: "flatpickr" }) do |f| %>
-<div class="row">
-  <div class="col-lg-3"><% bid = params[:b] %></div>
-<!--Upload Member-->
-  <div class="col-lg-6">
-  <%= form_with url: import_batches_path(id: bid), method: :post do |form| %>
-  <%= form.label :file, "For coverage enrollment upload your csv file.", class: "form-text" %>
-    <div class="d-flex gap-3">
-      <%= form.file_field :file, class: "form-control", style: "width: 80%" %>
-      <%= submit_tag 'Upload', class: "btn btn-primary btn-sm"%>
-    </div>
-  <% end %>
-  </div>
-<!--Upload Member-->
-  <div class="col-lg-3"></div>
-</div>
-
-<hr>
-
 <%= simple_form_for(@coverage, url: url, method: meth) do |f| %>
-  <%= f.error_notification %>
-  <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+  <!--<p style="color: green"><%# notice %></p>-->
+<div class="container" data-controller="select" data-select-url="<%= coverages_path() %>">
+  <div class="row align-items-start">
+    <div class="col-lg-6">
+    <%= f.error_notification %>
+    <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+    <!--Form Field-->
+    <div class="form-inputs">
+      
+      <!--Select-M-->
+      <% if current_user.admin? %>
+        <%= f.association :member, label: "Member", input_html: { data: { controller: 'ts--select', action: 'change->select#member_select', select_target: "coverageMember" } } %>
+      <% else %>
+        <%= f.association :member, collection: Member.where(branch_id: current_user.user_detail.branch_id), label: "Member", input_html: { data: { controller: 'ts--select', action: 'change->select#member_select', select_target: "coverageMember" } } %>
+      <% end %>
+      <!--Select-M-->
 
-  <div class="form-inputs">
-    <%#= f.association :member, label_method: :get_cmember, {}, {data: { controller: "select" }} %>
+      <div>
+
+        <!--Select-CN-->
+        <% if current_user.admin? %>
+          <%= f.association :center_name, collection: CenterName.all, label: "Center Name", label_method: :description, input_html: { data: { controller: 'ts--select' } }  %>
+        <% else %>
+          <%= f.association :center_name, collection: CenterName.where(branch_id: current_user.user_detail.branch_id), label: "Center Name", label_method: :description, input_html: { data: { controller: 'ts--select' } }  %>
+        <% end %>
+        <!--Select-CN-->
+
+        <div class="row">
+          <%= f.input :loan_certificate, wrapper_html: { class: "col-md-6" }  %>
+          <%= f.input :group_certificate, wrapper_html: { class: "col-md-6" }  %>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <%= f.label :effectivity %>
+            <%= f.date_field :effectivity, data: { select_target: "cvgEdate" } %>
+          </div>
+          <div class="col-md-6">
+            <%#= f.label :expiry %>
+            <%#= f.date_field :expiry %>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <%= f.input :residency, wrapper_html: { class: "col-md-3", hidden: true }, input_html: { data: { select_target: "residencyInput" }  }  %>
+          <%= f.input :status, wrapper_html: { class: "col-md-3" }, collection: [['New','N'],['Renewal','R']], input_html: { data: { select_target: "statusInput" }  }, include_blank: true %>
+          <%= f.input :term, wrapper_html: { class: "col-md-3"}, collection: Coverage::TERMS, input_html: { data: { select_target: "termInput" }  } %>
+          <%= f.input :grace_period, wrapper_html: { class: "col-md-3" }, input_html: { data: { select_target: "gpInput" }  }  %>
+          <%= f.input :loan_coverage, wrapper_html: { class: "col-md-12"}, input_html: { data: { action: 'change->select#show_benefits' }  } %>
+        </div>
+      </div>
+
+      <% @coverage.id? %>
+      <% if @coverage.id? == true %>
+      <% hstatus = @coverage.member.health_declaration %>
+        <% if !hstatus.nil? && hstatus.size > 3 %>
+      <div class="col-md-6"><%= f.input :substandard_rate %></div>
+        <% end %>
+      <% end %>
+      
+      <!--Member-Container-->
+
+      <div class="form-actions">
+        <%= f.button :submit, class: "btn btn-primary memberBtn" %>
+        <%# console %>
+      </div>
+
+    </div>
+    <!--Form Field-->
+    </div>
+    <div class="col-lg-6">
+        <div id="cvgHistory" data-select-target="coverageHistory">
+          <div class="card">
+            <div><%= render 'coverages/show_prev_loan', rCvg: nil %></div>
+          </div>
+        </div>
+        <br>
+        <div id="cvgPremium" data-select-target="coveragePremium">
+           <div class="card">
+            <div><%= render 'coverages/show_premium', sCvg: nil %></div>
+          </div>
+        </div>
+    </div>
     
-    <!--Select-->
-    <% if current_user.admin? %>
-      <%= f.association :member, label: "Member", input_html: { data: { controller: 'ts--select' } } %>
-    <% else %>
-      <%= f.association :member, collection: Member.where(branch_id: current_user.user_detail.branch_id), label: "Member", input_html: { data: { controller: 'ts--select' } } %>
-    <% end %>
-    <!--Select-->
+  </div>  
+</div>  
 
-      <div class="row">
-        <%= f.input :loan_certificate, wrapper_html: { class: "col-md-6" }  %>
-        <%= f.input :group_certificate, wrapper_html: { class: "col-md-6" }  %>
-      </div>
-      <div class="row">
-        <div class="col-md-4">
-          <%= f.label :effectivity %>
-          <%= f.date_field :effectivity %>
-        </div>
-        <div class="col-md-4">
-          <%#= f.label :expiry %>
-          <%#= f.date_field :expiry %>
-        </div>
-      </div>
-      <div class="row">
-        <%#= f.input :term, collection: [3, 4, 6, 9, 12], wrapper_html: { class: "col-md-3"} %>
-        <%= f.input :term, collection: Coverage::TERMS, wrapper_html: { class: "col-md-3"} %>
-        <%= f.input :grace_period, wrapper_html: { class: "col-md-3" }  %>
-        <%= f.input :status, collection: [['New','N'],['Renewal','R']], include_blank: true, wrapper_html: { class: "col-md-3" } %>
-        <%= f.input :loan_coverage, wrapper_html: { class: "col-md-3" } %>
-      </div>
-  </div>
-
-  <div class="form-actions">
-    <%= f.button :submit, class: "btn btn-primary" %>
-    <%# console %>
-  </div>
 <% end %>

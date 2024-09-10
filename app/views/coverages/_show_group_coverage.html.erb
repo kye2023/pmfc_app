@@ -18,34 +18,71 @@
         </tr>
     </thead>
     <tbody>
-    <% sw.each do |c| %>
+    <% 
+        gsum_life = 0
+        gdsum_life = 0
+        gt_life = 0
+        gsum_prem = 0
+        gt_prem = 0
+        sw.each do |c| 
+            hstatus = c.member.health_declaration
+            cncvg = c.center_name_id
+    %>
         <tr>
             <th scope="row"><%= c.id %></th>
             <td class="text-center"><%= c.group_certificate %></td>
-            <td><%= c.member.get_cmember %> <span class="badge bg-dark"><%= c.coverage_status %></span> <br>
+            <td>
+                <%= c.member.get_cmember %> 
+                <span class="badge bg-dark"><%= c.coverage_status %></span>
+                <!--Health declaration status-->
+                <% if !hstatus.nil? && hstatus.size > 3 %>
+                    <span class="bi bi-clipboard2-pulse-fill"></span>
+                <% end %>
+                <!--Health declaration status-->
+                <!--Center Name status-->
+                <% if !cncvg.nil? && !c.center_name.id.nil? %>
+                    <span class="badge bg-primary"><%= c.center_name.description %></span>
+                <% end %>
+                <!--Center Name status-->
+                <br>
                 <small><%= to_shortdate(c.member.birth_date) %></small> | <small class="text-primary"><%= c.age %> y/o</small> |
                 <small class="text-muted">Residency: <%= c.residency %></small><br>
                 <small>
                     <ul>
                     <% c.dependent_coverages.each do |d| %>
-                        <li> <%= d.dependent %> - <%= d.dependent.relationship %> <small>(<%= d.dependent.get_age(c.effectivity)  %> y/o)</small> </li>
+                        <li> 
+                            <%= d.dependent %> - <%= d.dependent.relationship %> 
+                            <small>(<%= d.dependent.get_age(c.effectivity)  %> y/o)</small> <br>
+                            <% gdsum_life = d.group_benefit.life %>
+                        </li>
                     <% end %>
                     </ul>
                 </small>
             </td>
-            <td class="text-end"><small>L: <%= to_curr(c.group_benefit.life) %> <br> AD: <%= to_curr(c.group_benefit.add) %> <br> B: <%= to_curr(c.group_benefit.burial) %></small></td>
+            <td class="text-end">
+                <% gsum_life += (c.group_benefit.life + gdsum_life) %>
+                <small>
+                    Principal SI/L: <%= to_curr(c.group_benefit.life) %> <br> 
+                    <!--AD: <%# to_curr(c.group_benefit.add) %> <br> 
+                    B: <%# to_curr(c.group_benefit.burial) %> <br>-->
+                    Dependent SI/L: <%= to_curr(gdsum_life) %> <br>
+                    <%= content_tag :strong, "Total SI/L: " +  "#{to_curr(c.group_benefit.life + gdsum_life)}" %> <br>
+                </small>
+            </td>
             <!--<td class="text-center"><%# to_curr(c.loan_coverage) %></td>-->
             <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_shortdate(c.effectivity) %></small></div></td>
             <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_shortdate(c.expiry) %></small></div></td>
             <td class="text-center"><div class="text-wrap fw-lighter"><%= c.term %> <br> <%= content_tag :small, "(GP:" + "#{c.grace_period})" unless c.grace_period.nil? %> </td>
             <td class="text-end">
                 <% dependent_prem = c.dependent_coverages.sum(:premium) %>
-                <%= content_tag :small, "Loan Premium: " +  "#{to_curr(c.loan_premium)}" %> <br>
+                <!--<%# content_tag :small, "Principal Premium: " +  "#{to_curr(c.loan_premium)}" %> <br>-->
                 <%= content_tag :small, "Group Premium: " +  "#{to_curr(c.group_premium)}" %> <br>
                 <% if c.dependent_coverages.count > 0 %>
                 <%= content_tag :small, "Dependent Premium: " +  "#{to_curr(dependent_prem)}" %> <br>
                 <% end %>
-                <%= content_tag :strong, "Total Premium: " +  "#{to_curr(dependent_prem + c.loan_premium + c.group_premium)}" %> <br>
+                <!--<%# content_tag :strong, "Total Premium: " +  "#{to_curr(dependent_prem + c.loan_premium + c.group_premium)}" %> <br>-->
+                <% gsum_prem += (dependent_prem + c.group_premium) %>
+                <%= content_tag :strong, "Total Premium: " +  "#{to_curr(dependent_prem + c.group_premium)}" %> <br>
             </td>
             <% unless @batch.submit? %>
             <td class="text-center">
@@ -56,6 +93,29 @@
             <% end %>
         <!-- td class="text-end"><%= c.dependent_coverages.sum(:premium) %></!-->
         </tr>
-    <% end %>
+    <% 
+        end 
+    %>
     </tbody>
+    <tfoot>
+        <tr>
+            <td class="text-end" colspan="3">Grand Total (L) :</td>
+            <td class="text-center">
+                <div class="text-wrap fw-lighter">
+                   <% gt_life = gsum_life %>
+                    <small><%= to_curr(gt_life) %></small>
+                </div>
+            </td>
+            <td class="text-end" colspan="3">Total Gross Premuim Due :</td>
+            <td class="text-center">
+                <div class="text-wrap fw-lighter">
+                   <% gt_prem = gsum_prem %>
+                    <small><%= to_curr(gt_prem) %></small>
+                </div>
+            </td>
+            <% unless @batch.submit? %>
+            <td></td>
+            <% end %>
+        </tr>
+    </tfoot>
 </table>

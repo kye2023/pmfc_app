@@ -14,42 +14,49 @@
         <div class="text-wrap fw-lighter">Relation: <strong>(<%= dependent.relationship.upcase %>)</strong></div>
       </div>
     </div>
+    
+    <% if dependent.dependent_coverage.present? %>
     <div class="col-lg-6">
       <div class="card-body">
-      <table class="table table-striped table-bordered table-hover table-sm">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Coverage</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th width="5%"><%= dependent.dependent_coverage.id %></th>
-            <td>
-              <% dependent_prem =  dependent.dependent_coverage.premium %>
-              <div class="text-wrap fw-light text-muted">
-                <span class="badge bg-muted text-dark">
-                   <small>
-                    LIFE: <%= to_curr(dependent.dependent_coverage.group_benefit.life) %> <br> 
-                    ADD: <%= to_curr(dependent.dependent_coverage.group_benefit.add) %> <br> 
-                    BURIAL: <%= to_curr(dependent.dependent_coverage.group_benefit.burial) %>
-                  </small>
-                </span> 
-              </div>
-              <div class="text-wrap fw-light text-muted">
-                <span class="badge bg-muted text-dark">
-                  <small>Premium: <%= to_curr(dependent_prem) %></small>
-                </span> 
-              </div>
-            </td>
-            <td></td>
-          </tr>
-        </tbody>
-      </table>
+        <table class="table table-striped table-bordered table-hover table-sm">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Coverage</th>
+              <th>Premium</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th width="5%"><%= dependent.dependent_coverage.id %></th>
+              <td>
+                <% dependent_prem =  dependent.dependent_coverage.premium %>
+                <div class="text-wrap fw-light text-muted">
+                  <span class="badge bg-muted text-dark">
+                    <small>
+                      LIFE: &#8369; <%= to_curr(dependent.dependent_coverage.group_benefit.life) %> <br> 
+                      ADD: &#8369; <%= to_curr(dependent.dependent_coverage.group_benefit.add) %> <br> 
+                      BURIAL: &#8369; <%= to_curr(dependent.dependent_coverage.group_benefit.burial) %>
+                    </small>
+                  </span> 
+                </div>
+              </td>
+              <td>
+                <div class="text-wrap fw-light text-muted">
+                  <span class="badge bg-muted text-dark">
+                    <small>&#8369; <%= to_curr(dependent_prem) %></small>
+                  </span> 
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
-      
+    <% else %>
+     <h3 class="text-truncate">No record(s) found...</h3>
+    <% end %>
+   
   </div>
 </div>
+  <%# console %>

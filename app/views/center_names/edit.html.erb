@@ -1,0 +1,12 @@
+<!--<div class="card">
+  <h5 class="card-header">Edit center name</h5>
+  <div class="card-body">
+    <%#= render "form", center_name: @center_name %>
+  </div>
+</div>-->
+
+<%= render "remote_modal", title: "Edit Center Name" do %>
+
+  <%= render "form", item: @item %>
+
+<% end %>

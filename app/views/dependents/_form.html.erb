@@ -1,40 +1,29 @@
 
-<%# simple_form_for(@dependent, data: { controller: "flatpickr" }) do |f| %>
-
 <%= simple_form_for(@dependent, url: url, method: meth) do |f| %>
   <%= f.error_notification %>
   <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
-
-  <div class="form-inputs">
-    <%# f.association :member, label_method: :get_cmember, include_blank: true %>
+  
+  <div class="form-inputs" data-controller="select" data-select-url="<%= dependents_path() %>">
     <div class="row">
-      <%= f.input :last_name, wrapper_html: { class: "col-md-4" } %>
-      <%= f.input :first_name, wrapper_html: { class: "col-md-4" } %>
-      <%= f.input :middle_name, wrapper_html: { class: "col-md-4" } %>
-      <div>
-        <%= f.label :birth_date %>
-        <%= f.date_field :birth_date %>
-      </div>
-      <%= f.input :relationship, collection: ['spouse', 'child', 'parent', 'sibling'], wrapper_html: { class: "col-md-4" } %>
-      <%= f.input :civil_status , collection: ['Single', 'Married', 'Widowed', 'Divorced'], include_blank: true, wrapper_html: { class: "col-md-4" } %>
-      <%= f.input :gender , collection: [['Male','M'],['Female','F']], include_blank: true, wrapper_html: { class: "col-md-4" } %>
-      <%= f.input :mobile_no, wrapper_html: { class: "col-md-6" } %>
-      <%= f.input :email, wrapper_html: { class: "col-md-6" } %>
-      <%#= f.input :middle_name, wrapper_html: { class: "col-md-3" } %>
-      <%#= f.input :last_name, wrapper_html: { class: "col-md-3" } %>
-      <%#= f.input :suffix, wrapper_html: { class: "col-md-2" } %>
-    <%#= f.label :birth_date %>
-    <%#= f.date_field :birth_date %>
-    <%#= f.input :relationship, collection: ['spouse', 'child', 'parent', 'sibling'], wrapper_html: { class: "col-md-4" } %>
-    <%#= f.input :civil_status , collection: ['Single', 'Married', 'Widowed', 'Divorced'], include_blank: true, wrapper_html: { class: "col-md-4" } %>
-    <%#= f.input :gender , collection: [['Male','M'],['Female','F']], include_blank: true, wrapper_html: { class: "col-md-4" } %>
-    <%#= f.input :mobile_no, wrapper_html: { class: "col-md-6" } %>
-    <%#= f.input :email, wrapper_html: { class: "col-md-6" } %>
+        <%= f.input :member_id, wrapper_html: { class: "col-md-4", hidden: "true" }, input_html: { data: { select_target: "memberID" } } %>
+        <%= f.input :last_name, wrapper_html: { class: "col-md-4" }, input_html: { data: { select_target: "lnameInput" }  } %>
+        <%= f.input :first_name, wrapper_html: { class: "col-md-4" } %>
+        <%= f.input :middle_name, wrapper_html: { class: "col-md-4" } %>
+        <div>
+          <%= f.label :birth_date %>
+          <%= f.date_field :birth_date, class: "ddate_pick", input_html: { data: { select_target: "dateInput" }  } %>
+        </div>
+        <%= f.input :relationship, collection: ['Spouse', 'Child', 'Parent', 'Sibling'], wrapper_html: { class: "col-md-4", data: { action: 'change->select#relation_select' } } %>
+        <%= f.input :civil_status , collection: ['Single', 'Married', 'Widowed', 'Divorced'], include_blank: true, wrapper_html: { class: "col-md-4" } %>
+        <%= f.input :gender , collection: [['Male','M'],['Female','F']], include_blank: true, wrapper_html: { class: "col-md-4" } %>
+        <%= f.input :mobile_no, wrapper_html: { class: "col-md-6" } %>
+        <%= f.input :email, wrapper_html: { class: "col-md-6" } %>
     </div>
-  </div>
 
-  <div class="form-actions">
-    <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, @member, class: "btn btn-secondary" %>
-    <%= f.button :submit, class: "btn btn-primary" %>
+    <div class="form-actions">
+      <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, @member, class: "btn btn-secondary" %>
+      <%= f.button :submit, class: "btn btn-primary" %>
+    </div>
+    
   </div>
 <% end %>

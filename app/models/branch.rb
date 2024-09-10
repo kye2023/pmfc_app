@@ -1,7 +1,7 @@
 class Branch < ApplicationRecord
     validates_presence_of :name
     has_many :batches
-
+    has_many :center_names
     def to_s 
         name
     end

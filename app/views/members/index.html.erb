@@ -46,7 +46,11 @@
         </tr>
       </thead>
       <tbody>
-        <% @members.each do |member| %>
+        <% 
+        if @members.present?
+          @members.each do |member| 
+        
+        %>
         <tr class="table-secondary" id="members">
           <th><%= member.id %></th>
           <td>
@@ -58,26 +62,45 @@
             <div class="text-wrap fw-bold">
               <strong><%= member.get_cmember.upcase %></strong>
               <span class="badge bg-secondary">Principal</span>
+              <!--Health declaration status-->
               <% if !hstatus.nil? && hstatus.size > 3 %>
                 <span class="bi bi-clipboard2-pulse-fill"></span>
               <% end %>
+              <!--Health declaration status-->
             </div>
             <% else %>
             <div class="text-wrap fw-bold"><strong><%= member.get_cmember.upcase %></strong></div>
             <% end %>
             <div class="text-wrap fw-light">
-              <small> Birth Date: <%= to_shortdate(member.birth_date) %> | Membership: <%= to_shortdate(member.date_membership) %></small>
+              <!--<small> Birth Date: <%# to_shortdate(member.birth_date) %> | Membership: <%# to_shortdate(member.date_membership) %></small>-->
+              <small>Coverage availed: <%= member.coverages.count %> | Residency: <%= member.coverages.sum(:term) %></small>
             </div>
           </td>
           <td>
-            <% member.coverages.each do |mcb| %>
-              <div class="text-wrap fw-light"><small><%= mcb.batch.title %></small></div>
+            <%# member.coverages.each do |mcb| %>
+            <% member.coverages.order(created_at: :desc).limit(1).each do |mcb| %>
+              <div class="text-wrap fw-light"><i class="bi bi-receipt-cutoff"></i> <small><%= mcb.batch.title %></small></div>
+              <div class="text-wrap fw-light"><i class="bi bi-calendar"></i> 
+                <small><%=  "#{to_shortdate(mcb.effectivity)+" - "+to_shortdate(mcb.expiry)}" %></small>
+              </div>
+              <div class="text-wrap fw-light"><i class="bi bi-calendar3"></i> 
+                <small>
+                  <% cvg_aging = mcb.coverage_aging %>
+                  <%= mcb.coverage_aging_status(cvg_aging) %>
+                </small>
+              </div>
             <% end %>
           </td>
           <td>
-            <%= link_to '<i class="bi bi-eye-fill"></i>'.html_safe, member, class: 'btn btn-secondary btn-sm ' %>
-            <%= link_to '<i class="bi bi-pencil-square"></i>'.html_safe, edit_member_path(member), class: 'btn btn-secondary btn-sm' %>
-            <%= link_to '<i class="bi bi-trash"></i>'.html_safe, member, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+            <% if current_user.admin == true %>
+              <%= link_to '<i class="bi bi-eye-fill"></i>'.html_safe, member, class: 'btn btn-secondary btn-sm ' %>
+              <%= link_to '<i class="bi bi-pencil-square"></i>'.html_safe, edit_member_path(member), class: 'btn btn-secondary btn-sm' %>
+              <%= link_to '<i class="bi bi-trash"></i>'.html_safe, member, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+            <% else %>
+              <%= link_to '<i class="bi bi-eye-fill"></i>'.html_safe, member, class: 'btn btn-secondary btn-sm ' %>
+              <%= link_to '<i class="bi bi-pencil-square"></i>'.html_safe, edit_member_path(member), class: 'btn btn-secondary btn-sm' %>
+              <% link_to '<i class="bi bi-trash"></i>'.html_safe, member, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+            <% end %>
           </td>
         </tr>
         <%
@@ -87,9 +110,21 @@
         %> 
         <tr class="table-info">
           <td></td>
-          <td colspan="3"><div class="text-wrap fw-light text-muted"><small><%= "#{member.alpharray(mdcount)}. "+md.full_name %><span class="badge bg-muted text-dark">Dependent</span></small></div></td>
+          <td colspan="3">
+            <div class="text-wrap fw-light text-muted">
+              <small><%= "#{member.alpharray(mdcount)}. "+md.full_name %><span class="badge bg-muted text-dark">Dependent</span></small>
+            </div>
+          </td>
         </tr>
         <% end %>
+      <% end %>
+
+      <% else %>
+
+        <tr>
+          <td colspan="4">No record(s) found...</td>
+        </tr>
+
       <% end %>
       </tbody>
     </table>

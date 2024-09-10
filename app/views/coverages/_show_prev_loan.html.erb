@@ -1,0 +1,27 @@
+ <% if rCvg.blank? %>   
+    <div class="card">
+        <div class="card-header">Previous Coverage</div>        
+        <div class="card-body text-center">No record found...</div>
+    </div> 
+<% else %>
+<!--Member-Info Field-->
+    <div class="card">
+        <div class="card-header">Previous Coverage <%= "#{"("+rCvg.status+")"}" %></div>
+        <div class="card-body">
+            <div class="text-wrap fw-light"><i class="bi bi-person-lines-fill"></i> <small><%= rCvg.member %></small></div>
+            <div class="text-wrap fw-light"><i class="bi bi-receipt-cutoff"></i> <small><%= rCvg.batch.title %></small></div>
+                <% 
+                  efdate = rCvg.effectivity 
+                  exdate = rCvg.expiry
+                %>
+                <div class="text-wrap fw-light"><i class="bi bi-calendar"></i> <small><%= "#{to_shortdate(efdate)+" - "+to_shortdate(exdate)}" %></small></div>
+                <div class="text-wrap fw-light"><i class="bi bi-calendar3"></i> 
+                <small>
+                    <% cvg_aging = rCvg.coverage_aging %>
+                    <%= rCvg.coverage_aging_status(cvg_aging) %>
+                </small>
+            </div>
+        </div>
+    </div>
+<!--Member-Info Field-->
+<% end %>

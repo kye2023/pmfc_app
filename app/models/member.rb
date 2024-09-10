@@ -33,6 +33,11 @@ class Member < ApplicationRecord
     "#{cm_age}" + " y/o"
   end
 
+  def compute_cmmbrage(efdate,bday)
+    cc_mage = ((efdate.year - bday.year)).round
+    "#{cc_mage}" + " y/o"
+  end
+
   def count_dependent
     mmbr_id = id
     cdpndnt = Dependent.where(member_id: mmbr_id).count

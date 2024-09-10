@@ -10,32 +10,102 @@
             <th class="text-center">Term</th>
             <th class="text-center">Premium</th>
             <% unless @batch.submit? %>
-            <th></th>
+            <th>Action</th>
             <% end %>
         </tr>
     </thead>
     <tbody>
-    <% sw.each do |c| %>
+    <% 
+        msum_loan = 0
+        mgt_loan = 0
+        msum_prem = 0
+        mgt_prem = 0
+        sw.each do |c| 
+            m_loan = c.loan_coverage
+            m_prem = c.loan_premium
+            hstatus = c.member.health_declaration
+            cncvg = c.center_name_id
+    %>
         <tr>
             <th scope="row"><%= c.id %></th>
             <td class="text-center"><%= c.loan_certificate %></td>
-            <td><%= c.member.get_cmember %> <br>
+            <td>
+                <%= c.member.get_cmember %>
+                <span class="badge bg-dark"><%= c.coverage_status %></span>
+                <%# hstatus = c.member.health_declaration %>
+                <!--Health declaration status-->
+                <% if !hstatus.nil? && hstatus.size > 3 %>
+                    <span class="bi bi-clipboard2-pulse-fill"></span>
+                <% end %>
+                <!--Health declaration status-->
+                <!--Center Name status-->
+                <% if !cncvg.nil? && !c.center_name.id.nil? %>
+                    <span class="badge bg-primary"><%= c.center_name.description %></span>
+                <% end %>
+                <!--Center Name status-->
+                <br>
                 <small><%= to_shortdate(c.member.birth_date) %></small> | <small class="text-primary"> Age: <%= c.age %></small> |
                 <small class="text-muted">Residency: <%= c.residency %></small></td>
-                <td class="text-center text-end"><div class="text-wrap fw-lighter"><small><%# csum_si += c.loan_coverage %><%= to_curr(c.loan_coverage) %></small></div>
-            </td>
+                <td class="text-center">
+                    <div class="text-wrap fw-lighter">
+                        <small><%= to_curr(m_loan) %><% msum_loan += m_loan %></small>
+                    </div>
+                </td>
             <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_shortdate(c.effectivity) %></small></div></td>
             <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_shortdate(c.expiry) %></small></div></td>
             <td class="text-center"><div class="text-wrap fw-lighter"><small><%= c.term %></small></div></td>
-            <td class="text-end"><small><%# csum_prm+= c.loan_premium %><%= to_curr(c.loan_premium) %></small></td>
+            <td class="text-center"><small><%= to_curr(m_prem) %><% msum_prem+= m_prem %></small></td>
             <% unless @batch.submit? %>
             <td class="text-center">
-                <small>Status: <%= c.status %></small> <br>
+                <!--<small>Status: <%#= c.status %></small> <br>-->
                 <%= link_to '<i class="bi bi-pencil-square"></i>'.html_safe, edit_coverage_path(c), class: "btn btn-secondary btn-sm", data: { turbo_frame: "remote_modal" } %> 
                 <%= link_to '<i class="bi bi-trash"></i>'.html_safe, c, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
             </td>
             <% end %>
         </tr>
-    <% end %>
+    <% 
+        end 
+    %>
     </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="3" class="text-end">Grand Total :</td>
+            <td class="text-center">
+                <div class="text-wrap fw-lighter">
+                    <% mgt_loan = msum_loan %>
+                    <small><%= to_curr(mgt_loan) %></small>
+                </div>
+            </td>
+            <td colspan="3" class="text-end">Total Gross Premium Due :</td>
+            <td class="text-center">
+                <div class="text-wrap fw-lighter">
+                   <% mgt_prem = msum_prem %>
+                    <small><%= to_curr(mgt_prem) %></small>
+                </div>
+            </td>
+            <% unless @batch.submit? %>
+            <td></td>
+            <% end %>
+        </tr>
+        <tr>
+            <td colspan="7" class="text-end">Less Service Fee :</td>
+            <td></td>
+            <% unless @batch.submit? %>
+            <td></td>
+            <% end %>
+        </tr>
+        <tr>
+            <td colspan="7" class="text-end">Total Net Premium Due :</td>
+            <td class="text-center">
+                 <div class="text-wrap fw-lighter">
+                   <% mgt_prem = msum_prem %>
+                    <small><%= to_curr(mgt_prem) %></small>
+                </div>
+            </td>
+            <% unless @batch.submit? %>
+            <td></td>
+            <% end %>
+        </tr>
+    </tfoot>
 </table>
+<%# console %>

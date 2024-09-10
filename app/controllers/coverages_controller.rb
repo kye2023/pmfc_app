@@ -32,41 +32,40 @@ class CoveragesController < ApplicationController
   end
 
   def selected
-    # @target = params[:target]
     # @members = Member.where(id: params[:id])
-    # respond_to do |format|
-    # format.turbo_stream
-    # end
+    @target = params[:categoryId]
+    respond_to do |format|
+    format.turbo_stream
+    # format.json { render json: @coverage.errors, status: :unprocessable_entity }
+    end
   end
 
   # POST /coverages or /coverages.json
   def create
-      #@coverage = Coverage.new(coverage_params)
-      
-      @batch = Batch.find(params[:b])
-      @coverage = @batch.coverages.build(coverage_params)
-      
-      #@coverage.compute_age(@member.birth_date,coverage_params[:effectivity])
-      #@coverage.coverage_aging(coverage_params[:effectivity],coverage_params[:expiry])
-      #@member = Member.find(coverage_params[:member_id])
-      #@member = Member.find(coverage_params[:member_id])
-      
+    @batch = Batch.find(params[:b])
+    @coverage = @batch.coverages.build(coverage_params)
+    # raise "error"
+    if @coverage.valid?
       @coverage.compute_age
-     
-      #@coverage.term = @coverage.coverage_aging
-      #@coverage.lppi_gross_premium = @coverage.coverage_lppi_premium
-      
       respond_to do |format|
-      if @coverage.save
-        dependent_coverage_save
-        #format.html { redirect_to @batch, notice: "Coverage was successfully created." }
-        format.html { redirect_to batch_url(@batch, qry: 0, pln: 0, pth: "b1"), notice: "Coverage was successfully created." }
-        format.json { render :show, status: :created, location: @coverage }
-      else
+        if @coverage.save
+          dependent_coverage_save
+          #format.html { redirect_to @batch, notice: "Coverage was successfully created." }
+          format.html { redirect_to batch_url(@batch, qry: 0, pln: 0, pth: "b1"), notice: "Coverage was successfully created." }
+          format.json { render :show, status: :created, location: @coverage }
+        else
+          format.html { render :new, status: :unprocessable_entity }
+          format.json { render json: @coverage.errors, status: :unprocessable_entity }
+          format.turbo_stream { render :form_update, status: :unprocessable_entity }
+        end
+      end
+    else
+      respond_to do |format|
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @coverage.errors, status: :unprocessable_entity }
+        format.turbo_stream { render :form_update, status: :unprocessable_entity }
       end
-    end
+    end 
   end
 
   def dependent_coverage_save
@@ -114,7 +113,7 @@ class CoveragesController < ApplicationController
       end
     end
   end
-
+  
   # DELETE /coverages/1 or /coverages/1.json
   def destroy
     @coverage.destroy
@@ -122,6 +121,91 @@ class CoveragesController < ApplicationController
       format.html { redirect_to batch_url(@batch, qry: 0, pln: 0, pth: "b1"), notice: "Coverage was successfully destroyed." }
       format.json { head :no_content }
     end
+  end
+
+  def check_residency
+    @mmbrID = params[:Id]
+    
+    @check_coverage = Coverage.where(member_id: @mmbrID)
+    
+    if @check_coverage.empty? == true
+        render json: {
+          mmbrID: @mmbrID,
+          residency: 0,
+          status: 0,
+          count_id: 0,
+          coverage: 0,
+          redirecto: member_path(@mmbrID)
+        }
+    else
+      @count_coverage = @check_coverage.where(member_id: @mmbrID).count
+      @sum_residency = @check_coverage.sum(:term)
+    
+      # Sort record base on terms and retrieve the latest record (1 record)
+      @retrieve_coverage = @check_coverage.order(:effectivity,:expiry).last
+      @cov_aging = @retrieve_coverage.coverage_aging
+
+      @cov_status = @retrieve_coverage.status
+      @member_link = member_path(@mmbrID)
+
+      render json: { 
+        mmbrID: @mmbrID, 
+        residency: @sum_residency, 
+        status: @cov_status, 
+        count_id: @count_coverage, 
+        coverage: @cov_aging, 
+        redirecto: @member_link 
+      }
+       
+    end
+
+    # respond_to do |format|
+    #   format.json { 
+    #     render json: { 
+    #       mmbrID: @mmbrID, 
+    #       residency: @sum_residency, 
+    #       status: @cov_status, 
+    #       count_id: @count_coverage, 
+    #       coverage: @cov_aging, 
+    #       redirecto: @member_link 
+    #     } 
+    #   }
+    # end
+
+  end
+
+  def coverage_history
+    
+    @target = params[:target]
+    @chkCoverage = Coverage.where(member_id: params[:Id])
+    # raise "errors"
+
+    if @chkCoverage.empty? == true
+      render turbo_stream: [ turbo_stream.update(@target, partial: "coverages/show_prev_loan", locals: { rCvg: nil }) ]
+    else
+      @rtrCoverage = @chkCoverage.order(:effectivity, :expiry).last
+      # format.turbo_stream show output to "coverage_history.turbo_stream.erb"
+      render turbo_stream: [ turbo_stream.update(@target, partial: "coverages/show_prev_loan", locals: { rCvg: @rtrCoverage }) ]
+    end
+
+  end
+
+  def coverage_premium_benefits
+    @ptarget = params[:ptarget]
+    @pId = params[:Id]
+    @eDate = params[:efdate]
+    @pterm = params[:term]
+    @rsdncy = params[:residency]
+    @pgp = params[:gperiod]
+    @ploans = params[:loans]
+
+    # @getMember = Member.find(@pId)
+    @coveragePremiumBenefits = Coverage.new(member_id: @pId, effectivity: @eDate, term: @pterm, residency: @rsdncy, grace_period: @pgp, loan_coverage: @ploans)
+    @coveragePremiumBenefits.compute_age
+    # raise "error"
+
+    render turbo_stream: [ turbo_stream.update(@ptarget, partial: "coverages/show_premium", locals: { sCvg: @coveragePremiumBenefits }) ]
+
   end
 
   private
@@ -133,7 +217,7 @@ class CoveragesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def coverage_params
-      params.require(:coverage).permit(:batch_id, :member_id, :loan_certificate, :age, :effectivity, :expiry, :term, :status, :loan_coverage, :lppi_gross_premium, :group_certificate, :residency, :group_coverage, :group_premium, :grace_period)
+      params.require(:coverage).permit(:batch_id, :member_id, :loan_certificate, :age, :effectivity, :expiry, :term, :status, :loan_coverage, :lppi_gross_premium, :group_certificate, :residency, :group_coverage, :group_premium, :grace_period, :substandard_rate, :center_name_id)
     end
 
 end

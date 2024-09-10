@@ -3,8 +3,8 @@
     <%= render @branch %>
   </div>
   <div class="card-footer">
-  <%= link_to "Edit", edit_branch_path(@branch), class: 'btn btn-secondary btn-sm' %> |
-  <%= link_to "Back", branches_path, class: 'btn btn-secondary btn-sm' %> 
+    <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, branches_path, class: 'btn btn-secondary btn-sm' %> | 
+    <%= link_to "Edit", edit_branch_path(@branch), class: 'btn btn-secondary btn-sm' %>
   </div>
 </div>
 

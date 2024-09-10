@@ -1,6 +1,7 @@
 class DependentImportService
-  def initialize(spreadsheet)
+  def initialize(spreadsheet,bid)
     @spreadsheet = spreadsheet
+    @branch_id = bid
   end
 
   def import
@@ -55,8 +56,8 @@ class DependentImportService
           middle_name: dependent_hash[:middle_name],
           birth_date: dependent_hash[:birth_date]
         )
-
-        #new_dependent = Dependent.create(dependent_hash)
+        #raise "errors"
+        new_dependent = Dependent.create(dependent_hash)
         dependent.assign_attributes(dependent_hash)
         dependent.save!
       end

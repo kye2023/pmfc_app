@@ -1,17 +1,21 @@
 class Coverage < ApplicationRecord
-  validates_presence_of :loan_certificate, :effectivity, :loan_coverage, :term
-  belongs_to :member
   belongs_to :batch
+  # belongs_to :member, optional: true
+  belongs_to :member
   belongs_to :group_benefit, optional: true
   has_many :dependent_coverages, dependent: :destroy
+  belongs_to :center_name
+  validates_presence_of :member_id, :loan_certificate, :effectivity, :term, :grace_period, :status
+  validates :grace_period, numericality: { greater_than: 0 }
+  validates :loan_coverage, numericality: { greater_than: 0 }
 
-  TERMS = [3, 4, 5, 6, 9, 12, 18, 24, 30]
+  TERMS = [3, 4, 5, 6, 9, 12, 18, 24, 30, 36]
 
   def compute_age
     
     #binding.pry
     
-    self.age = effectivity.year-member.birth_date.year
+    self.age = effectivity.year - member.birth_date.year
     # SET PREMIUM RATE ACCORDING TO AGE group/range
     case age 
     when 18..65 
@@ -28,32 +32,35 @@ class Coverage < ApplicationRecord
     end
     
     #GET EXPIRY BASED ON EFFECTIVITY AND TERM
-    self.expiry = effectivity >> term
+    self.expiry = effectivity >> term # Shift (forward) selected date by the no. of terms 
     self.expiry = expiry + grace_period
-
+    #raise "error"
     self.loan_premium = (loan_coverage/1000) * (rate * (term + grace_period))
-    self.residency = (effectivity.year * 12 + effectivity.month) - (member.date_membership.year * 12 + member.date_membership.month)
+    # self.residency = (effectivity.year * 12 + effectivity.month) - (member.date_membership.year * 12 + member.date_membership.month)
+    # self.residency = member.coverages.sum(:term)
 
     gp = GroupPremium.where('? between residency_floor and residency_ceiling', self.residency)
     self.group_premium = gp.find_by(member_type: 'principal', term: self.term).premium unless gp.nil?
 
     gb = GroupBenefit.where('? between residency_floor and residency_ceiling', self.residency)
     self.group_benefit_id = gb.find_by(member_type: 'principal').id
-
-    #SEARCH GROUP BENEFIT
-    # g_bnft = GroupBenefit.where('? between residency_floor and residency_ceiling', self.residency)
-    # self.group_benefit_id = g_bnft.find_by(member_type: 'principal').id
+    
   end
   
   def coverage_aging
-    #today = Date.today
+    today = Date.today
     #c_aging = ((exdate.to_date - efdate.to_date) / 31).round
     #self.term = c_aging
 
     if expiry.present? && effectivity.present?
-      ((expiry.to_date - effectivity.to_date) / 31).round
+      # ((expiry.to_date - effectivity.to_date) / 31).round? Month
+      aging = ((expiry - today)).round
+      if aging <= 0
+        return aging = 0
+      else
+        return aging
+      end
     end
-    
   end
 
   def coverage_date
@@ -68,6 +75,14 @@ class Coverage < ApplicationRecord
       vstatus = "New"
     else
       vstatus = "Renewal"
+    end
+  end
+
+  def coverage_aging_status(val)
+    if val <= 0
+      return "Expired"
+    else
+      return "#{val} day(s)"
     end
   end
 
