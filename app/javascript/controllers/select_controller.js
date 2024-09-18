@@ -5,7 +5,7 @@ import flatpickr from "flatpickr"
 // Connects to data-controller="select"
 export default class extends Controller {
   
-  static targets = ["memberID","residencyInput","coverageHistory","coveragePremium","statusInput","termInput","gpInput","coverageMember","cvgEdate"]
+  static targets = ["memberID","residencyInput","coverageHistory","coveragePremium","statusInput","termInput","gpInput","coverageMember","cvgEdate","coverageCenter"]
   
   connect() {
     //console.log("connected", this.element);
@@ -35,9 +35,7 @@ export default class extends Controller {
       let jbday = new Date(data.bday)
       let formattedDate = jbday.toLocaleDateString('en-US',{ year: 'numeric', month: '2-digit', day: '2-digit' })
 
-      if(data.relation == 'Sibling' && data.validity == false || data.relation == 'Child' && data.validity == false || data.relation == 'Spouse' && data.validity == false || data.relation == 'Parent' && data.validity == false)
-        {
-        
+      if(data.relation == 'Sibling' && data.validity == false || data.relation == 'Child' && data.validity == false || data.relation == 'Spouse' && data.validity == false || data.relation == 'Parent' && data.validity == false){
         Swal.fire({
           icon: 'error',
           html: `
@@ -49,10 +47,8 @@ export default class extends Controller {
             </p>
             `,
         })
-
         event.target.value = ""
         dinputElement.clear()
-        
       }else
       {
         console.log("birth date: "+formattedDate+", Age: "+data.age+", Relation: "+data.relation)
@@ -79,8 +75,7 @@ export default class extends Controller {
         console.log("MemberID-"+data.mmbrID+", Coverages : "+data.count_id+" | Residency : "+data.residency+" | "+data.coverage+" day(s) "+"Status :"+data.status);
         
         if( data.coverage > 0 )
-          {
-          
+        {
           Swal.fire({
             icon: 'error',
             html: `
@@ -89,9 +84,7 @@ export default class extends Controller {
             coverage
           `,
           })
-          
           mbutton.disabled = true
-          
         }
         else
         {
@@ -163,6 +156,105 @@ export default class extends Controller {
     get(`${cvgUrlId}/${cvgMemberId}/coverage_premium_benefits?Id=${cvgMemberId}&efdate=${efDate}&term=${term}&residency=${rsdncy}&gperiod=${gp}&loans=${loans}&ptarget=${ptarget}`, {
       responseKind: "turbo-stream"
     })
+  }
+
+  add_center()
+  {
+    // let btn_center = event.target.value
+    let cmmbrId = this.coverageMemberTarget.selectedOptions[0].value
+    
+      if(cmmbrId == "" )
+      {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Member can't be blank and Member must exist!"
+        });
+      }
+      else
+      {
+        (async () => {
+          $('#shareRecipeModal').modal('hide');
+          
+          const response = await fetch(`/branches/${cmmbrId}/load_branch`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+        
+          const branches = await response.json();
+  
+          const branchOptions = branches.reduce((acc, br) => {
+            acc[br.id] = br.name;
+            return acc;
+          }, {});
+  
+          const html = `
+              <select id="branch-select">
+                <option value="">Select a branch</option>
+                ${Object.keys(branchOptions).map((id) => `<option value="${id}">${branchOptions[id]}</option>`).join('')}
+              </select>
+              <input type="text" id="center-input" placeholder="Enter quantity">
+            `;
+  
+          const { value: formValues } = await Swal.fire({
+            title: "Add Center",
+            html: html,
+            focusConfirm: true,
+            preConfirm: async () => {
+              const branch = document.getElementById("branch-select").value;
+              const center = document.getElementById("center-input").value;
+              if (branch == "" || center == "")
+              {
+                Swal.showValidationMessage("All fields required!");
+              }
+              else
+              {
+                try {
+                  const response = await fetch(`/center_names/${cmmbrId}/find_center/?cname=${center}`);
+                  const data = await response.json();
+                  let carrlen = data.length
+                  if(branch != "" && carrlen > 0 && center == data[0].description)
+                  {
+                    Swal.showValidationMessage("Record exist!");
+                  }
+                  else
+                  {
+                    return [branch, center];
+                  }
+                } 
+                catch (error) {
+                  Swal.showValidationMessage(error.message);
+                  throw error;
+                }
+              }
+            },
+            showCancelButton: true
+          });
+          
+          if (formValues)
+          {
+            
+            const [nbranch, ncenter] = formValues;
+            console.log(formValues.length)
+            this.center_turbo("/center_names",cmmbrId,nbranch,ncenter);
+            Swal.fire(`Data recorded! ${nbranch} and ${ncenter}`);
+            $('#shareRecipeModal').modal('show');
+          }
+        })()
+      }
+    
+  }
+
+  center_turbo(urlID,mmbrID,br,cntr)
+  {
+    let cvgcntr = this.coverageCenterTarget.id
+    // console.log(cvgcntr)
+    get(`${urlID}/${mmbrID}/add_new_center?cbranch=${br}&cname=${cntr}&target=${cvgcntr}`, {
+      responseKind: "turbo-stream"
+    })
+
   }
 
 

@@ -17,12 +17,11 @@
       <!--Select-M-->
 
       <div>
-
         <!--Select-CN-->
         <% if current_user.admin? %>
-          <%= f.association :center_name, collection: CenterName.all, label: "Center Name", label_method: :description, input_html: { data: { controller: 'ts--select' } }  %>
+          <%= f.association :center_name, collection: CenterName.all, label: "Center Name", label_method: :description, input_html: { data: { select_target: "coverageCenter" } }  %>
         <% else %>
-          <%= f.association :center_name, collection: CenterName.where(branch_id: current_user.user_detail.branch_id), label: "Center Name", label_method: :description, input_html: { data: { controller: 'ts--select' } }  %>
+          <%= f.association :center_name, collection: CenterName.where(branch_id: current_user.user_detail.branch_id), label: "Center Name", label_method: :description, input_html: { data: { select_target: "coverageCenter" } }  %>
         <% end %>
         <!--Select-CN-->
 
@@ -61,8 +60,8 @@
       <!--Member-Container-->
 
       <div class="form-actions">
-        <%= f.button :submit, class: "btn btn-primary memberBtn" %>
-        <%# console %>
+        <%= f.button :submit, name: 'memberBtn', class: "btn btn-primary memberBtn" %>
+        <%= f.button :submit, 'Add Center', name:'centerBtn', class: "btn btn-warning centerBtn", data: { action: 'click->select#add_center' } %>
       </div>
 
     </div>

@@ -63,6 +63,15 @@ class BranchesController < ApplicationController
     end
   end
 
+  def load_branch
+    if current_user.admin? 
+      @branches = Branch.all
+    else
+      @branches = Branch.where(id: current_user.user_detail.branch_id)
+    end
+    render json: @branches
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_branch

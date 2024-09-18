@@ -1,4 +1,5 @@
 class CenterNamesController < ApplicationController
+  # before_action :authenticate_user!
   before_action :set_center_name, only: %i[ show edit update destroy ]
 
   # GET /center_names or /center_names.json
@@ -8,6 +9,7 @@ class CenterNamesController < ApplicationController
 
   # GET /center_names/1 or /center_names/1.json
   def show
+  
   end
 
   # GET /center_names/new
@@ -56,6 +58,36 @@ class CenterNamesController < ApplicationController
       format.html { redirect_to center_names_url, notice: "Center name was successfully destroyed." }
       format.json { head :no_content }
     end
+  end
+
+  def load_center
+    @center_names = CenterName.all
+    render json: @center_names
+  end
+
+  def find_center
+    @cntr_name = params[:cname]
+    @ccenters = CenterName.where(description: @cntr_name)
+    # raise "errors"
+    render json: @ccenters
+  end
+
+  def add_new_center
+    @branchID = params[:cbranch]
+    @cntrname = params[:cname]
+    @ctarget = params[:target]
+
+    @find_cname = CenterName.find_or_initialize_by(description: @cntrname, branch_id: @branchID)
+   
+    if @find_cname.persisted? == false
+      @find_cname.save
+      @load_cnames = CenterName.all
+      render turbo_stream: [ turbo_stream.update(@ctarget, partial: "center_names/load_cselect", locals: { lCname: @load_cnames }) ]
+    end
+  end
+
+  def renewal
+  
   end
 
   private

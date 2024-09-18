@@ -42,30 +42,35 @@ class CoveragesController < ApplicationController
 
   # POST /coverages or /coverages.json
   def create
-    @batch = Batch.find(params[:b])
-    @coverage = @batch.coverages.build(coverage_params)
-    # raise "error"
-    if @coverage.valid?
-      @coverage.compute_age
-      respond_to do |format|
-        if @coverage.save
-          dependent_coverage_save
-          #format.html { redirect_to @batch, notice: "Coverage was successfully created." }
-          format.html { redirect_to batch_url(@batch, qry: 0, pln: 0, pth: "b1"), notice: "Coverage was successfully created." }
-          format.json { render :show, status: :created, location: @coverage }
-        else
+    if params[:memberBtn]
+      
+      # form->member Button
+      @batch = Batch.find(params[:b])
+      @coverage = @batch.coverages.build(coverage_params)
+      # raise "error"
+      if @coverage.valid?
+        @coverage.compute_age
+        respond_to do |format|
+          if @coverage.save
+            dependent_coverage_save
+            #format.html { redirect_to @batch, notice: "Coverage was successfully created." }
+            format.html { redirect_to batch_url(@batch, qry: 0, pln: 0, pth: "b1"), notice: "Coverage was successfully created." }
+            format.json { render :show, status: :created, location: @coverage }
+          else
+            format.html { render :new, status: :unprocessable_entity }
+            format.json { render json: @coverage.errors, status: :unprocessable_entity }
+            format.turbo_stream { render :form_update, status: :unprocessable_entity }
+          end
+        end
+      else
+        respond_to do |format|
           format.html { render :new, status: :unprocessable_entity }
           format.json { render json: @coverage.errors, status: :unprocessable_entity }
           format.turbo_stream { render :form_update, status: :unprocessable_entity }
         end
       end
-    else
-      respond_to do |format|
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @coverage.errors, status: :unprocessable_entity }
-        format.turbo_stream { render :form_update, status: :unprocessable_entity }
-      end
-    end 
+    
+    end
   end
 
   def dependent_coverage_save
@@ -158,20 +163,7 @@ class CoveragesController < ApplicationController
       }
        
     end
-
-    # respond_to do |format|
-    #   format.json { 
-    #     render json: { 
-    #       mmbrID: @mmbrID, 
-    #       residency: @sum_residency, 
-    #       status: @cov_status, 
-    #       count_id: @count_coverage, 
-    #       coverage: @cov_aging, 
-    #       redirecto: @member_link 
-    #     } 
-    #   }
-    # end
-
+    
   end
 
   def coverage_history
