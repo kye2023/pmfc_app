@@ -45,7 +45,7 @@
           <%= f.input :status, wrapper_html: { class: "col-md-3" }, collection: [['New','N'],['Renewal','R']], input_html: { data: { select_target: "statusInput" }  }, include_blank: true %>
           <%= f.input :term, wrapper_html: { class: "col-md-3"}, collection: Coverage::TERMS, input_html: { data: { select_target: "termInput" }  } %>
           <%= f.input :grace_period, wrapper_html: { class: "col-md-3" }, input_html: { data: { select_target: "gpInput" }  }  %>
-          <%= f.input :loan_coverage, wrapper_html: { class: "col-md-12"}, input_html: { data: { action: 'change->select#show_benefits' }  } %>
+          <%= f.input :loan_coverage, wrapper_html: { class: "col-md-12"}, input_html: { data: { action: 'input->select#show_benefits' }  } %>
         </div>
       </div>
 
@@ -82,6 +82,5 @@
     </div>
     
   </div>  
-</div>  
-
+</div>
 <% end %>

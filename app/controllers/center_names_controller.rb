@@ -86,10 +86,6 @@ class CenterNamesController < ApplicationController
     end
   end
 
-  def renewal
-  
-  end
-
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_center_name
