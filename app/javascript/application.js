@@ -9,9 +9,9 @@ import * as bootstrap from "bootstrap"
 import "@rails/request.js"
 import Swal from "sweetalert2"
 
+window.Swal = Swal;
 Turbo.session.drive = true
 window.bootstrap = bootstrap
-window.Swal = Swal;
 
 document.addEventListener("turbo:load", function () {
   // initialize bs toast

@@ -1,11 +1,18 @@
 Rails.application.routes.draw do
-  resources :center_names
+  resources :center_names do
+    get :load_center
+    get :add_new_center
+    get :find_center
+    get :renewal
+  end
   resources :user_details do 
     get :approve_user, on: :member
   end
   resources :group_benefits
   resources :group_premia
-  resources :branches
+  resources :branches do
+    get :load_branch
+  end
   devise_for :users
   resources :premium_rates
   

@@ -4,10 +4,18 @@ class BatchesController < ApplicationController
   require 'csv'
 
   def batch_submit 
-    @batch.update(submit: 1)
-    respond_to do |format| 
-      format.html { redirect_to batch_url(@batch, qry: 0, pln: 0, pth: "b1"), notice: "Batch was successfully submitted." }
+    @check_loans = Coverage.where(batch_id: @batch.id)
+    if @check_loans.size > 0
+      @batch.update(submit: 1)
+      respond_to do |format| 
+        format.html { redirect_to batch_url(@batch, qry: 0, pln: 0, pth: "b1"), notice: "Batch was successfully submitted." }
+      end
+    else
+      respond_to do |format| 
+        format.html { redirect_to batch_url(@batch, qry: 0, pln: 0, pth: "b1"), alert: "Unable to save, No loan(s) recorded." }
+      end
     end
+   
   end
   
   # GET /batches or /batches.json
