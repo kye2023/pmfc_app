@@ -3,17 +3,17 @@
   <%= f.error_notification %>
   <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
   
-  <div class="form-inputs" data-controller="select" data-select-url="<%= dependents_path() %>">
+  <div class="form-inputs" data-controller="search" data-search-url="<%= dependents_path() %>">
     <div class="row">
-        <%= f.input :member_id, wrapper_html: { class: "col-md-4", hidden: "true" }, input_html: { data: { select_target: "memberID" } } %>
-        <%= f.input :last_name, wrapper_html: { class: "col-md-4" }, input_html: { data: { select_target: "lnameInput" }  } %>
+        <%= f.input :member_id, wrapper_html: { class: "col-md-4", hidden: "false" }, input_html: { data: { search_target: "memberID" } } %>
+        <%= f.input :last_name, wrapper_html: { class: "col-md-4" }, input_html: { data: { search_target: "lnameInput" }  } %>
         <%= f.input :first_name, wrapper_html: { class: "col-md-4" } %>
         <%= f.input :middle_name, wrapper_html: { class: "col-md-4" } %>
         <div>
           <%= f.label :birth_date %>
-          <%= f.date_field :birth_date, class: "ddate_pick", input_html: { data: { select_target: "dateInput" }  } %>
+          <%= f.date_field :birth_date, class: "ddate_pick", input_html: { data: { search_target: "dateInput" }  } %>
         </div>
-        <%= f.input :relationship, collection: ['Spouse', 'Child', 'Parent', 'Sibling'], wrapper_html: { class: "col-md-4", data: { action: 'change->select#relation_select' } } %>
+        <%= f.input :relationship, collection: ['Spouse', 'Child', 'Parent', 'Sibling'], wrapper_html: { class: "col-md-4", data: { action: 'change->search#relation_select' } } %>
         <%= f.input :civil_status , collection: ['Single', 'Married', 'Widowed', 'Divorced'], include_blank: true, wrapper_html: { class: "col-md-4" } %>
         <%= f.input :gender , collection: [['Male','M'],['Female','F']], include_blank: true, wrapper_html: { class: "col-md-4" } %>
         <%= f.input :mobile_no, wrapper_html: { class: "col-md-6" } %>
