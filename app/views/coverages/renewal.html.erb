@@ -1,11 +1,7 @@
-<%= content_tag :h1, "List of Loans" %>
-
-  <!--<div class="btn-group" role="group" aria-label="Basic example">
-    <%# link_to new_coverage_path, class: 'btn btn-primary' do %> New Coverage <%# end %>
-    <%# link_to new_premium_rate_path, class: 'btn btn-primary' do %>New Premium Rate<%# end %>
-  </div>-->
-  <%= link_to "Renewals", renewal_coverages_path, data: { turbo_method: :get } %>
-  <div>
+<%= content_tag :h1, "Renewals" %>
+<%= link_to "Back", coverages_path, data: { turbo_method: :get } %>
+<%# @coverages.size %>
+<div>
   <table class="table table-striped table-bordered table-hover">
     <thead>
       <tr>
@@ -33,9 +29,9 @@
           csuninsurge = coverage.loan_coverage
           cpremium = coverage.loan_premium
           cn_aging = coverage.coverage_aging
+          if cn_aging <= 0
       %>
         <tr>
-
           <th scope="row"><%= cvgcount %></th>
           <td>
             <div class="badge bg-primary text-wrap" style="width: 6rem;"><%= coverage.loan_certificate %></div>
@@ -49,24 +45,24 @@
             <div class="badge bg-primary text-wrap" style="width: 10rem;"><%= coverage.coverage_date %></div>
             <div class="badge bg-primary text-wrap" style="width: 2rem;"><%= cterm %></div>
             <div class="badge bg-primary text-wrap" style="width: 4rem;"><%= coverage.coverage_status %></div>
-            <% if cn_aging <= 0 %>
             <div class="badge bg-danger text-wrap" style="width: 4rem;"><%= coverage.coverage_aging_status(cn_aging) %></div>
-            <% else %>
-            <div class="badge bg-primary text-wrap" style="width: 6rem;"><%= coverage.coverage_aging_status(cn_aging) %></div>
-            <% end %>
-             <div class="text-wrap fw-lighter"><small>Coverage: <%= cbatch %></small></div>
-            <div class="text-wrap fw-lighter"><small>Sum Insured: <%= csuninsurge %></small></div>
-            <div class="text-wrap fw-lighter"><small>Premium: <%= cpremium %></small></div>
-            <div class="text-wrap fw-lighter"><small>Rate: <%= crate %></small></div>
+            <div class="text-wrap fw-lighter"><small>Coverage: <%= cbatch %></small></div>
+            <!--
+            <div class="text-wrap fw-lighter"><small>Sum Insured: <%#= csuninsurge %></small></div>
+            <div class="text-wrap fw-lighter"><small>Premium: <%#= cpremium %></small></div>
+            <div class="text-wrap fw-lighter"><small>Rate: <%#= crate %></small></div>
+            -->
           </td>   
           <td>
             <%# link_to 'View', coverage_path(coverage), class: 'btn btn-secondary btn-sm' %>
             <%# link_to 'Edit', edit_coverage_path(coverage), class: 'btn btn-secondary btn-sm' %>
             <%# link_to "Delete", coverage, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
           </td>
-
         </tr>
-      <% end %>
+      <% 
+          end
+        end 
+      %>
     </tbody>
   </table>
   </div>

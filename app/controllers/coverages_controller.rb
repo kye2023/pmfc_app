@@ -201,7 +201,7 @@ class CoveragesController < ApplicationController
   end
 
   def renewal
-  
+    @coverages = Coverage.all
   end
 
   private

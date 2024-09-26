@@ -5,13 +5,14 @@ import flatpickr from "flatpickr"
 // Connects to data-controller="search"
 export default class extends Controller {
 
-  static targets = ["memberID","residencyInput","coverageHistory","coveragePremium","statusInput","termInput","gpInput","coverageMember","cvgEdate","coverageCenter"]
-
+  static targets = ["memberID"]
 
   connect() 
   {
     console.log("connected", this.element);
-    Swal.fire("SweetAlert2 is working!");
+    $(".ddate_pick").flatpickr();
+    $(".cdate_pick").flatpickr();
+    // Swal.fire("SweetAlert2 is working!");
   }
 
   relation_select(event)

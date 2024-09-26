@@ -19,7 +19,6 @@
 <!--<div>
   <%#= link_to "Edit", edit_center_name_path(@center_name), class: 'btn btn-primary' %> |
   <%#= link_to "Back", center_names_path, class: 'btn btn-primary' %>
-
   <%#= button_to "Delete", @center_name, method: :delete, class: 'btn btn-danger' %>
 </div>-->
 
@@ -46,6 +45,7 @@
         <tbody>
           <%
           @center_name.coverages.each do |cncvg|
+            cn_aging = cncvg.coverage_aging
           %>
           <tr>
             <th scope="row" class="text-center"><%= cncvg.id %></th>
@@ -56,7 +56,7 @@
             <td class="text-center"><div class="text-wrap fw-lighter"><small><%= cncvg.term %></small></td>
             <td class="text-center"><div class="text-wrap fw-lighter"><%= to_curr((cncvg.loan_premium)+(cncvg.group_premium)) %></div></td>
             <td class="text-center">
-              <div class="text-wrap fw-lighter"><%= "#{cncvg.coverage_aging} day(s) left" %></div>
+              <div class="text-wrap fw-lighter"><%= cncvg.coverage_aging_status(cn_aging) %></div>
             </td>
           </tr>
           <%
