@@ -1,11 +1,29 @@
 class CoveragesController < ApplicationController
-  # before_action :authenticate_user!
+  before_action :authenticate_user!
   before_action :set_coverage, only: %i[ show edit update destroy ]
   
 
   # GET /coverages or /coverages.json
   def index
-    @coverages = Coverage.all
+
+    require 'pagy/extras/bootstrap'
+
+    @coverages = Coverage.get_coverages_index(current_user.admin, params[:query], current_user)
+    # @ccoverages = Coverage.all
+    # raise "errors"
+
+    @cntcvg = @coverages
+    @cccvg = 0
+    @cntcvg.each do |ccvg|
+      cn_aging = ccvg.coverage_aging
+      if cn_aging <= 0
+        @cccvg += 1  
+      end
+    end
+
+    #set pagination 
+    @pagy, @coverages = pagy(@coverages, items: 10)
+
   end
 
   # GET /coverages/1 or /coverages/1.json
@@ -201,7 +219,10 @@ class CoveragesController < ApplicationController
   end
 
   def renewal
-    @coverages = Coverage.all
+    
+    # @coverages = Coverage.all
+    @coverages = Coverage.get_coverages_index(current_user.admin, params[:query], current_user)
+   
   end
 
   private

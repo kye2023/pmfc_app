@@ -1,5 +1,5 @@
 class CenterNamesController < ApplicationController
-  # before_action :authenticate_user!
+  before_action :authenticate_user!
   before_action :set_center_name, only: %i[ show edit update destroy ]
 
   # GET /center_names or /center_names.json

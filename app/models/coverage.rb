@@ -86,6 +86,25 @@ class Coverage < ApplicationRecord
     end
   end
 
+  def self.get_coverages_index(admin, query, current_user)
+    if query.present?
+      if admin == true
+        # where("last_name LIKE ?", "%#{query}%")
+        find_by(member: Member.where("last_name LIKE ? OR first_name LIKE ?", "%#{query}%", "%#{query}%"))
+      else
+        # where(branch_id: current_user.user_detail.branch_id).where("last_name LIKE ? OR first_name LIKE ?", "%#{query}%", "%#{query}%")
+        find_by(member: Member.where("last_name LIKE ? OR first_name LIKE ?", "%#{query}%", "%#{query}%").where(branch_id: current_user.user_detail.branch_id))
+      end
+    else
+      if admin == true
+        all
+      else
+        # where(branch_id: current_user.user_detail.branch_id)
+        where(member: Member.where(branch_id: current_user.user_detail.branch_id))
+      end
+    end
+  end
+
   def coverage_lppi_premium
     # lppi_prem = batch.premium_rate.premium
     # if lppi_gross_coverage.present? && term.present?
