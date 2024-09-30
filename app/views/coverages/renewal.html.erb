@@ -11,10 +11,9 @@
         <th>#</th>
         <th>Insured</th>
         <th>Loan Data</th>
-        <th></th>
+        <th>action</th>
       </tr>
     </thead>
-
     <tbody>
       <% 
         cmember = ""
@@ -22,21 +21,25 @@
         cterm = 0
         cvgcount = 0
         @coverages.each do |coverage| 
-          cvgcount += 1
-          cbatch = coverage.batch.title
-          crate = coverage.rate
-          cmember = coverage.member.get_cmember
-          # cbdate = coverage.member.get_formatted_bday
-          # c_age = coverage.member.compute_member_age(coverage.member.birth_date)
-          cterm = coverage.term
-          csuninsurge = coverage.loan_coverage
-          cpremium = coverage.loan_premium
-          cn_aging = coverage.coverage_aging
+          chk_cvg = Coverage.where(member_id: coverage.member_id)
+          ret_cvg = chk_cvg.order(:effectivity,:expiry).last
+          cov_aging = ret_cvg.coverage_aging
+
+          cn_aging = cov_aging
           if cn_aging <= 0
+            cvgcount += 1
+            cbatch = coverage.batch.title
+            crate = coverage.rate
+            cmember = coverage.member.get_cmember
+            # cbdate = coverage.member.get_formatted_bday
+            # c_age = coverage.member.compute_member_age(coverage.member.birth_date)
+            cterm = coverage.term
+            csuninsurge = coverage.loan_coverage
+            cpremium = coverage.loan_premium
       %>
         <tr>
           <th class="text-center"><input class="form-check-input" id="#" name="#" type="checkbox" value="<%= coverage.member_id %>" disabled></th>
-          <th scope="row"><%= cvgcount %></th>
+          <th scope="row"><%= "#{coverage.id}"+" - #{cvgcount}" %><%# cvgcount %></th>
           <td>
             <div class="badge bg-primary text-wrap" style="width: 6rem;"><%= coverage.loan_certificate %></div>
             <div class="text-wrap fw-lighter"><strong><%= cmember.upcase %></strong></div>
@@ -61,6 +64,7 @@
             <%# link_to 'View', coverage_path(coverage), class: 'btn btn-secondary btn-sm' %>
             <%# link_to 'Edit', edit_coverage_path(coverage), class: 'btn btn-secondary btn-sm' %>
             <%# link_to "Delete", coverage, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+            <%= link_to "Renew", new_coverage_path(m: coverage.member_id), class: "btn btn-primary btn-sm", data: { turbo_frame: "remote_modal" } %>
           </td>
         </tr>
       <% 
@@ -69,4 +73,4 @@
       %>
     </tbody>
   </table>
-  </div>
+</div>

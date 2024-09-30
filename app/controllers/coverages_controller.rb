@@ -10,19 +10,26 @@ class CoveragesController < ApplicationController
 
     @coverages = Coverage.get_coverages_index(current_user.admin, params[:query], current_user)
     # @ccoverages = Coverage.all
-    # raise "errors"
 
+    @cn_exp_cvg = 0
+    @cn_act_cvg = 0
     @cntcvg = @coverages
-    @cccvg = 0
     @cntcvg.each do |ccvg|
-      cn_aging = ccvg.coverage_aging
+      
+      chk_cvg = Coverage.where(member_id: ccvg.member_id)
+      ret_cvg = chk_cvg.order(:effectivity,:expiry).last
+      cov_aging = ret_cvg.coverage_aging
+
+      cn_aging = cov_aging
       if cn_aging <= 0
-        @cccvg += 1  
+        @cn_exp_cvg += 1
+      elsif
+        @cn_act_cvg += 1  
       end
     end
 
     #set pagination 
-    @pagy, @coverages = pagy(@coverages, items: 10)
+    # @pagy, @coverages = pagy(@coverages, items: 25)
 
   end
 
@@ -32,10 +39,24 @@ class CoveragesController < ApplicationController
   
   # GET /coverages/new
   def new
-    # @coverage = Coverage.new
-    @batch = Batch.find(params[:b])
-    @coverage = @batch.coverages.build
-    
+    ###@coverage = Coverage.new
+
+    # @batch = Batch.find(params[:b])
+    # @coverage = @batch.coverages.build
+
+    @bId = params[:b]
+    @mId = params[:m]
+
+    if @bId.present? == true
+      @batch = Batch.find(params[:b])
+      @coverage = @batch.coverages.build
+    elsif @mId.present? == true
+      @member = Member.find(params[:m])
+      @coverage = @member.coverages.build
+    end
+
+    # raise "errors"
+
     dummy_data
   end
 

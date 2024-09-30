@@ -3,14 +3,13 @@
   <%= link_to renewal_coverages_path, data: { turbo_method: :get }, class: 'btn btn-primary position-relative' do %>
     Renewals
     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-      <%= @cccvg %>
+      <%= @cn_exp_cvg %>
     </span>
   <% end %>
 </div>
 
-<%= content_tag :h1, "List of Loans" %>
-<%== pagy_bootstrap_nav(@pagy) %>
-
+<%= content_tag :h1, "List of Loans x(#{@cn_act_cvg})" %>
+<%#== pagy_bootstrap_nav(@pagy) %>
   <table class="table table-striped table-bordered table-hover">
     <thead>
       <tr>
@@ -28,20 +27,25 @@
         cterm = 0
         cvgcount = 0
         @coverages.each do |coverage| 
-          cvgcount += 1
-          cbatch = coverage.batch.title
-          crate = coverage.rate
-          cmember = coverage.member.get_cmember
-          # cbdate = coverage.member.get_formatted_bday
-          # c_age = coverage.member.compute_member_age(coverage.member.birth_date)
-          cterm = coverage.term
-          csuninsurge = coverage.loan_coverage
-          cpremium = coverage.loan_premium
-          cn_aging = coverage.coverage_aging
+          chk_cvg = Coverage.where(member_id: coverage.member_id)
+          ret_cvg = chk_cvg.order(:effectivity,:expiry).last
+          cov_aging = ret_cvg.coverage_aging
+          
+          cn_aging = cov_aging
+          if cn_aging > 0
+            cvgcount += 1
+            cbatch = coverage.batch.title
+            crate = coverage.rate
+            cmember = coverage.member.get_cmember
+            # cbdate = coverage.member.get_formatted_bday
+            # c_age = coverage.member.compute_member_age(coverage.member.birth_date)
+            cterm = coverage.term
+            csuninsurge = coverage.loan_coverage
+            cpremium = coverage.loan_premium
       %>
         <tr>
 
-          <th scope="row"><%= coverage.id %><%# cvgcount %></th>
+          <th scope="row"><%= "#{coverage.id}"+" - #{cvgcount}" %><%# coverage.id %><%# cvgcount %></th>
           <td>
             <div class="badge bg-primary text-wrap" style="width: 6rem;"><%= coverage.loan_certificate %></div>
             <div class="text-wrap fw-lighter"><strong><%= cmember.upcase %></strong></div>
@@ -71,6 +75,7 @@
           </td>
 
         </tr>
+        <% end %>
       <% end %>
     </tbody>
   </table>
