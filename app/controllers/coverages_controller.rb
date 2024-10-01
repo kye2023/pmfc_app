@@ -40,11 +40,11 @@ class CoveragesController < ApplicationController
   # GET /coverages/new
   def new
     ###@coverage = Coverage.new
-
     # @batch = Batch.find(params[:b])
     # @coverage = @batch.coverages.build
 
     @bId = params[:b]
+    @cId = params[:c]
     @mId = params[:m]
 
     if @bId.present? == true
@@ -53,6 +53,9 @@ class CoveragesController < ApplicationController
     elsif @mId.present? == true
       @member = Member.find(params[:m])
       @coverage = @member.coverages.build
+      chk_cvg = Coverage.where(id: @cId)
+      ret_cvg = chk_cvg.order(:effectivity,:expiry).last
+      @get_cvg_sts = ret_cvg.status
     end
 
     # raise "errors"
@@ -81,11 +84,18 @@ class CoveragesController < ApplicationController
 
   # POST /coverages or /coverages.json
   def create
-    if params[:memberBtn]
-      
-      # form->member Button
+    if params[:b].present? == true
       @batch = Batch.find(params[:b])
       @coverage = @batch.coverages.build(coverage_params)
+    elsif params[:m].present? == true
+      @member = Member.find(params[:m])
+      @coverage = @member.coverages.build(coverage_params)
+    end
+
+    if params[:memberBtn]
+      # form->member Button
+      # @batch = Batch.find(params[:b])
+      # @coverage = @batch.coverages.build(coverage_params)
       # raise "error"
       if @coverage.valid?
         @coverage.compute_age
@@ -93,7 +103,11 @@ class CoveragesController < ApplicationController
           if @coverage.save
             dependent_coverage_save
             #format.html { redirect_to @batch, notice: "Coverage was successfully created." }
-            format.html { redirect_to batch_url(@batch, qry: 0, pln: 0, pth: "b1"), notice: "Coverage was successfully created." }
+            if @member.present? == true  
+              format.html { redirect_to batch_url(@coverage.batch_id, qry: 0, pln: 0, pth: "b1"), notice: "Coverage was successfully created." }
+            else    
+              format.html { redirect_to batch_url(@batch, qry: 0, pln: 0, pth: "b1"), notice: "Coverage was successfully created." }
+            end
             format.json { render :show, status: :created, location: @coverage }
           else
             format.html { render :new, status: :unprocessable_entity }

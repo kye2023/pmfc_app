@@ -7,7 +7,7 @@
   <table class="table table-striped table-bordered table-hover">
     <thead>
       <tr>
-        <th class="text-center"></th>
+        <!--<th class="text-center"></th>-->
         <th>#</th>
         <th>Insured</th>
         <th>Loan Data</th>
@@ -38,7 +38,7 @@
             cpremium = coverage.loan_premium
       %>
         <tr>
-          <th class="text-center"><input class="form-check-input" id="#" name="#" type="checkbox" value="<%= coverage.member_id %>" disabled></th>
+          <!--<th class="text-center"><input class="form-check-input" id="#" name="#" type="checkbox" value="<%# coverage.member_id %>" disabled></th>-->
           <th scope="row"><%= "#{coverage.id}"+" - #{cvgcount}" %><%# cvgcount %></th>
           <td>
             <div class="badge bg-primary text-wrap" style="width: 6rem;"><%= coverage.loan_certificate %></div>
@@ -64,7 +64,7 @@
             <%# link_to 'View', coverage_path(coverage), class: 'btn btn-secondary btn-sm' %>
             <%# link_to 'Edit', edit_coverage_path(coverage), class: 'btn btn-secondary btn-sm' %>
             <%# link_to "Delete", coverage, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
-            <%= link_to "Renew", new_coverage_path(m: coverage.member_id), class: "btn btn-primary btn-sm", data: { turbo_frame: "remote_modal" } %>
+            <%= link_to "Renew", new_coverage_path(m: coverage.member_id, c: coverage.id), class: "btn btn-primary btn-sm", data: { turbo_frame: "remote_modal" } %>
           </td>
         </tr>
       <% 

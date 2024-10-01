@@ -1,5 +1,5 @@
 <%= url %><br>
-<%= "BatchID: #{@batch.present?}"+" MemberID: #{@member.present?}" %>
+<%= "BatchID: #{@batch.present?}"+" MemberID: #{@member.present?}" %><br>
 <%= simple_form_for(@coverage, url: url, method: meth) do |f| %>
   <!--<p style="color: green"><%# notice %></p>-->
 	<div class="container" data-controller="select" data-select-url="<%= coverages_path() %>">
@@ -57,7 +57,13 @@
 				<br>
 				<div class="row">
 					<%= f.input :residency, wrapper_html: { class: "col-md-3", hidden: true }, input_html: { data: { select_target: "residencyInput" }  }  %>
-					<%= f.input :status, wrapper_html: { class: "col-md-3" }, collection: [['New','N'],['Renewal','R']], input_html: { data: { select_target: "statusInput" }  }, include_blank: true %>
+				<% if @get_cvg_sts.present? && @get_cvg_sts[0,1] == "N" %>
+				<% cstatus = "R" %>
+					<%= f.input :status, wrapper_html: { class: "col-md-3" }, collection: [['New','N'],['Renewal','R']], selected: cstatus, input_html: { data: { select_target: "statusInput" }  }, include_blank: true %>
+				<% else %>
+				<% cstatus = "R" %>
+					<%= f.input :status, wrapper_html: { class: "col-md-3" }, collection: [['New','N'],['Renewal','R']], selected: cstatus, input_html: { data: { select_target: "statusInput" }  }, include_blank: true %>		
+				<% end %>
 					<%= f.input :term, wrapper_html: { class: "col-md-3"}, collection: Coverage::TERMS, input_html: { data: { select_target: "termInput" }  } %>
 					<%= f.input :grace_period, wrapper_html: { class: "col-md-3" }, input_html: { data: { select_target: "gpInput" }  }  %>
 					<%= f.input :loan_coverage, wrapper_html: { class: "col-md-12"}, input_html: { data: { action: 'input->select#show_benefits' }  } %>
@@ -76,6 +82,9 @@
 				<div class="form-actions">
 					<%= f.button :submit, name: 'memberBtn', class: "btn btn-primary memberBtn" %>
 					<%= f.button :submit, 'Add Center', name:'centerBtn', class: "btn btn-warning centerBtn", data: { action: 'click->select#add_center' } %>
+					<% if @member.present? == true %>
+					<%= f.button :submit, 'Add Batch', name:'batchBtn', class: "btn btn-info batchBtn", data: { action: 'click->select#add_batch' } %>
+					<% end %>
 				</div>
 				<!--Member-Btn-Container-->
 			</div>

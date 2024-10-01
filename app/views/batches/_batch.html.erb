@@ -73,7 +73,7 @@
           <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, branch_url(surl), class: "btn btn-secondary btn-sm" %>
         <% when "b1" %>
           <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, batches_path, class: "btn btn-secondary" %>
-          <%= link_to "New Loan", new_coverage_path(b: batch), class: "btn btn-primary", data: { turbo_frame: "remote_modal" } unless batch.submit? %>
+          <%= link_to "New Loan", new_coverage_path(b: batch, c: 0), class: "btn btn-primary", data: { turbo_frame: "remote_modal" } unless batch.submit? %>
           <%#= link_to "New Center", new_center_name_path, class: "btn btn-primary", data: { turbo_frame: "remote_modal" } %>
           <%= link_to "Import Coverage", import_cov_batch_path(), class: "btn btn-outline-primary", data: {turbo_frame: "remote_modal"} unless batch.submit? %>
           <%= link_to "Submit", batch_submit_batch_path(batch), class: "btn btn-outline-success" unless batch.submit? %>
