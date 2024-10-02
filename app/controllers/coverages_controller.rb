@@ -7,13 +7,21 @@ class CoveragesController < ApplicationController
   def index
 
     require 'pagy/extras/bootstrap'
-
-    @coverages = Coverage.get_coverages_index(current_user.admin, params[:query], current_user)
+    
     # @ccoverages = Coverage.all
+    @coverages = Coverage.get_coverages_index(current_user.admin, params[:query], current_user)
+    # raise "errors"
+
+   
+    if params[:query].present? == true
+      @cntcvg = Coverage.get_coverages_index(current_user.admin, params[:query]=nil, current_user)
+    else
+      @cntcvg = @coverages
+    end
 
     @cn_exp_cvg = 0
     @cn_act_cvg = 0
-    @cntcvg = @coverages
+    
     @cntcvg.each do |ccvg|
       
       chk_cvg = Coverage.where(member_id: ccvg.member_id)
@@ -29,7 +37,7 @@ class CoveragesController < ApplicationController
     end
 
     #set pagination 
-    # @pagy, @coverages = pagy(@coverages, items: 25)
+    @pagy, @coverages = pagy(@coverages, items: 25)
 
   end
 

@@ -8,7 +8,7 @@
     <thead>
       <tr>
         <!--<th class="text-center"></th>-->
-        <th>#</th>
+        <th class="text-center">#</th>
         <th>Insured</th>
         <th>Loan Data</th>
         <th>action</th>
@@ -39,7 +39,7 @@
       %>
         <tr>
           <!--<th class="text-center"><input class="form-check-input" id="#" name="#" type="checkbox" value="<%# coverage.member_id %>" disabled></th>-->
-          <th scope="row"><%= "#{coverage.id}"+" - #{cvgcount}" %><%# cvgcount %></th>
+          <th scope="row" class="text-center"><%= coverage.id %><%# "#{coverage.id}"+" - #{cvgcount}" %><%# cvgcount %></th>
           <td>
             <div class="badge bg-primary text-wrap" style="width: 6rem;"><%= coverage.loan_certificate %></div>
             <div class="text-wrap fw-lighter"><strong><%= cmember.upcase %></strong></div>
