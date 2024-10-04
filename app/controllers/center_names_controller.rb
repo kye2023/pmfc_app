@@ -76,7 +76,7 @@ class CenterNamesController < ApplicationController
     @branchID = params[:cbranch]
     @cntrname = params[:cname]
     @ctarget = params[:target]
-
+      
     @find_cname = CenterName.find_or_initialize_by(description: @cntrname, branch_id: @branchID)
    
     if @find_cname.persisted? == false

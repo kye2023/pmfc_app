@@ -132,6 +132,34 @@ class BatchesController < ApplicationController
     end
   end
 
+  def load_batch
+    @batch_title = Batch.where(submit: 0)
+    render json: @batch_title
+  end
+
+  def find_batch
+    @btitle = params[:btitle]
+    @btdescription = params[:bdesc]
+    @bbatches = Batch.where(title: @btitle, description: @btdescription)
+    # raise "errors"
+    render json: @bbatches
+  end
+
+  def add_new_batch
+    @bId = params[:Id]
+    @btitle = params[:title]
+    @bdesc = params[:desc]
+    @btarget = params[:target]
+      
+    @find_batch = Batch.find_or_initialize_by(branch_id: @bId,title: @btitle,description: @bdesc)
+    # raise "errors"
+    if @find_batch.persisted? == false
+      @find_batch.save
+      @batch_title = Batch.where(submit: 0)
+      render turbo_stream: [ turbo_stream.update(@btarget, partial: "batches/load_bselect", locals: { lBname: @batch_title }) ]
+    end
+  end
+
   def import
     batch_id = params[:p]
     import_service = ImportService.new(:batch, params[:file], batch_id)

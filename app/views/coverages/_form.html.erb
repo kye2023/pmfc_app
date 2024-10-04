@@ -27,7 +27,7 @@
 				<% end %>
 				<!--Select-CN-->
 				<!--Select-Batch-->
-				<%= f.association :batch, collection: Batch.all, label: "Batch Coverage", label_method: :title, input_html: { data: { select_target: "#" } }, wrapper_html: { class: "col-md-6" }  %>
+				<%= f.association :batch, collection: Batch.where(submit: 0), label: "Batch Coverage", label_method: :title, input_html: { data: { select_target: "coverageBatch" } }, wrapper_html: { class: "col-md-6" }  %>
 				<!--Select-Batch-->
       </div>
       <% elsif @batch.present? == true %>
@@ -83,7 +83,7 @@
 					<%= f.button :submit, name: 'memberBtn', class: "btn btn-primary memberBtn" %>
 					<%= f.button :submit, 'Add Center', name:'centerBtn', class: "btn btn-warning centerBtn", data: { action: 'click->select#add_center' } %>
 					<% if @member.present? == true %>
-					<%= f.button :submit, 'Add Batch', name:'batchBtn', class: "btn btn-info batchBtn", data: { action: 'click->select#add_batch' } %>
+					<%= f.button :submit, 'Add Batch', name:'batchBtn', class: "btn btn-info batchBtn", data: { action: 'click->select#add_coverage' } %>
 					<% end %>
 				</div>
 				<!--Member-Btn-Container-->

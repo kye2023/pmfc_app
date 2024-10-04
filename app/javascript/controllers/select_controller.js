@@ -5,7 +5,7 @@ import flatpickr from "flatpickr"
 // Connects to data-controller="select"
 export default class extends Controller {
 
-  static targets = ["memberID","residencyInput","coverageHistory","coveragePremium","statusInput","termInput","gpInput","coverageMember","cvgEdate","coverageCenter"]
+  static targets = ["memberID","residencyInput","coverageHistory","coveragePremium","statusInput","termInput","gpInput","coverageMember","cvgEdate","coverageCenter","coverageBatch"]
   timeoutId = 0
   connect() {
     console.log("connected", this.element)
@@ -155,10 +155,10 @@ export default class extends Controller {
   
           const html = `
               <select id="branch-select">
-                <option value="">Select a branch</option>
+                <option value="">Select a Center</option>
                 ${Object.keys(branchOptions).map((id) => `<option value="${id}">${branchOptions[id]}</option>`).join('')}
               </select>
-              <input type="text" id="center-input" placeholder="Enter quantity">
+              <input type="text" id="center-input" placeholder="Enter Title">
             `;
   
           const { value: formValues } = await Swal.fire({
@@ -217,6 +217,108 @@ export default class extends Controller {
     let cvgcntr = this.coverageCenterTarget.id
     // console.log(cvgcntr)
     get(`${urlID}/${mmbrID}/add_new_center?cbranch=${br}&cname=${cntr}&target=${cvgcntr}`, {
+      responseKind: "turbo-stream"
+    })
+  }
+
+  add_coverage()
+  {
+    // let btn_center = event.target.value
+    let cmmbrId = this.coverageMemberTarget.selectedOptions[0].value
+    
+      if(cmmbrId == "" )
+      {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Member can't be blank and Member must exist!"
+        });
+      }
+      else
+      {
+        (async () => {
+          $('#shareRecipeModal').modal('hide');
+          
+          const response = await fetch(`/branches/${cmmbrId}/load_branch`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+        
+          const batches = await response.json();
+  
+          const batchesOptions = batches.reduce((acc, bt) => {
+            acc[bt.id] = bt.name;
+            return acc;
+          }, {});
+  
+          const html = `
+              <select id="batch-select" class="swal2-input">
+                <option value="">Select a Batch</option>
+                ${Object.keys(batchesOptions).map((id) => `<option value="${id}">${batchesOptions[id]}</option>`).join('')}
+              </select>
+              <input type="text" id="title-input" placeholder="Enter Title" class="swal2-input">
+              <input type="text" id="description-input" placeholder="Enter Description" class="swal2-input">
+            `;
+  
+          const { value: formValues } = await Swal.fire({
+            title: "Add Batch",
+            html: html,
+            focusConfirm: true,
+            preConfirm: async () => {
+              const batch = document.getElementById("batch-select").value;
+              const title = document.getElementById("title-input").value;
+              const desc = document.getElementById("description-input").value;
+              if (batch == "" || title == "" || desc == "")
+              {
+                Swal.showValidationMessage("All fields required!");
+              }
+              else
+              {
+                try {
+                  const response = await fetch(`/batches/${cmmbrId}/find_batch/?btitle=${title}&bdesc=${desc}`);
+                  const data = await response.json();
+                  let barrlen = data.length
+                  if(batch != "" && barrlen > 0 && title == data[0].title && desc == data[0].description)
+                  {
+                    Swal.showValidationMessage("Record exist!");
+                  }
+                  else
+                  {
+                    return [batch, title, desc];
+                  }
+                } 
+                catch (error) {
+                  Swal.showValidationMessage(error.message);
+                  throw error;
+                }
+              }
+            },
+            showCancelButton: true,
+            didClose: () => {
+              $('#shareRecipeModal').modal('show');
+            }
+          });
+          
+          if (formValues)
+          {
+            const [nbatch, ntitle, ndesc] = formValues;
+            console.log(formValues.length)
+            this.batch_turbo("/batches",nbatch,ntitle,ndesc);
+            Swal.fire(`Data recorded! ${ntitle} and ${ndesc}`);
+            $('#shareRecipeModal').modal('show');
+          }
+          
+        })()
+      }
+  }
+
+  batch_turbo(urlID,bId,btitle,bdesc)
+  {
+    let btarget = this.coverageBatchTarget.id
+    // console.log(cvgcntr)
+    get(`${urlID}/${bId}/add_new_batch?Id=${bId}&title=${btitle}&desc=${bdesc}&target=${btarget}`, {
       responseKind: "turbo-stream"
     })
   }

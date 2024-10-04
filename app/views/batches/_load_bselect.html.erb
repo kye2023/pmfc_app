@@ -1,0 +1,8 @@
+<% if lBname.blank? %>
+<%= content_tag :option, "No record found..." %>
+<% else %>
+    <%= content_tag :option, "Select Batch" %>
+  <% @batch_title.each do |bt| %>
+    <%= content_tag :option, bt.title, value: bt.id %>
+  <% end %>
+<% end %>

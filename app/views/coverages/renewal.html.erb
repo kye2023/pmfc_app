@@ -31,8 +31,6 @@
             cbatch = coverage.batch.title
             crate = coverage.rate
             cmember = coverage.member.get_cmember
-            # cbdate = coverage.member.get_formatted_bday
-            # c_age = coverage.member.compute_member_age(coverage.member.birth_date)
             cterm = coverage.term
             csuninsurge = coverage.loan_coverage
             cpremium = coverage.loan_premium
@@ -43,10 +41,6 @@
           <td>
             <div class="badge bg-primary text-wrap" style="width: 6rem;"><%= coverage.loan_certificate %></div>
             <div class="text-wrap fw-lighter"><strong><%= cmember.upcase %></strong></div>
-            <!--
-            <div class="text-wrap fw-lighter">Birth Date: <%# cbdate %></div>
-            <div class="text-wrap fw-lighter">Age: <%# c_age %></div>
-            -->
           </td>
           <td>
             <div class="badge bg-primary text-wrap" style="width: 10rem;"><%= coverage.coverage_date %></div>
