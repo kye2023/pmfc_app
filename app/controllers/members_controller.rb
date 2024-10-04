@@ -5,13 +5,7 @@ class MembersController < ApplicationController
   # GET /members or /members.json
   def index
     require 'pagy/extras/bootstrap'
-    
-    # if params[:query].present?
-    #   # @members = Member.where(branch: current_user.user_detail.branch).where("last_name LIKE ?", "%#{params[:query]}%")
-    #   @members = Member.get_members_index(current_user.admin, params[:query], current_user)
-    # else
-    #   @members = Member.where(branch: current_user.user_detail.branch)
-    # end
+
     @members = Member.get_members_index(current_user.admin, params[:query], current_user)
 
     #set pagination

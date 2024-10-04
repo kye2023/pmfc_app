@@ -3,7 +3,7 @@ Rails.application.routes.draw do
     get :load_center
     get :add_new_center
     get :find_center
-    get :renewal
+   
   end
   resources :user_details do 
     get :approve_user, on: :member
@@ -27,6 +27,9 @@ Rails.application.routes.draw do
     get :check_residency
     get :coverage_history
     get :coverage_premium_benefits
+    collection do
+      get :renewal
+    end
   end
   
   resources :dependents do
@@ -41,6 +44,9 @@ Rails.application.routes.draw do
     get :batch_submit, on: :member
     get :batch_download, on: :member
     get :batch_preview, on: :member
+    get :load_batch
+    get :find_batch
+    get :add_new_batch
     collection do
       post :import
     end

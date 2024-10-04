@@ -1,6 +1,9 @@
-<%# render "remote_modal", title: "New Loan"+"(#{current_user.user_detail.last_name}"+" | #{current_user.email})" do %>
+<%# "(#{current_user.user_detail.last_name}"+" | #{current_user.email})" %>
+<%# "BatchID: #{@bId}"+" MemberID: #{@mId}" %>
 <%= render "remote_modal", title: "New Loan" do %>
-
-  <%= render "form", url: coverages_path(b: @batch), meth: 'post' %>
-
+  <% if @bId.present? == true %>
+    <%= render "form", url: coverages_path(b: @batch), meth: 'post' %>
+  <% elsif @mId.present? == true %>
+    <%= render "form", url: coverages_path(m: @member), meth: 'post' %>
+  <% end %>
 <% end %>

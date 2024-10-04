@@ -1,11 +1,44 @@
 class CoveragesController < ApplicationController
-  # before_action :authenticate_user!
+  before_action :authenticate_user!
   before_action :set_coverage, only: %i[ show edit update destroy ]
   
 
   # GET /coverages or /coverages.json
   def index
-    @coverages = Coverage.all
+
+    require 'pagy/extras/bootstrap'
+    
+    # @ccoverages = Coverage.all
+    @coverages = Coverage.get_coverages_index(current_user.admin, params[:query], current_user)
+    # raise "errors"
+
+   
+    if params[:query].present? == true
+      @cntcvg = Coverage.get_coverages_index(current_user.admin, params[:query]=nil, current_user)
+    else
+      @cntcvg = @coverages
+    end
+
+    @cn_exp_cvg = 0
+    @cn_act_cvg = 0
+    
+    @cntcvg.each do |ccvg|
+      
+      chk_cvg = Coverage.where(member_id: ccvg.member_id)
+      ret_cvg = chk_cvg.order(:effectivity,:expiry).last
+      cov_aging = ret_cvg.coverage_aging
+
+      cn_aging = cov_aging
+      if cn_aging <= 0
+        @cn_exp_cvg += 1
+      elsif
+        @cn_act_cvg += 1  
+      end
+    end
+
+    #set pagination 
+    @pagy, @coverages = pagy(@coverages, items: 25)
+
   end
 
   # GET /coverages/1 or /coverages/1.json
@@ -14,10 +47,27 @@ class CoveragesController < ApplicationController
   
   # GET /coverages/new
   def new
-    # @coverage = Coverage.new
-    @batch = Batch.find(params[:b])
-    @coverage = @batch.coverages.build
-    
+    ###@coverage = Coverage.new
+    # @batch = Batch.find(params[:b])
+    # @coverage = @batch.coverages.build
+
+    @bId = params[:b]
+    @cId = params[:c]
+    @mId = params[:m]
+
+    if @bId.present? == true
+      @batch = Batch.find(params[:b])
+      @coverage = @batch.coverages.build
+    elsif @mId.present? == true
+      @member = Member.find(params[:m])
+      @coverage = @member.coverages.build
+      chk_cvg = Coverage.where(id: @cId)
+      ret_cvg = chk_cvg.order(:effectivity,:expiry).last
+      @get_cvg_sts = ret_cvg.status
+    end
+
+    # raise "errors"
+
     dummy_data
   end
 
@@ -42,11 +92,18 @@ class CoveragesController < ApplicationController
 
   # POST /coverages or /coverages.json
   def create
-    if params[:memberBtn]
-      
-      # form->member Button
+    if params[:b].present? == true
       @batch = Batch.find(params[:b])
       @coverage = @batch.coverages.build(coverage_params)
+    elsif params[:m].present? == true
+      @member = Member.find(params[:m])
+      @coverage = @member.coverages.build(coverage_params)
+    end
+
+    if params[:memberBtn]
+      # form->member Button
+      # @batch = Batch.find(params[:b])
+      # @coverage = @batch.coverages.build(coverage_params)
       # raise "error"
       if @coverage.valid?
         @coverage.compute_age
@@ -54,7 +111,11 @@ class CoveragesController < ApplicationController
           if @coverage.save
             dependent_coverage_save
             #format.html { redirect_to @batch, notice: "Coverage was successfully created." }
-            format.html { redirect_to batch_url(@batch, qry: 0, pln: 0, pth: "b1"), notice: "Coverage was successfully created." }
+            if @member.present? == true  
+              format.html { redirect_to batch_url(@coverage.batch_id, qry: 0, pln: 0, pth: "b1"), notice: "Coverage was successfully created." }
+            else    
+              format.html { redirect_to batch_url(@batch, qry: 0, pln: 0, pth: "b1"), notice: "Coverage was successfully created." }
+            end
             format.json { render :show, status: :created, location: @coverage }
           else
             format.html { render :new, status: :unprocessable_entity }
@@ -201,7 +262,10 @@ class CoveragesController < ApplicationController
   end
 
   def renewal
-  
+    
+    # @coverages = Coverage.all
+    @coverages = Coverage.get_coverages_index(current_user.admin, params[:query], current_user)
+   
   end
 
   private

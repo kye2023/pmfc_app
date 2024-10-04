@@ -51,17 +51,15 @@ class Member < ApplicationRecord
   def self.get_members_index(admin, query, current_user)
     if query.present?
       if admin == true
-        #where("last_name LIKE ?", "%#{params[:query]}%")
-        where("last_name LIKE ?", "%#{query}%") #kyestrella
-
+        where("last_name LIKE ?", "%#{query}%").limit(25)
       else
-        where(branch_id: current_user.user_detail.branch_id).where("last_name LIKE ? OR first_name LIKE ?", "%#{query}%", "%#{query}%")
+        where(branch_id: current_user.user_detail.branch_id).where("last_name LIKE ? OR first_name LIKE ?", "%#{query}%", "%#{query}%").limit(25)
       end
     else
       if admin == true
-        all
+        limit(100).all
       else
-        where(branch_id: current_user.user_detail.branch_id) #kyestrella
+        where(branch_id: current_user.user_detail.branch_id).limit(100)
       end
     end
   end
