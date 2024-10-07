@@ -12,7 +12,6 @@ class DependentImportService
 
     dependents_spreadsheet = parse_file('DependentMasterlist')
     
-    
     #drop 1 - header excluded
     dependents_spreadsheet.drop(1).each do |row|
       #iteration per row
@@ -56,15 +55,24 @@ class DependentImportService
           middle_name: dependent_hash[:middle_name],
           birth_date: dependent_hash[:birth_date]
         )
-        #raise "errors"
-        new_dependent = Dependent.create(dependent_hash)
-        dependent.assign_attributes(dependent_hash)
-        dependent.save!
+        
+        if dependent.persisted? == true
+          #dependent.update(dependent_hash)
+          row["STATUS"] = "Existing"
+          next
+        else
+          new_dependent = Dependent.create(dependent_hash)
+          dependent.assign_attributes(dependent_hash)
+          dependent.save!
+          row["STATUS"] = "Uploaded"  
+        end
+        
+        # raise "errors"
       end
 
     end
 
-    "Success"
+    # "Success"
 
   end
 

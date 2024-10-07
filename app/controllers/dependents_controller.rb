@@ -90,7 +90,31 @@ class DependentsController < ApplicationController
 
     import_service = ImportService.new(:dependent,params[:file],brn_id)
     import_message = import_service.import
-    redirect_to dependents_path, notice: import_message
+    # redirect_to dependents_path, notice: import_message
+    if import_message.present? && import_message == "No file uploaded"
+      flash[:notice] = "No file uploaded"
+      redirect_to dependents_path
+    else
+      status_names = import_message.map do |r|
+        lname = r["LASTNAME"].upcase
+        fname = r["FIRSTNAME"].upcase
+        mname = r["MI"].upcase
+      end.compact 
+
+      status_count = import_message.group_by { |message| message["STATUS"] }.map { |status, messages| [status, messages.size] }.to_h
+      
+      # raise "errors"
+
+      flash_existing = status_count["Existing"]
+      flash_uploaded = status_count["Uploaded"]
+
+      flash_names = status_names.map { |status_names| "#{status_names}<br>" }.join
+    
+      flash[:notice] = "Import successful. <br><br> Existing :"+flash_existing.to_s+"<br> Uploaded :"+flash_uploaded.to_s
+      redirect_to dependents_path
+    end
+
+
   end
 
   def age_validation

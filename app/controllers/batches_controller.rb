@@ -1,6 +1,7 @@
 class BatchesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_batch, only: %i[ show edit update destroy import_cov batch_submit batch_preview]
+  
   require 'csv'
 
   def batch_submit 
@@ -26,7 +27,6 @@ class BatchesController < ApplicationController
       @batches = Batch.where(branch_id: current_user.user_detail.branch_id)
     end
    
-
     respond_to do |format|
       format.html
       format.csv do 
@@ -297,7 +297,7 @@ class BatchesController < ApplicationController
           "#{helpers.to_shortdate(c.effectivity)}",
           "#{helpers.to_shortdate(c.expiry)}",
           "#{c.term}",
-          "#{c.status}",
+          "#{c.status[0,1]}",
           "#{helpers.to_curr(loan_prem)}"
         ]]
         total_sumi += c.loan_coverage
