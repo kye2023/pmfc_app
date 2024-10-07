@@ -1,5 +1,5 @@
-<%= url %><br>
-<%= "BatchID: #{@batch.present?}"+" MemberID: #{@member.present?}" %><br>
+<%#<%# url %<br>
+<%# "BatchID: #{@batch.present?}"+" MemberID: #{@member.present?}" %<br>%>
 <%= simple_form_for(@coverage, url: url, method: meth) do |f| %>
   <!--<p style="color: green"><%# notice %></p>-->
 	<div class="container" data-controller="select" data-select-url="<%= coverages_path() %>">
