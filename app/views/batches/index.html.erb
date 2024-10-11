@@ -1,11 +1,20 @@
 <%= content_tag :h1, "List of Batches" %>
-
-<div class="text-start mb-3">
-  <%= link_to new_batch_path, data: { turbo_frame:"remote_modal" }, class: 'btn btn-primary' do %>
-    New Batch
-  <% end %>
-</div>
-
+<!--Search-->
+    <div class="col-lg-12">
+      <%= form_with( url: batches_path, method: :get, data: {turbo_frame: "search_batch"} ) do |form| %>
+      <div class="input-group mb-3">
+        <%= form.text_field :query, placeholder: 'Search by Batch/Title/Reference#...', class: "form-control" %>
+        <%= form.submit 'Search', class: "btn btn-success" %>
+        <!--New-Btn-->
+        <%= link_to new_batch_path, data: { turbo_frame:"remote_modal" }, class: 'btn btn-primary' do %>
+          New Batch
+        <% end %>
+        <!--New-Btn-->
+      </div>
+      <% end %>
+      <%== pagy_bootstrap_nav(@pagy) %>
+    </div>
+  <!--Search-->
 <table class="table table-striped table-bordered table-hover">
   <thead>
     <tr>
@@ -21,7 +30,7 @@
     @batches.each do |batch| 
       bcount += 1
   %>
-    <tr>
+    <tr id="load_batch">
       <th scope="row"><%= batch.id %></th>
       <td><%= batch.title %> <strong><%= batch.branch %></strong> <br> <%= batch.description %></td>
       <td class="text-center"><%= batch.coverages.count %></td>

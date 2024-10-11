@@ -33,7 +33,16 @@
         member.coverages.each do |mcb| 
           loan_prem = mcb.loan_premium 
           group_prem = mcb.group_premium 
-          dependent_prem = mcb.dependent_coverages.sum(:premium) 
+          
+          cterm = mcb.term
+          cbatch = mcb.batch.title
+
+          gblife = mcb.group_benefit.life
+          gbadd = mcb.group_benefit.add
+          gbburial = mcb.group_benefit.burial
+
+          dependent_cvg = mcb.dependent_coverages.count(:id)
+          dependent_prem = mcb.dependent_coverages.sum(:premium)
           mmbr_aging = Coverage.new(effectivity: mcb.effectivity, expiry: mcb.expiry)
           m_aging = mmbr_aging.coverage_aging
       %>
@@ -59,38 +68,44 @@
               <thead>
                 <tr>
                   <th class="text-center" width="5%"><%= mcb.id %></th>
-                  <th>Coverage</th>
-                  <th>Effictivity</th>
-                  <th>Premium</th>
+                  <th>
+                    <div class="text-center text-wrap fw-bold text-muted"><small><%= cbatch %></small></div>
+                  </th>
+                  <th>
+                    <div class="badge bg-primary text-wrap" style="width: 10rem;"><%= mcb.coverage_date %></div>
+                    <div class="badge bg-primary text-wrap" style="width: 2rem;"><%= cterm %></div>
+                    <div class="badge bg-primary text-wrap" style="width: 4rem;"><%= mcb.coverage_status %></div>
+                  </th>
+                  <th></th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td><div class="text-center text-wrap fw-light text-muted"><small>LPPI</small></div></td>
-                  <td><div class="text-wrap fw-light text-muted"><small>&#8369; <%= to_curr(mcb.loan_coverage) %></small></div></td>
-                  <td><div class="text-wrap fw-light text-muted"><small><%= "#{to_shortdate(mcb.effectivity)+" - "+to_shortdate(mcb.expiry)}" %></small></div></td>
-                  <td><div class="text-wrap fw-light text-muted"><small>&#8369; <%= to_curr(loan_prem) %></small></div></td>
-                </tr>
-                <tr>
-                  <td><div class="text-center text-wrap fw-light text-muted"><small>GYRT/SGYRT</small></div></td>
-                  <td>
-                    <div class="text-wrap fw-light text-muted">
-                      <small>
-                        LIFE: &#8369; <%= to_curr(mcb.group_benefit.life) %><br> 
-                        ADD: &#8369; <%= to_curr(mcb.group_benefit.add) %><br> 
-                        BURIAL: &#8369; <%= to_curr(mcb.group_benefit.burial) %><br>
-                      </small>
-                    </div>
-                  </td>
-                  <td><div class="text-wrap fw-light text-muted"><small><%= "#{to_shortdate(mcb.effectivity)+" - "+to_shortdate(mcb.expiry)}" %></small></div></td>
-                  <td><div class="text-wrap fw-light text-muted"><small>&#8369; <%= to_curr(group_prem) %></small></div></td>
-                </tr>
-                <tr>
-                  <td colspan="3"><div class="text-center text-wrap fw-light text-muted"><small>Dependents(x<%= member.dependents.count %>)</small></div></td>
-                  <td><div class="text-wrap fw-light text-muted"><small>&#8369; <%= to_curr(dependent_prem) %></small></div></td>
-                </tr>
-              </tbody>
             </table>
+
+            <div class="container-sm">
+              <div class="row">
+                <div class="col">
+                  LPPI
+                  <div class="text-wrap fw-light">&#8369; <%= to_curr(mcb.loan_coverage) %></div>
+                  <div class="text-wrap fw-light">&#8369; <%= to_curr(loan_prem) %></div>
+                </div>
+                <div class="col">
+                  SGYRT
+                  <div class="text-wrap fw-light">LIFE: &#8369; <%= to_curr(gblife) %></div>
+                  <div class="text-wrap fw-light">ADD: &#8369; <%= to_curr(gbadd) %></div>
+                  <div class="text-wrap fw-light">BURIAL: &#8369; <%= to_curr(gbburial) %></div>
+                  <div class="text-wrap fw-light">&#8369; <%= to_curr(group_prem) %></div>
+                </div>
+                <div class="col">
+                  Dependent(s)
+                  <div class="text-wrap fw-light">
+                    <% if dependent_cvg.present? == true %>
+                    <%= "(x"+"#{dependent_cvg}"+")" %>
+                    <% end %>
+                  </div>
+                  <div class="text-wrap fw-light">&#8369; <%= dependent_prem %></div>
+                </div>
+              </div>
+            </div>
             
           </div>
         </div>
@@ -102,6 +117,7 @@
     <% end %>
   </div>
   <!--Coverage-->
+
   <!--Dependent-Info-->
     <div class="col-lg-4">
       <table class="table table-striped table-bordered table-hover table-sm">
@@ -141,7 +157,7 @@
         <% end %>
       </tbody>
     </table>
-
     </div>
   <!--Dependent-Info-->
+  
 </div>

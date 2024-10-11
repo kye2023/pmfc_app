@@ -8,49 +8,62 @@
   </div>
 </div> %>
 
-<div class="card mb-3" style="max-width: 100rem;">
-  <div class="row g-0">
-    <div class="col-md-4">
-      <%= image_tag 'pmfc.jpg', width: 10, class: 'card-img-top' %>
-    </div>
-    <div class="col-md-8">
-      <div class="container text-center">
-        <div class="row">
-          <div class="col">
-            <div class="card-body">
-              <h1 class="card-title"><%= to_numdelimit(@cntmember) %></h1>
-              <p class="card-text"><%= link_to members_path, data: { turbo_method: :get }, class: 'position-relative' do %>
-                Enrolled
-              <% end %></p>
+<div class="row row-cols-1 row-cols-md-2 align-items-md-center g-5 py-5">
+  <div class="col d-flex flex-column align-items-start gap-2">
+    <%= image_tag 'pmfc.jpg', width: 10, class: 'card-img-top' %>
+      <!--<h2 class="fw-bold text-body-emphasis">Left-aligned title explaining these awesome features</h2>
+      <p class="text-body-secondary">Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and probably just keep going until we run out of words.</p>-->
+  </div>
+
+    <div class="col">
+      <div class="row row-cols-1 row-cols-sm-2 g-4">
+          <div class="col d-flex flex-column gap-2">
+            <div class="feature-icon-small d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-4 rounded-3">
+              <svg class="bi" width="1em" height="1em">
+                <use xlink:href="#collection"></use>
+              </svg>
             </div>
-          </div>
-          <!--<div class="col">
-           <div class="card-body">
-              <h5 class="card-title">Loans</h5>
-              <p class="card-text">000</p>
-            </div>
-          </div>-->
-          <div class="col">
-            <div class="card-body">
-              <h1 class="card-title"><%= to_numdelimit(@cn_exp_cvg) %></h1>
-              <p class="card-text"><%= link_to renewal_coverages_path, data: { turbo_method: :get }, class: 'position-relative' do %>
-                Renewals
+            <h1 class="fw-semibold mb-0 text-body-emphasis"><%= to_numdelimit(@cntmember) %></h1>
+            <p class="text-body-secondary">Enrolled Members</p>
+            <%= link_to members_path, data: { turbo_method: :get }, class: 'btn btn-primary btn-sm position-relative' do %>
+                See more
               <% end %>
-              </p>
-            </div>
           </div>
-        </div>
+
+          <div class="col d-flex flex-column gap-2">
+            <div class="feature-icon-small d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-4 rounded-3">
+              <svg class="bi" width="1em" height="1em">
+                <use xlink:href="#gear-fill"></use>
+              </svg>
+            </div>
+            <h1 class="fw-semibold mb-0 text-body-emphasis">0</h1>
+            <p class="text-body-secondary">Coverages</p>
+            <a href="#" class="btn btn-primary btn-sm">See more</a>
+          </div>
+
+          <div class="col d-flex flex-column gap-2">
+            <div class="feature-icon-small d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-4 rounded-3">
+              <svg class="bi" width="1em" height="1em">
+                <use xlink:href="#speedometer"></use>
+              </svg>
+            </div>
+            <h1 class="fw-semibold mb-0 text-body-emphasis">0</h1>
+            <p class="text-body-secondary">Loan</p>
+            <a href="#" class="btn btn-primary btn-sm">See more</a>
+          </div>
+
+          <div class="col d-flex flex-column gap-2">
+            <div class="feature-icon-small d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-4 rounded-3">
+              <svg class="bi" width="1em" height="1em">
+                <use xlink:href="#table"></use>
+              </svg>
+            </div>
+            <h1 class="fw-semibold mb-0 text-body-emphasis"><%= to_numdelimit(@cn_exp_cvg) %></h1>
+            <p class="text-body-secondary">Renewal</p>
+              <%= link_to renewal_coverages_path, data: { turbo_method: :get }, class: 'btn btn-primary btn-sm position-relative' do %>
+                See more
+              <% end %>
+          </div>
       </div>
-
     </div>
-  </div>
 </div>
-
-<%#<div class="card text-bg-dark">
-  <%= image_tag 'pmfc.jpg', width: 10, class: 'card-img-top' %
-  <div class="card-img-overlay text-white">
-    <h5 class="card-title">Card title</h5>
-    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-    <p class="card-text"><small>Last updated 3 mins ago</small></p>
-  </div>
-</div> %>

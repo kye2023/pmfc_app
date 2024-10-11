@@ -21,11 +21,17 @@ class BatchesController < ApplicationController
   
   # GET /batches or /batches.json
   def index
-    if current_user.admin == true
-      @batches = Batch.all
-    else
-      @batches = Batch.where(branch_id: current_user.user_detail.branch_id)
-    end
+    require 'pagy/extras/bootstrap'
+    
+    @batches = Batch.get_batches_index(current_user.admin, params[:query], current_user)
+
+    @pagy, @batches = pagy(@batches, items: 10)
+
+    # if current_user.admin == true
+    #   @batches = Batch.all
+    # else
+    #   @batches = Batch.where(branch_id: current_user.user_detail.branch_id)
+    # end
    
     respond_to do |format|
       format.html
@@ -68,7 +74,7 @@ class BatchesController < ApplicationController
     #   @show_coverage
     # end
     
-    @pagy, @records = pagy(@show_coverage, items: 5)
+    # @pagy, @records = pagy(@show_coverage, items: 5)
 
     #download CSV
     respond_to do |format|

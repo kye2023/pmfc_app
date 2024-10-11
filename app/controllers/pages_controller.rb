@@ -2,12 +2,14 @@ class PagesController < ApplicationController
   before_action :authenticate_user!
   def index
     @coverages = Coverage.get_coverages_index(current_user.admin, params[:query], current_user)
+
     if params[:query].present? == true
       @cntcvg = Coverage.get_coverages_index(current_user.admin, params[:query]=nil, current_user)
     else
       @cntcvg = @coverages
     end
 
+    # Count Renewal
     @cn_exp_cvg = 0
     @cn_act_cvg = 0
     
@@ -25,6 +27,7 @@ class PagesController < ApplicationController
       end
     end
 
+    # Count member
     @cntmember = Member.count(:id)
 
   end

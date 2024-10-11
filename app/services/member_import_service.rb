@@ -30,7 +30,6 @@ class MemberImportService
         first_name: row["FIRSTNAME"] == nil ? nil : row["FIRSTNAME"].strip,
         middle_name: row["MI"] == nil ? nil : row["MI"].strip,
         birth_date: formatted_bdate,
-        date_membership: row["DATEOFMEMBERSHIP"] == nil ? nil : row["DATEOFMEMBERSHIP"],
         civil_status: row["CIVILSTATUS"] == nil ? nil : row["CIVILSTATUS"].strip,
         gender: row["GENDER"] == nil ? nil : row["GENDER"],
         mobile_no: row["MOBILENO"] == nil ? nil : row["MOBILENO"],
@@ -42,22 +41,22 @@ class MemberImportService
         last_name: member_hash[:last_name],
         first_name: member_hash[:first_name],
         middle_name: member_hash[:middle_name],
-        birth_date: member_hash[:birth_date],
-        branch_id: member_hash[:branch_id]
+        birth_date: member_hash[:birth_date]
       )
 
-      # member.assign_attributes(member_hash)
-      # raise "errors"
-      # member.save!
       
+
       if member.persisted? == true
        #member.update(member_hash)
        row["STATUS"] = "Existing"
        next
       else
-        member = Member.assign_attributes(member_hash)
-        member.save!
-        row["STATUS"] = "Uploaded"
+        nmember = Member.new(member_hash)
+        if nmember.save
+          row["STATUS"] = "Uploaded"
+        else
+          row["STATUS"] = "Error: #{nmember.errors.full_messages.join(', ')}"
+        end
       end
     
     end

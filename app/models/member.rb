@@ -1,5 +1,5 @@
 class Member < ApplicationRecord
-  validates_presence_of :last_name, :first_name, :middle_name, :birth_date, :date_membership
+  validates_presence_of :last_name, :first_name, :middle_name, :birth_date
   has_many :dependents, dependent: :destroy
   accepts_nested_attributes_for :dependents, reject_if: :all_blank, allow_destroy: true
 

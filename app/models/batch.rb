@@ -31,6 +31,22 @@ class Batch < ApplicationRecord
     return dc_prm
   end
 
+  def self.get_batches_index(admin, query, current_user)
+    if query.present?
+      if admin == true
+        where("title LIKE ?", "%#{query}%")
+      else
+        where("title LIKE ? OR description LIKE ?", "%#{query}%", "%#{query}%").where(branch_id: current_user.user_detail.branch_id)
+      end
+    else
+      if admin == true
+        limit(100).all
+      else
+        where(branch_id: current_user.user_detail.branch_id).limit(100)
+      end
+    end
+  end
+
   def batch_csv(batch_id) 
     @batch = Batch.find(batch_id)
     CSV.generate(col_sep: ";") do |csv|

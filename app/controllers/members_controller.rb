@@ -80,6 +80,7 @@ class MembersController < ApplicationController
     import_service = ImportService.new(:member, params[:file],brn_id)
     import_message = import_service.import
     # redirect_to members_path, notice: import_message
+
     if import_message.present? && import_message == "No file uploaded"
       flash[:notice] = "No file uploaded"
       redirect_to members_path
@@ -113,7 +114,7 @@ class MembersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def member_params
-      params.require(:member).permit(:last_name, :first_name, :middle_name, :suffix, :birth_date, :date_membership, :civil_status, :gender, :mobile_no, :email,:health_declaration, :branch_id, dependents_attributes: [:id, :member_id, :last_name, :first_name, :middle_name, :birth_date, :relationship, :_destroy] )
+      params.require(:member).permit(:last_name, :first_name, :middle_name, :suffix, :birth_date, :civil_status, :gender, :mobile_no, :email,:health_declaration, :branch_id, dependents_attributes: [:id, :member_id, :last_name, :first_name, :middle_name, :birth_date, :relationship, :_destroy] )
     end
 
 end
