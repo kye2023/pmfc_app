@@ -1,6 +1,11 @@
-<div class="card">
+<!--<div class="card">
   <h5 class="card-header">Edit branch</h5>
   <div class="card-body">
-    <%= render "form", branch: @branch %>
+    <%# render "form", branch: @branch %>
   </div>
-</div>
+</div>-->
+<%= render "batches/remote_modal", title: "Edit Branch" do %>
+
+  <%= render "form", branch: @branch %>
+
+<% end %>

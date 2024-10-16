@@ -277,7 +277,7 @@ class BatchesController < ApplicationController
       pdf.move_down 20
 
       #Table Header
-      datazero = [["#","Certificate", "Name", "Sum Insured", "Effectiity", "Expiry", "Term","Status","Premium"]]
+      datazero = [["#","Certificate", "Name", "Sum Insured", "Effectivity", "Expiry", "Term","Status","Premium"]]
       
       #Table Body (Active Record)
       total_sumi = 0
@@ -300,8 +300,8 @@ class BatchesController < ApplicationController
           "#{c.group_certificate}",
           "#{c.member.get_cmember}",
           "#{helpers.to_curr(c.loan_coverage)}",
-          "#{helpers.to_shortdate(c.effectivity)}",
-          "#{helpers.to_shortdate(c.expiry)}",
+          "#{(c.effectivity).strftime("%m/%d/%Y")}",
+          "#{(c.expiry).strftime("%m/%d/%Y")}",
           "#{c.term}",
           "#{c.status[0,1]}",
           "#{helpers.to_curr(loan_prem)}"

@@ -23,23 +23,31 @@
     </thead>
 
     <tbody>
-      <% @branches.each do |branch| %>
+      <% 
+        bId = 0
+        @branches.each do |branch| 
+          bId = branch.id
+      %>
       <tr>
         <th scope="row"><%= branch.id %></th>
         <td>
           <div class="text-wrap fw-bold"><%= branch.name %></div>
           <div class="text-wrap fw-lighter">
             <% 
-              individual_plan = branch.branch_premium("lppi") 
-              group_plan = branch.branch_premium("gyrt") 
-              total_premium = (individual_plan+group_plan)
+              individual_plan = branch.branch_premium("lppi", bId) 
+              group_plan = branch.branch_premium("gyrt", bId) 
+              # total_premium = (individual_plan+group_plan)
             %>
-            <small class="text-muted"><%= "Centers: "+"#{branch.center_names.count(:id)}"+" | Remittance: "+"#{branch.count_branch_id(branch.id)}"+" | Premium: "+"#{to_curr(total_premium)}" %> </small>
+            <small class="text-muted">
+              <%= 
+                "Centers: "+"#{branch.center_names.count(:id)}"+" | Remittance: "+"#{branch.count_branch_id(branch.id)}"+" | Premium: "+"LPPI("+"#{to_curr(individual_plan)}"+") SGYRT ("+"#{to_curr(group_plan)}"+")"
+              %> 
+            </small>
           </div>
         </td>
         <td>
-          <%= link_to '<i class="bi bi-eye-fill"></i>'.html_safe, branch, class: 'btn btn-secondary btn-sm' %>
-          <%= link_to '<i class="bi bi-pencil-square"></i>'.html_safe, edit_branch_path(branch), class: 'btn btn-secondary btn-sm' %>
+          <%= link_to '<i class="bi bi-eye-fill"></i>'.html_safe, branch, data: { turbo_frame:"remote_modal" }, class: 'btn btn-secondary btn-sm' %>
+          <%= link_to '<i class="bi bi-pencil-square"></i>'.html_safe, edit_branch_path(branch), data: { turbo_frame:"remote_modal" }, class: 'btn btn-secondary btn-sm' %>
           <%= link_to '<i class="bi bi-trash"></i>'.html_safe, branch, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
         </td>
       </tr>

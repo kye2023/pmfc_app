@@ -1,21 +1,35 @@
-
 <%= simple_form_for(@batch) do |f| %>
   <%= f.error_notification %>
   <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
 
   <div class="form-inputs">
-    <%= f.input :title %>
+    <%= f.input :title, label: 'Title/BS No./Ref No.' %>
     <%= f.input :description %>
 
     <%# current_user.admin? %><br>
     <%# current_user.user_detail.branch_id %>
-
+    <div class="row">
     <% if current_user.admin? %>
-      <%= f.association :branch %>
+      <%= f.association :branch, wrapper_html: { class: "col-md-6" } %>
+        <% 
+          sb_select = 0
+          if @batch.submit == true 
+            sb_select = 1
+        %>
+      <%= f.input :submit, label: 'Coverage status', wrapper_html: { class: "col-md-6" }, collection: [['Open','0'],['Closed','1']], selected: sb_select, input_html: { data: { select_target: "bInput" }  }, include_blank: true %>		
+        <% 
+          else 
+        %>
+      <%= f.input :submit, label: 'Coverage status', wrapper_html: { class: "col-md-6" }, collection: [['Open','0'],['Closed','1']], selected: sb_select, input_html: { data: { select_target: "bInput" }  }, include_blank: true %>	
+        <% 
+          end 
+        %>
     <% else %>
       <%= f.association :branch, collection: Branch.where(id: current_user.user_detail.branch_id), selected: current_user.user_detail.branch_id, wrapper_html: { hidden: true } %>
     <% end %>
+    </div>
   </div>
+
 
   <div class="form-actions">
     <%= f.button :submit, class: "btn btn-primary" %>
