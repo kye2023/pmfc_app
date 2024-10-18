@@ -3,7 +3,7 @@
     <div class="mt-4 p-5 bg-secondary text-white rounded" id="<%= dom_id member %>">
       <h1 class="text-truncate"><%= member.get_cmember %></h1>
       <div class="text-wrap fw-lighter"><strong>Birth date: </strong><%= "#{member.get_formatted_bday} | ("+"#{member.compute_member_age(member.birth_date)})" %></div>
-      <div class="text-wrap fw-lighter"><strong>Date membership: </strong><%= member.get_formatted_membership %></div>
+      <!--<div class="text-wrap fw-lighter"><strong>Date membership: </strong><%# member.get_formatted_membership %></div>-->
       <div class="text-wrap fw-lighter"><strong>Civil status: </strong><%= member.civil_status %></div>
       <div class="text-wrap fw-lighter"><strong>Gender: </strong><%= member.gender %></div>
       <div class="text-wrap fw-lighter"><strong>Mobile no: </strong><%= member.mobile_no %></div>

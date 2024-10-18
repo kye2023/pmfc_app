@@ -17,7 +17,7 @@ class BatchImportCoverage
     #drop 1 - header excluded
     dependents_spreadsheet.drop(1).each do |row|
 
-      certificate_num = row["CERTNO"].strip.upcase
+      certificate_num = row["CERTNO"]
       principal_lname = row["LASTNAME"].strip.upcase
       principal_fname = row["FIRSTNAME"].strip.upcase
       principal_mname = row["MI"].strip.upcase
@@ -37,53 +37,60 @@ class BatchImportCoverage
       
       if mmbr_data.present? == true && mmbr_data.id.nil? == false
         #CHECK if DB member meet the params from excel row
-        check_coverage = Coverage.where(member_id: mmbr_data.id)
-        retrieve_coverage = check_coverage.order(:effectivity,:expiry).last
-        cov_aging = retrieve_coverage.coverage_aging
-
-        # coverage_id = Coverage.find_by(batch_id: @batch_id, member_id: mmbr_data.id)&.id
-        # center_id = CenterName.find_by(description: cvg_cname)&.id
-        # verify center & residency
-        center_id = verify_center(cvg_cname)
-        gresidency = verify_residency(mmbr_data, cvg_resdncy)
-
-        coverage_hash = {
-          batch_id: @batch_id,
-          member_id: mmbr_data.id,
-          loan_certificate: row["CERTNO"] == nil ? nil : row["CERTNO"],
-          age: row["AGE"] == nil ? nil : row["AGE"],
-          loan_coverage: row["AMOUNTOFLOAN"] == nil ? nil : row["AMOUNTOFLOAN"],
-          effectivity: formatted_efdate,
-          grace_period: row["GRACEPERIOD"] == nil ? nil : row["GRACEPERIOD"],
-          term: row["TERM"] == nil ? nil : row["TERM"],
-          residency: gresidency,
-          status: row["STATUS"] == nil ? nil : row["STATUS"],
-          center_name_id: center_id
-        }
         
-        # raise "errors"
+        check_coverage = Coverage.where(member_id: mmbr_data.id)
+        if check_coverage.present? == true
+          retrieve_coverage = check_coverage.order(:effectivity,:expiry).last
+          cov_aging = retrieve_coverage.coverage_aging
 
-        if cov_aging <= 0
-          
+          # coverage_id = Coverage.find_by(batch_id: @batch_id, member_id: mmbr_data.id)&.id
+          # center_id = CenterName.find_by(description: cvg_cname)&.id
+          # verify center & residency
+          center_id = verify_center(cvg_cname)
+          gresidency = verify_residency(mmbr_data, cvg_resdncy)
+
+          coverage_hash = 
+          {
+            batch_id: @batch_id,member_id: mmbr_data.id,loan_certificate: row["CERTNO"] == nil ? nil : row["CERTNO"],age: row["AGE"] == nil ? nil : row["AGE"],
+            loan_coverage: row["AMOUNTOFLOAN"] == nil ? nil : row["AMOUNTOFLOAN"],effectivity: formatted_efdate,grace_period: row["GRACEPERIOD"] == nil ? nil : row["GRACEPERIOD"],term: row["TERM"] == nil ? nil : row["TERM"],residency: gresidency,status: row["STATUS"] == nil ? nil : row["STATUS"],center_name_id: center_id
+          }
+
+          if cov_aging <= 0
+            # raise "errors"
+            # CHECK for EXISTING coverage, ADD NEW IF NIL
+            icoverage = Coverage.new(coverage_hash)
+            # Calls method from coverage model
+            icoverage.compute_age
+            icoverage.save!
+            scoverage = Coverage.find_by(batch_id: @batch_id, member_id: mmbr_data.id)
+            cdpndnt = dependent_coverage_save(scoverage.id, mmbr_data.id, scoverage.residency, scoverage.term)
+            row["up_STATUS"] = "Renewed"
+          else
+            row["up_STATUS"] = "Existing"
+          end
+        else
+          center_id = verify_center(cvg_cname)
+          coverage_new_hash = 
+          {
+            batch_id: @batch_id,member_id: mmbr_data.id,loan_certificate: row["CERTNO"] == nil ? nil : row["CERTNO"],age: row["AGE"] == nil ? nil : row["AGE"],
+            loan_coverage: row["AMOUNTOFLOAN"] == nil ? nil : row["AMOUNTOFLOAN"],effectivity: formatted_efdate,grace_period: row["GRACEPERIOD"] == nil ? nil : row["GRACEPERIOD"],term: row["TERM"] == nil ? nil : row["TERM"],residency: row["RESIDENCY"],status: row["STATUS"] == nil ? nil : row["STATUS"],
+            center_name_id: center_id
+          }
           # CHECK for EXISTING coverage, ADD NEW IF NIL
-          icoverage = Coverage.new(coverage_hash)
+          iicoverage = Coverage.new(coverage_new_hash)
           # Calls method from coverage model
-          icoverage.compute_age
-          icoverage.save!
+          iicoverage.compute_age
+          iicoverage.save!
           scoverage = Coverage.find_by(batch_id: @batch_id, member_id: mmbr_data.id)
           cdpndnt = dependent_coverage_save(scoverage.id, mmbr_data.id, scoverage.residency, scoverage.term)
-          row["STATUS"] = "Uploaded"
-
-        else
-
-          row["STATUS"] = "Existing"
-
+          row["up_STATUS"] = "New"
+         
         end
 
       else
 
         #SKIP THIS ROW IF TRUE/no record(s) found, count as non-enrolled
-        row["STATUS"] = "Unlisted"
+        row["up_STATUS"] = "Unlisted"
         next
         
       end
@@ -121,7 +128,7 @@ def verify_center(excl_center)
 end
 
 def verify_residency(arr, excl_residency)
-  if excl_residency.nil? == false && excl_residency.match?(/\A-?\d+\Z/) == true
+  if excl_residency.nil? == false && excl_residency.to_s.match?(/\A-?\d+\Z/) == true
     excl_residency
   else
     excl_residency = arr.coverages.sum(:term)
@@ -137,8 +144,9 @@ def dependent_coverage_save(cvrgid, mmbrid, residency, term)
     dependent.each do |dpndnt|
       
       mmbr_type = dpndnt.relationship
-      dgpremium = get_dependent_gpremium_gbenefits(residency,term,mmbr_type,"gp")
-      dgbenefits = get_dependent_gpremium_gbenefits(residency,term,mmbr_type,"gb")
+      msc = mmbr_type.strip.capitalize
+      dgpremium = get_dependent_gpremium_gbenefits(residency,term,msc,"gp")
+      dgbenefits = get_dependent_gpremium_gbenefits(residency,term,msc,"gb")
 
       dep_coverage = DependentCoverage.find_or_initialize_by(
         coverage_id: cvrgid,dependent_id: dpndnt.id,
@@ -153,7 +161,8 @@ end
 def get_dependent_gpremium_gbenefits(residency,term,membertype,type)
   group_premium = 0
   group_benefit_id = 0
-  
+  membertype
+
   case membertype
   when "Spouse"
     membertype = 'spouse'

@@ -7,25 +7,20 @@
     <%# render @branch %>
       <div class="row">
         <div class="col-lg-6">
-          <p><strong>Name:</strong><%= branch.name %></p>
+          <p><strong>Name: </strong><%= branch.name %></p>
           <p><strong>Description:</strong><%= branch.description %></p>
           <p><strong>Address:</strong><%= branch.address %></p>
           <p><strong>Contact no:</strong><%= branch.contact_no %></p>
-          <p><strong>Email:</strong><%= branch.email %></p>
+          <p><strong>Email: </strong><%= branch.email %></p>
         </div>
         <div class="col-lg-6">
-          <p><strong>Remittance:</strong><%= branch.count_branch_id(branch.id) %></p>
-          <!--<p>
-            <strong>Total Premium:</strong><br>
-            <% 
-              bId = branch.id
-              iplan = branch.branch_premium("lppi", bId)
-              gplan = branch.branch_premium("gyrt", bId)
-              # raise "errors"
-            %>
-          </p>-->
-          <!--<p><strong>LPPI :</strong><%# total_premium = to_curr(iplan) %></p>
-          <p><strong>SGYRT :</strong> <%# total_premium = to_curr(gplan) %></p>-->
+          <p><strong>Remittance: </strong><%= branch.count_branch_id(branch.id) %></p>
+          <% 
+            sfee = branch.service_fee.to_i 
+            if sfee.present? == true
+          %>
+          <p><strong>Service Fee: </strong><%= "#{sfee}"+"%" %></p>
+          <% end %>
         </div>
       </div>
   </div>
@@ -70,24 +65,25 @@
               slppi += lppi
               %>
               <% if lppi == 0 %>
-              <%= link_to '<i class="bi bi-file-plus"></i>'.html_safe+" Add Coverage", batch_url(batch, qry: 0, pln: 0, pth: "br1-"+"#{@branch.id}"), class: 'btn btn-secondary btn-sm' %>
+              <%# link_to '<i class="bi bi-file-plus"></i>'.html_safe+" Add Coverage", batch_url(batch, qry: 0, pln: 0, pth: "br1-"+"#{@branch.id}"), class: 'btn btn-secondary btn-sm' %>
+              <div class="text-wrap fw-lighter"><small>-</small></div>
               <% else %>
-              <%= link_to '<i class="bi bi-eye-fill"></i>'.html_safe+" #{to_curr(lppi)}", batch_url(batch, qry: 0, pln: 0, pth: "br1-"+"#{@branch.id}"), class: 'btn btn-secondary btn-sm' %>
+              <%# link_to '<i class="bi bi-eye-fill"></i>'.html_safe+" #{to_curr(lppi)}", batch_url(batch, qry: 0, pln: 0, pth: "br1-"+"#{@branch.id}"), class: 'btn btn-secondary btn-sm' %>
+              <div class="text-wrap fw-lighter"><small><%= to_curr(lppi) %></small></div>
               <% end %>
             </td>
             <td class="text-end">
-              <!--<div class="text-wrap fw-lighter"><small><%# to_curr(batch.coverages.sum(:group_premium)+(batch.batch_coverage)) %></small></div>-->
               <%
                 gyrt = 0
                 gyrt = batch.coverages.sum(:group_premium)+(batch.batch_coverage)
                 ssgyrt += gyrt
-                # gyrt = batch.coverages.sum(:group_premium)
-                # dgyrt = batch.batch_coverage
               %>
               <% if gyrt == 0 %>
-                <%= link_to '<i class="bi bi-file-plus"></i>'.html_safe+" Add Coverage", batch_url(batch, qry: 0, pln: 1, pth: "br1-"+"#{@branch.id}"), class: 'btn btn-secondary btn-sm' %>
+                <%# link_to '<i class="bi bi-file-plus"></i>'.html_safe+" Add Coverage", batch_url(batch, qry: 0, pln: 1, pth: "br1-"+"#{@branch.id}"), class: 'btn btn-secondary btn-sm' %>
+                <div class="text-wrap fw-lighter"><small>-</small></div>
               <% else %>
-                <%= link_to '<i class="bi bi-eye-fill"></i>'.html_safe+" #{to_curr(gyrt)}", batch_url(batch, qry: 0, pln: 1, pth: "br1-"+"#{@branch.id}"), class: 'btn btn-secondary btn-sm' %>
+                <%# link_to '<i class="bi bi-eye-fill"></i>'.html_safe+" #{to_curr(gyrt)}", batch_url(batch, qry: 0, pln: 1, pth: "br1-"+"#{@branch.id}"), class: 'btn btn-secondary btn-sm' %>
+                <div class="text-wrap fw-lighter"><small><%= to_curr(gyrt) %></small></div>
               <% end %>
             </td>
           </tr>

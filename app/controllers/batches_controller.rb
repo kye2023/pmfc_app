@@ -180,24 +180,25 @@ class BatchesController < ApplicationController
         lname = r["LASTNAME"].upcase
         fname = r["FIRSTNAME"].upcase
         mname = r["MI"].upcase
-        if r["STATUS"] == "Unlisted"
+        if r["up_STATUS"] == "Unlisted"
           scounter+=1
-          scounter.to_s+". "+lname+", "+fname+" "+mname+" - "+r["STATUS"]
+          scounter.to_s+". "+lname+", "+fname+" "+mname+" - "+r["up_STATUS"]
         end
       end.compact 
 
-      status_count = import_message.group_by { |message| message["STATUS"] }.map { |status, messages| [status, messages.size] }.to_h
+      status_count = import_message.group_by { |message| message["up_STATUS"] }.map { |status, messages| [status, messages.size] }.to_h
       
       # raise "errors"
 
       flash_existing = status_count["Existing"]
-      flash_uploaded = status_count["Uploaded"]
+      flash_renewal = status_count["Renewed"]
       flash_unlisted = status_count["Unlisted"]
+      flash_new = status_count["New"]
 
       flash_names = status_names.map { |status_names| "#{status_names}<br>" }.join
     
-      flash[:notice] = "Import successful. <br><br> Existing :"+flash_existing.to_s+"<br> Uploaded :"+flash_uploaded.to_s+"<br> Unlisted :"+flash_unlisted.to_s+"<br>"
-      if flash_unlisted > 0
+      flash[:notice] = "Import successful. <br><br> Existing :"+flash_existing.to_s+"<br> Renewed :"+flash_renewal.to_s+"<br> Unlisted :"+flash_unlisted.to_s+"<br> New :"+flash_new.to_s+"<br>"
+      if flash_unlisted.present? == true && flash_unlisted > 0
         flash[:notice] += "Please enroll the following member(s) :<br>"
         # flash[:notice] += flash_names
         flash[:notice] += "<br>#{view_context.link_to('View Unlisted', unlisted_preview_batch_path(batch_id, unlisted: flash_names), data: {turbo_frame: "remote_modal"})}"
