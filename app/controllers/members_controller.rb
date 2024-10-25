@@ -18,10 +18,24 @@ class MembersController < ApplicationController
 
   # GET /members/new
   def new
+    # @ulist = params[:unlisted]
+    # @member = Member.new
+    #   if @ulist.present? == true
+    #     @member.last_name = @ulist[0]
+    #     @member.first_name = @ulist[1]
+    #     @member.middle_name = @ulist[2]
+    #     @member.birth_date = @ulist[3].to_s
+    #   else
+    #     if Rails.env.development?
+    #       dummy_data
+    #     end
+    #   end
+
     @member = Member.new
     if Rails.env.development?
       dummy_data
     end
+    
   end
 
   def dummy_data 
@@ -79,7 +93,31 @@ class MembersController < ApplicationController
 
     import_service = ImportService.new(:member, params[:file],brn_id)
     import_message = import_service.import
-    redirect_to members_path, notice: import_message
+    # redirect_to members_path, notice: import_message
+
+    if import_message.present? && import_message == "No file uploaded"
+      flash[:notice] = "No file uploaded"
+      redirect_to members_path
+    else
+      status_names = import_message.map do |r|
+        lname = r["LASTNAME"].upcase
+        fname = r["FIRSTNAME"].upcase
+        mname = r["MI"].upcase
+      end.compact 
+
+      status_count = import_message.group_by { |message| message["STATUS"] }.map { |status, messages| [status, messages.size] }.to_h
+      
+      # raise "errors"
+
+      flash_existing = status_count["Existing"]
+      flash_uploaded = status_count["Uploaded"]
+
+      flash_names = status_names.map { |status_names| "#{status_names}<br>" }.join
+    
+      flash[:notice] = "Import successful. <br><br> Existing :"+flash_existing.to_s+"<br> Uploaded :"+flash_uploaded.to_s
+      redirect_to members_path
+    end
+    
   end
 
   private
@@ -90,7 +128,7 @@ class MembersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def member_params
-      params.require(:member).permit(:last_name, :first_name, :middle_name, :suffix, :birth_date, :date_membership, :civil_status, :gender, :mobile_no, :email,:health_declaration, :branch_id, dependents_attributes: [:id, :member_id, :last_name, :first_name, :middle_name, :birth_date, :relationship, :_destroy] )
+      params.require(:member).permit(:last_name, :first_name, :middle_name, :suffix, :birth_date, :civil_status, :gender, :mobile_no, :email,:health_declaration, :branch_id, dependents_attributes: [:id, :member_id, :last_name, :first_name, :middle_name, :birth_date, :relationship, :_destroy] )
     end
 
 end

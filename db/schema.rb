@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_06_04_060216) do
+ActiveRecord::Schema[7.0].define(version: 2024_10_14_035713) do
   create_table "batches", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "title"
     t.text "description"
@@ -36,6 +36,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_04_060216) do
     t.string "email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "service_fee", precision: 10, scale: 2
   end
 
   create_table "center_names", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -140,6 +141,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_04_060216) do
     t.string "suffix"
     t.bigint "branch_id"
     t.string "health_declaration"
+    t.boolean "plan_lppi", default: true
+    t.boolean "plan_sgyrt", default: true
     t.index ["branch_id"], name: "index_members_on_branch_id"
   end
 

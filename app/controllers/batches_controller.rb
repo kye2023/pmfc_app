@@ -1,6 +1,7 @@
 class BatchesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_batch, only: %i[ show edit update destroy import_cov batch_submit batch_preview]
+  
   require 'csv'
 
   def batch_submit 
@@ -20,13 +21,18 @@ class BatchesController < ApplicationController
   
   # GET /batches or /batches.json
   def index
-    if current_user.admin == true
-      @batches = Batch.all
-    else
-      @batches = Batch.where(branch_id: current_user.user_detail.branch_id)
-    end
-   
+    require 'pagy/extras/bootstrap'
+    
+    @batches = Batch.get_batches_index(current_user.admin, params[:query], current_user)
 
+    @pagy, @batches = pagy(@batches, items: 10)
+
+    # if current_user.admin == true
+    #   @batches = Batch.all
+    # else
+    #   @batches = Batch.where(branch_id: current_user.user_detail.branch_id)
+    # end
+   
     respond_to do |format|
       format.html
       format.csv do 
@@ -68,7 +74,7 @@ class BatchesController < ApplicationController
     #   @show_coverage
     # end
     
-    @pagy, @records = pagy(@show_coverage, items: 5)
+    # @pagy, @records = pagy(@show_coverage, items: 5)
 
     #download CSV
     respond_to do |format|
@@ -169,33 +175,51 @@ class BatchesController < ApplicationController
       flash[:notice] = "No file uploaded"
       redirect_to batches_path
     else
-      scounter = 0
+      mcount = 0
+      ucount = 0
+      # ul_arname = []
       status_names = import_message.map do |r|
         lname = r["LASTNAME"].upcase
         fname = r["FIRSTNAME"].upcase
         mname = r["MI"].upcase
-        if r["STATUS"] == "Unlisted"
-          scounter+=1
-          scounter.to_s+". "+lname+", "+fname+" "+mname+" - "+r["STATUS"]
+        bdate = r["BIRTHDATE"]
+        arr_sts = r["up_STATUS"]
+        cId = r["cvgID"]
+        ul_name = "#{lname}"+", "+"#{fname}"+", "+"#{mname}"
+        mcount+=1
+
+        if arr_sts == "Unlisted"
+          # ucount+=1
+          "#{mcount}. #{ul_name} - #{arr_sts}"
+          # ul_arname << [lname, fname, mname, bdate]
+          # "#{ucount}. #{ul_name} - #{arr_sts} #{view_context.link_to('Enroll', new_member_path(unlisted: ul_arname), target: '_blank')}"
+          # ucount.to_s+". "+lname+", "+fname+" "+mname+" - "+r["up_STATUS"]+"#{view_context.link_to('Enroll', new_member_path(unlisted: import_message[mcount-1]), target: '_blank')}"
+        elsif arr_sts == "Active"
+          "#{mcount}. #{ul_name} - #{view_context.link_to("#{arr_sts}", coverage_path(cId, activeID: cId), target: '_blank')}"
         end
+
       end.compact 
 
-      status_count = import_message.group_by { |message| message["STATUS"] }.map { |status, messages| [status, messages.size] }.to_h
+      status_count = import_message.group_by { |message| message["up_STATUS"] }.map { |status, messages| [status, messages.size] }.to_h
       
       # raise "errors"
 
       flash_existing = status_count["Existing"]
-      flash_uploaded = status_count["Uploaded"]
+      flash_renewal = status_count["Renewed"]
       flash_unlisted = status_count["Unlisted"]
+      flash_new = status_count["New"]
+      flash_active = status_count["Active"]
 
       flash_names = status_names.map { |status_names| "#{status_names}<br>" }.join
     
-      flash[:notice] = "Import successful. <br><br> Existing :"+flash_existing.to_s+"<br> Uploaded :"+flash_uploaded.to_s+"<br> Unlisted :"+flash_unlisted.to_s+"<br>"
-      if flash_unlisted > 0
+      flash[:notice] = "Import successful. <br><br> Active : #{flash_active} <br> Existing : #{flash_existing} <br> Renewed : #{flash_renewal} <br> Unlisted : #{flash_unlisted} <br> New : #{flash_new} <br>"
+
+      if flash_unlisted.present? == true && flash_unlisted > 0
         flash[:notice] += "Please enroll the following member(s) :<br>"
         # flash[:notice] += flash_names
         flash[:notice] += "<br>#{view_context.link_to('View Unlisted', unlisted_preview_batch_path(batch_id, unlisted: flash_names), data: {turbo_frame: "remote_modal"})}"
       end
+
       redirect_to batches_path
     end
     
@@ -271,7 +295,7 @@ class BatchesController < ApplicationController
       pdf.move_down 20
 
       #Table Header
-      datazero = [["#","Certificate", "Name", "Sum Insured", "Effectiity", "Expiry", "Term","Status","Premium"]]
+      datazero = [["#","Certificate", "Name", "Sum Insured", "Effectivity", "Expiry", "Term","Status","Premium"]]
       
       #Table Body (Active Record)
       total_sumi = 0
@@ -294,10 +318,10 @@ class BatchesController < ApplicationController
           "#{c.group_certificate}",
           "#{c.member.get_cmember}",
           "#{helpers.to_curr(c.loan_coverage)}",
-          "#{helpers.to_shortdate(c.effectivity)}",
-          "#{helpers.to_shortdate(c.expiry)}",
+          "#{(c.effectivity).strftime("%m/%d/%Y")}",
+          "#{(c.expiry).strftime("%m/%d/%Y")}",
           "#{c.term}",
-          "#{c.status}",
+          "#{c.status[0,1]}",
           "#{helpers.to_curr(loan_prem)}"
         ]]
         total_sumi += c.loan_coverage

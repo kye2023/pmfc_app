@@ -12,8 +12,6 @@ class MemberImportService
 
     members_spreadsheet = parse_file('MemberMasterlist')
     
-    mbr_ncount = 0
-    mbr_ecount = 0
     #drop 1 - header excluded
     members_spreadsheet.drop(1).each do |row|
       #iteration per row
@@ -32,7 +30,6 @@ class MemberImportService
         first_name: row["FIRSTNAME"] == nil ? nil : row["FIRSTNAME"].strip,
         middle_name: row["MI"] == nil ? nil : row["MI"].strip,
         birth_date: formatted_bdate,
-        date_membership: row["DATEOFMEMBERSHIP"] == nil ? nil : row["DATEOFMEMBERSHIP"],
         civil_status: row["CIVILSTATUS"] == nil ? nil : row["CIVILSTATUS"].strip,
         gender: row["GENDER"] == nil ? nil : row["GENDER"],
         mobile_no: row["MOBILENO"] == nil ? nil : row["MOBILENO"],
@@ -40,31 +37,32 @@ class MemberImportService
         branch_id: @branch_id
       }
     
-
       member = Member.find_or_initialize_by(
         last_name: member_hash[:last_name],
         first_name: member_hash[:first_name],
         middle_name: member_hash[:middle_name],
-        birth_date: member_hash[:birth_date],
-        branch_id: member_hash[:branch_id]
+        birth_date: member_hash[:birth_date]
       )
 
-      member.assign_attributes(member_hash)
-      member.save!
       
-      # if member.persisted?
-      #  #member.update(member_hash)
-      #  next
-      #  mbr_ecount += 1
-      # else
-      #   new_member = Member.create(member_hash)
-      #   mbr_ncount += 1
-      # end
+
+      if member.persisted? == true
+       #member.update(member_hash)
+       row["STATUS"] = "Existing"
+       next
+      else
+        nmember = Member.new(member_hash)
+        if nmember.save
+          row["STATUS"] = "Uploaded"
+        else
+          row["STATUS"] = "Error: #{nmember.errors.full_messages.join(', ')}"
+        end
+      end
     
     end
 
-    #"Success!\nNew :"+"#{mbr_ncount}"+"\nExisting :"+"#{mbr_ecount}"
-    "Member file uploaded!"
+    # "Success!\nNew :"+"#{mbr_ncount}"+"\nExisting :"+"#{mbr_ecount}"
+    # "Member file uploaded!"
 
   end
 

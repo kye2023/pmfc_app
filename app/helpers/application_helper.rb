@@ -8,6 +8,10 @@ module ApplicationHelper
 		number_to_currency(amount, unit: "")
 	end
 
+	def to_numdelimit(numbr)
+		number_with_precision(numbr, :precision => 0, :delimiter => ',')	
+	end
+
 	def to_shortdate(date)
 		date.strftime('%b %d, %Y')
 	end

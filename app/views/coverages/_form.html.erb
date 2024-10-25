@@ -1,5 +1,5 @@
-<%= url %><br>
-<%= "BatchID: #{@batch.present?}"+" MemberID: #{@member.present?}" %><br>
+<%#<%# url %<br>
+<%# "BatchID: #{@batch.present?}"+" MemberID: #{@member.present?}" %<br>%>
 <%= simple_form_for(@coverage, url: url, method: meth) do |f| %>
   <!--<p style="color: green"><%# notice %></p>-->
 	<div class="container" data-controller="select" data-select-url="<%= coverages_path() %>">
@@ -65,7 +65,8 @@
 					<%= f.input :status, wrapper_html: { class: "col-md-3" }, collection: [['New','N'],['Renewal','R']], selected: cstatus, input_html: { data: { select_target: "statusInput" }  }, include_blank: true %>		
 				<% end %>
 					<%= f.input :term, wrapper_html: { class: "col-md-3"}, collection: Coverage::TERMS, input_html: { data: { select_target: "termInput" }  } %>
-					<%= f.input :grace_period, wrapper_html: { class: "col-md-3" }, input_html: { data: { select_target: "gpInput" }  }  %>
+					<%= f.input :grace_period, as: :integer, wrapper_html: { class: "col-md-3" }, input_html: { data: { select_target: "gpInput" }, 
+					required: true, min: 0, step: 1   }  %>
 					<%= f.input :loan_coverage, wrapper_html: { class: "col-md-12"}, input_html: { data: { action: 'input->select#show_benefits' }  } %>
 				</div>
 			</div>

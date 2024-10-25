@@ -1,3 +1,4 @@
+<%# @ulist.present? %>
 <%= simple_form_for(@member, data: { controller: "flatpickr" }) do |f| %>
   <%= f.error_notification %>
   <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
@@ -23,16 +24,17 @@
       <%= f.input :middle_name, wrapper_html: { class: "col-md-2" } %>
       <%= f.input :suffix, wrapper_html: { class: "col-md-2" } %>
     </div>
+    
     <!--Date-Picker-->
     <div class="row">
       <div class="col-md-6">
         <%= f.label :birth_date %>
         <%= f.date_field :birth_date, class: "bdate_pick" %>
       </div>
-      <div class="col-md-6">
-        <%= f.label :date_membership %>
-        <%= f.date_field :date_membership, class: "dmdate_pick" %>
-     </div>
+      <!--<div class="col-md-6">
+        <%#= f.label :date_membership %>
+        <%#= f.date_field :date_membership, class: "dmdate_pick" %>
+     </div>-->
     </div><br>
     <!--Date-Picker-->
     <div class="row">
@@ -71,5 +73,4 @@
     <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, members_path, class: "btn btn-secondary" %>
     <%= f.button :submit, class: "btn btn-primary" %>
   </div>
-  <%# raise "errors"%>
 <% end %>
