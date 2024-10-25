@@ -72,13 +72,13 @@
             <% else %>
             <div class="badge bg-primary text-wrap" style="width: 6rem;"><%= coverage.coverage_aging_status(cn_aging) %></div>
             <% end %>
-             <div class="text-wrap fw-lighter"><small>Coverage: <%= cbatch %></small></div>
+            <div class="text-wrap fw-lighter"><small>Coverage: <%= cbatch %></small></div>
             <div class="text-wrap fw-lighter"><small>Sum Insured: <%= csuninsurge %></small></div>
             <div class="text-wrap fw-lighter"><small>Premium: <%= cpremium %></small></div>
             <div class="text-wrap fw-lighter"><small>Rate: <%= crate %></small></div>
           </td>   
           <td>
-            <%# link_to 'View', coverage_path(coverage), class: 'btn btn-secondary btn-sm' %>
+            <%= link_to 'View', coverage_path(coverage, activeID: nil), class: 'btn btn-secondary btn-sm', data: {turbo_frame: "remote_modal"} %>
             <%# link_to 'Edit', edit_coverage_path(coverage), class: 'btn btn-secondary btn-sm' %>
             <%# link_to "Delete", coverage, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
           </td>

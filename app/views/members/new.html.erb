@@ -10,12 +10,20 @@
 <%
 =end
 %>
-
-<%= render "remote_modal", title: "New Member" do %>
-<div class="card">
-  <h5 class="card-header">Add member <%# current_user.user_detail.last_name %><%# current_user.user_detail.branch_id %></h5>
-  <div class="card-body">
-    <%= render "form", item: @item %>
+<% if @ulist.present? == true %>
+  <div class="card">
+    <h5 class="card-header">Add member <%# current_user.user_detail.last_name %><%# current_user.user_detail.branch_id %></h5>
+    <div class="card-body">
+      <%= render "form", item: @item %>
+    </div>
   </div>
-</div>
+<% else %>
+  <%= render "remote_modal", title: "New Member" do %>
+  <div class="card">
+    <h5 class="card-header">Add member <%# current_user.user_detail.last_name %><%# current_user.user_detail.branch_id %></h5>
+    <div class="card-body">
+      <%= render "form", item: @item %>
+    </div>
+  </div>
+  <% end %>
 <% end %>

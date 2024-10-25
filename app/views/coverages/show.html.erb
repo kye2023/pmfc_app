@@ -1,5 +1,17 @@
-
-<%= render "remote_modal", title: "#{@coverage.member}" + "#{@coverage.coverage_status}" do %>
-  <%= render @coverage %>
+<% if @actvID.present? == true %>
+  <div class="col-lg-12">
+    <div class="card-body">
+    <%= link_to '<i class="bi bi-arrow-bar-left">Loans Individual</i>'.html_safe, coverages_path, class: 'btn btn-primary btn-sm' %>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <%= render @coverage %>
+      </div>
+    </div>
+  </div>
+<% else %>
+  <%= render "remote_modal", title: "Loan details" do %>
+    <%= render @coverage %>
+  <% end %>
 <% end %>
 

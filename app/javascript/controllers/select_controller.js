@@ -73,23 +73,25 @@ export default class extends Controller {
 
   show_benefits(event)
   {
+    let mbutton2 = document.querySelector('.memberBtn');  
     const debounceTimeout = 300 // 1 second debounce timeout
     const handleShowBenefits = () => {
+      
       let loansInput = event.target.value
       let cv_terms = this.termInputTarget.selectedOptions[0].value
       let cv_gperiod = this.gpInputTarget.value
       
         // alert('Timeout executed!'+loansInput)
-        if( cv_terms == "" || cv_gperiod == "" )
+        if( cv_terms == "" )
         {
           alert("Required fields")
           event.target.value = ""
-          //mbutton.disabled = true
+          mbutton2.disabled = true
         }
         else
         {
           this.show_pbenefits(cv_terms,cv_gperiod,loansInput) // show premium details
-          //mbutton.disabled = false
+          mbutton2.disabled = false
         }
     }
     if (this.timeoutId)

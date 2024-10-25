@@ -3,52 +3,79 @@
   
   <div class="row">
 
-    <dl class="row col-md-6">
-      <dt class="col-md-6">Loan Certificate</dt>
-      <dd class="col-md-6"><%= coverage.loan_certificate %> </dd>
-      <dt class="col-md-6">Effectivity</dt>
-      <dd class="col-md-6"><%= to_shortdate(coverage.effectivity) %> </dd>
-      <dt class="col-md-6">Terms</dt>
-      <dd class="col-md-6"><%= coverage.term %> </dd>
+    <dl class="row col-md-4">
+      <dt class="col-md-12">Insured <div class="text-wrap fw-lighter"><small><%= coverage.member %></small></div></dt>
+      <dt class="col-md-12">Branch <div class="text-wrap fw-lighter"><small><%= coverage.batch.branch %></small></div></dt>
+      <dt class="col-md-12">Loan <div class="text-wrap fw-lighter"><small><%= "#{coverage.batch.title} (#{@coverage.coverage_status})" %></small></div></dt>
     </dl>
-    <dl class="row col-md-6">
-      <dt class="col-md-6">Group Certificate</dt>
-      <dd class="col-md-6"><%= coverage.group_certificate %> </dd>
-      <dt class="col-md-6">Expiry</dt>
-      <dd class="col-md-6"><%= to_shortdate(coverage.expiry) %> </dd>
-      <dt class="col-md-6">Residency</dt>
-      <dd class="col-md-6"><%= coverage.residency %> </dd>
+    <dl class="row col-md-4">
+      <dt class="col-md-12">Loan Certificate <div class="text-wrap fw-lighter"><small><%= coverage.loan_certificate %></small></div></dt>
+      <!--<dd class="col-md-6"></dd>-->
+      <dt class="col-md-12">Effectivity <div class="text-wrap fw-lighter"><small><%= to_shortdate(coverage.effectivity) %></small></div></dt>
+      <!--<dd class="col-md-6"></dd>-->
+      <dt class="col-md-12">Terms <div class="text-wrap fw-lighter"><small><%= coverage.term %></small></div></dt>
+      <!--<dd class="col-md-6"></dd>-->
+    </dl>
+    <dl class="row col-md-4">
+      <dt class="col-md-12">Group Certificate <div class="text-wrap fw-lighter"><small><%= coverage.group_certificate %></small></div></dt>
+      <!--<dd class="col-md-6"></dd>-->
+      <dt class="col-md-12">Expiry <div class="text-wrap fw-lighter"><small><%= to_shortdate(coverage.expiry) %></small></div></dt>
+      <!--<dd class="col-md-6"></dd>-->
+      <dt class="col-md-12">Residency <div class="text-wrap fw-lighter"><small><%= coverage.residency %></small></div></dt>
+      <!--<dd class="col-md-6"></dd>-->
     </dl>
   </div>
 
   <table class="table table-bordered table-hover">
     <thead>
       <tr>
-        <th>Details</th>
-        <th>Life</th>
-        <th>Accidental</th>
-        <th>Burial</th>
+        <th colspan="2">LPPI</th>
+      </tr>
+      <tr>
+        <th>Loan</th>
         <th>Premium</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="table-secondary">
+        <td><%= to_curr(coverage.loan_coverage) %></td>
+        <td><%= to_curr(coverage.loan_premium) %></td>
+      </tr>
+    </tbody>
+  </table>  
+
+  <table class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <th colspan="5">SGYRT</th>
+      </tr>
+      <tr>
+        <th>Details</th>
+        <th class="text-center">Life</th>
+        <th class="text-center">Accidental</th>
+        <th class="text-center">Burial</th>
+        <th class="text-center">Premium</th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <td>Principal</td>
-        <td class="text-end"><%= to_curr(coverage.group_benefit.life) %></td>
-        <td class="text-end"><%= to_curr(coverage.group_benefit.add) %></td>
-        <td class="text-end"><%= to_curr(coverage.group_benefit.burial) %></td>
-        <td class="text-end"><%= to_curr(coverage.group_premium) %></td>
+        <td class="text-center"><%= to_curr(coverage.group_benefit.life) %></td>
+        <td class="text-center"><%= to_curr(coverage.group_benefit.add) %></td>
+        <td class="text-center"><%= to_curr(coverage.group_benefit.burial) %></td>
+        <td class="text-center"><%= to_curr(coverage.group_premium) %></td>
       </tr>
       <% coverage.dependent_coverages.each do |dc| %>
-      <tr>
+      <tr class="table-secondary">
         <td><small><%= dc.dependent %></small><span class="badge bg-light text-dark"><%= dc.dependent.relationship %></span></td>
-        <td class="text-end"><%= to_curr(dc.group_benefit.life) %></td>
-        <td class="text-end"><%= to_curr(dc.group_benefit.add) %></td>
-        <td class="text-end"><%= to_curr(dc.group_benefit.burial) %></td>
-        <td class="text-end"><%= to_curr(dc.premium) %></td>
+        <td class="text-center"><%= to_curr(dc.group_benefit.life) %></td>
+        <td class="text-center"><%= to_curr(dc.group_benefit.add) %></td>
+        <td class="text-center"><%= to_curr(dc.group_benefit.burial) %></td>
+        <td class="text-center"><%= to_curr(dc.premium) %></td>
       </tr>
       <% end %>
     </tbody>
   </table>
+
 
 </div>

@@ -15,7 +15,8 @@ class Coverage < ApplicationRecord
   def compute_age
     # Get age using excel format ((bday-efdate) / 365)
     age_in_days = (effectivity - member.birth_date).to_i
-    age_in_years = (age_in_days / 365.0).floor # Use 365.0 for float division
+    # age_in_years = (age_in_days / 365.0).floor
+    age_in_years = (age_in_days / 365.0).round # Used .round instead of .floor for float data_type to the nearest (ex age = 70.6 to 71)
     self.age = age_in_years
 
     # SET PREMIUM RATE ACCORDING TO AGE group/range

@@ -175,15 +175,29 @@ class BatchesController < ApplicationController
       flash[:notice] = "No file uploaded"
       redirect_to batches_path
     else
-      scounter = 0
+      mcount = 0
+      ucount = 0
+      # ul_arname = []
       status_names = import_message.map do |r|
         lname = r["LASTNAME"].upcase
         fname = r["FIRSTNAME"].upcase
         mname = r["MI"].upcase
-        if r["up_STATUS"] == "Unlisted"
-          scounter+=1
-          scounter.to_s+". "+lname+", "+fname+" "+mname+" - "+r["up_STATUS"]
+        bdate = r["BIRTHDATE"]
+        arr_sts = r["up_STATUS"]
+        cId = r["cvgID"]
+        ul_name = "#{lname}"+", "+"#{fname}"+", "+"#{mname}"
+        mcount+=1
+
+        if arr_sts == "Unlisted"
+          # ucount+=1
+          "#{mcount}. #{ul_name} - #{arr_sts}"
+          # ul_arname << [lname, fname, mname, bdate]
+          # "#{ucount}. #{ul_name} - #{arr_sts} #{view_context.link_to('Enroll', new_member_path(unlisted: ul_arname), target: '_blank')}"
+          # ucount.to_s+". "+lname+", "+fname+" "+mname+" - "+r["up_STATUS"]+"#{view_context.link_to('Enroll', new_member_path(unlisted: import_message[mcount-1]), target: '_blank')}"
+        elsif arr_sts == "Active"
+          "#{mcount}. #{ul_name} - #{view_context.link_to("#{arr_sts}", coverage_path(cId, activeID: cId), target: '_blank')}"
         end
+
       end.compact 
 
       status_count = import_message.group_by { |message| message["up_STATUS"] }.map { |status, messages| [status, messages.size] }.to_h
@@ -194,15 +208,18 @@ class BatchesController < ApplicationController
       flash_renewal = status_count["Renewed"]
       flash_unlisted = status_count["Unlisted"]
       flash_new = status_count["New"]
+      flash_active = status_count["Active"]
 
       flash_names = status_names.map { |status_names| "#{status_names}<br>" }.join
     
-      flash[:notice] = "Import successful. <br><br> Existing :"+flash_existing.to_s+"<br> Renewed :"+flash_renewal.to_s+"<br> Unlisted :"+flash_unlisted.to_s+"<br> New :"+flash_new.to_s+"<br>"
+      flash[:notice] = "Import successful. <br><br> Active : #{flash_active} <br> Existing : #{flash_existing} <br> Renewed : #{flash_renewal} <br> Unlisted : #{flash_unlisted} <br> New : #{flash_new} <br>"
+
       if flash_unlisted.present? == true && flash_unlisted > 0
         flash[:notice] += "Please enroll the following member(s) :<br>"
         # flash[:notice] += flash_names
         flash[:notice] += "<br>#{view_context.link_to('View Unlisted', unlisted_preview_batch_path(batch_id, unlisted: flash_names), data: {turbo_frame: "remote_modal"})}"
       end
+
       redirect_to batches_path
     end
     

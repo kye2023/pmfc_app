@@ -18,10 +18,24 @@ class MembersController < ApplicationController
 
   # GET /members/new
   def new
+    # @ulist = params[:unlisted]
+    # @member = Member.new
+    #   if @ulist.present? == true
+    #     @member.last_name = @ulist[0]
+    #     @member.first_name = @ulist[1]
+    #     @member.middle_name = @ulist[2]
+    #     @member.birth_date = @ulist[3].to_s
+    #   else
+    #     if Rails.env.development?
+    #       dummy_data
+    #     end
+    #   end
+
     @member = Member.new
     if Rails.env.development?
       dummy_data
     end
+    
   end
 
   def dummy_data 
