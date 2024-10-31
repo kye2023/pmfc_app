@@ -8,15 +8,50 @@
   <div class="card">
       <div class="card-header">Premium & Benefits</div>
       <div class="card-body">
-        <div class="text-wrap fw-light"><i class="bi bi-wallet"></i> <small>Loan Premium : &#8369; <%= sCvg.loan_premium %></small></div>
-        <hr>
-        <div class="text-wrap fw-light"><i class="bi bi-wallet"></i> <small>Group Premium : &#8369; <%= sCvg.group_premium %></small></div>
+        <table class="table table-bordered table-hover table-sm">
+          <thead>
+            <tr>
+              <th colspan="3">LPPI</th>
+            </tr>
+            <tr>
+              <th>Loan</th>
+              <th>Premium</th>
+              <th>Rate</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="table-secondary">
+              <td>&#8369;<%= to_curr(sCvg.loan_coverage) %></td>
+              <td>&#8369;<%= to_curr(sCvg.loan_premium) %></td>
+              <td>&#8369;<%= to_curr(sCvg.rate) %></td>
+            </tr>
+          </tbody>
+        </table>  
         <hr>
         <% sgb = GroupBenefit.find(sCvg.group_benefit_id) %>
-        <div class="text-wrap fw-light"><i class="bi bi-card-checklist"></i> <small><%= sgb.member_type %></small></div>
-        <div class="text-wrap fw-light"><i class="bi bi-card-checklist"></i> <small><%= sgb.life %></small></div>
-        <div class="text-wrap fw-light"><i class="bi bi-card-checklist"></i> <small><%= sgb.add %></small></div>
-        <div class="text-wrap fw-light"><i class="bi bi-card-checklist"></i> <small><%= sgb.burial %></small></div>
+        <table class="table table-bordered table-hover table-sm">
+          <thead>
+            <tr>
+              <th colspan="5">SGYRT</th>
+            </tr>
+            <tr>
+              <th>Details</th>
+              <th class="text-center">Life</th>
+              <th class="text-center">Accidental</th>
+              <th class="text-center">Burial</th>
+              <th class="text-center">Premium</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="table-secondary">
+              <td>Principal</td>
+              <td class="text-center">&#8369;<%= to_curr(sgb.life) %></td>
+              <td class="text-center">&#8369;<%= to_curr(sgb.add) %></td>
+              <td class="text-center">&#8369;<%= to_curr(sgb.burial) %></td>
+              <td class="text-center">&#8369;<%= to_curr(sCvg.group_premium) %></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
   </div>
 <!--Member-Info Field-->
