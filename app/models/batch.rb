@@ -1,8 +1,8 @@
 class Batch < ApplicationRecord
   has_one :premium_rate
-  has_many :coverages
+  has_many :coverages, dependent: :destroy
   has_many :members, through: :coverages
-  has_many :dependent_coverages
+  has_many :dependent_coverages, dependent: :destroy
   belongs_to :branch
   validates_presence_of :title
   

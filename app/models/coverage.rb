@@ -20,8 +20,9 @@ class Coverage < ApplicationRecord
     self.age = age_in_years
 
     # SET PREMIUM RATE ACCORDING TO AGE group/range
+
     case age 
-    when 18..65 
+    when 18..65
       self.rate = 0.83
     when 66..70
       self.rate = 3
@@ -38,11 +39,13 @@ class Coverage < ApplicationRecord
     self.expiry = effectivity >> term # Shift (forward) selected date by the no. of terms 
     # raise "errors"
     case grace_period
-      when nil
-        self.loan_premium = (loan_coverage/1000) * (rate * term)
+      when 0
+        self.loan_premium = ((loan_coverage/1000)*(rate*12)/12*term)
+        self.loan_premium = ((loan_coverage/1000)*((10.to_f/12).round(3)*12)/12*term) if rate == 0.83 #rate = (10/12) gives 0.833 instead of 0.83
+        # self.loan_premium = round_to_nearest(loan_premium, 0.05)
       else
         self.expiry = expiry + grace_period
-        self.loan_premium = (loan_coverage/1000) * (rate * (term + grace_period))
+        self.loan_premium = ( (loan_coverage/1000) * (rate * (term + grace_period) ) )
       end
       
     # self.residency = (effectivity.year * 12 + effectivity.month) - (member.date_membership.year * 12 + member.date_membership.month)
@@ -112,6 +115,10 @@ class Coverage < ApplicationRecord
         where(member: Member.where(branch_id: current_user.user_detail.branch_id)).limit(100)
       end
     end
+  end
+
+  def round_to_nearest(value, nearest)
+    (value / nearest).round * nearest
   end
 
   def coverage_lppi_premium
