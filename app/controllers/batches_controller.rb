@@ -46,7 +46,8 @@ class BatchesController < ApplicationController
   def show
     age = params[:qry]
     plan = params[:pln]
-    path = params[:bth]
+    path = params[:pth]
+    params[:query]
 
     case age
     when "1865"
@@ -64,17 +65,19 @@ class BatchesController < ApplicationController
     when "7680a"
       @show_coverage = @batch.coverages.where(age: 76..80).where("loan_coverage > 350001")
     else
-      @show_coverage = @batch.coverages
+      @show_coverage = @batch.coverages.limit(100) #SELECT `coverages`.* FROM `coverages` WHERE `coverages`.`batch_id` = '28' LIMIT 100
     end
 
     #search bar
-    # if params[:query].present?
-    #   @show_coverage = @show_coverage.joins(:member).where("members.last_name LIKE ? OR members.first_name LIKE ?", "#{params[:query]}", "#{params[:query]}")
-    # else
-    #   @show_coverage
-    # end
+    if params[:query].present?
+      @show_coverage = @batch.coverages.joins(:member).where("members.last_name LIKE ? OR members.first_name LIKE ?", "#{params[:query]}", "#{params[:query]}")
+      # SELECT `coverages`.* FROM `coverages` INNER JOIN `members` ON `members`.`id` = `coverages`.`member_id` WHERE `coverages`.`batch_id` = '28' AND (members.last_name LIKE 'gaspar' OR members.first_name LIKE 'gaspar')
+
+      # @show_coverage = @show_coverage.joins(:member).where("members.last_name LIKE ? OR members.first_name LIKE ?", "#{params[:query]}", "#{params[:query]}")
+      # SELECT `coverages`.* FROM `coverages` INNER JOIN `members` ON `members`.`id` = `coverages`.`member_id` WHERE `coverages`.`batch_id` = '28' AND (members.last_name LIKE 'gaspar' OR members.first_name LIKE 'gaspar') LIMIT 100
+    end
     
-    # @pagy, @records = pagy(@show_coverage, items: 5)
+    #@pagy, @show_coverage = pagy(@show_coverage, items: 25)
 
     #download CSV
     respond_to do |format|
@@ -190,7 +193,7 @@ class BatchesController < ApplicationController
 
         if arr_sts == "Unlisted"
           # ucount+=1
-          "#{mcount}. #{ul_name} - #{arr_sts}"
+          "#{mcount}. #{ul_name} - #{arr_sts} (Member enrollment required.)"
           # ul_arname << [lname, fname, mname, bdate]
           # "#{ucount}. #{ul_name} - #{arr_sts} #{view_context.link_to('Enroll', new_member_path(unlisted: ul_arname), target: '_blank')}"
           # ucount.to_s+". "+lname+", "+fname+" "+mname+" - "+r["up_STATUS"]+"#{view_context.link_to('Enroll', new_member_path(unlisted: import_message[mcount-1]), target: '_blank')}"
@@ -214,10 +217,9 @@ class BatchesController < ApplicationController
     
       flash[:notice] = "Import successful. <br><br> Active : #{flash_active} <br> Existing : #{flash_existing} <br> Renewed : #{flash_renewal} <br> Unlisted : #{flash_unlisted} <br> New : #{flash_new} <br>"
 
-      if flash_unlisted.present? == true && flash_unlisted > 0
-        flash[:notice] += "Please enroll the following member(s) :<br>"
+      if flash_unlisted.present? == true && flash_unlisted > 0 || flash_active.present? == true && flash_active > 0
         # flash[:notice] += flash_names
-        flash[:notice] += "<br>#{view_context.link_to('View Unlisted', unlisted_preview_batch_path(batch_id, unlisted: flash_names), data: {turbo_frame: "remote_modal"})}"
+        flash[:notice] += "<br>#{view_context.link_to('View Remark(s)', unlisted_preview_batch_path(batch_id, unlisted: flash_names), data: {turbo_frame: "remote_modal"})}"
       end
 
       redirect_to batches_path
@@ -534,6 +536,6 @@ class BatchesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def batch_params
-      params.require(:batch).permit(:title, :description, :branch_id)
+      params.require(:batch).permit(:title, :description, :branch_id, :submit)
     end
 end

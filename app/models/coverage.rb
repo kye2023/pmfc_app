@@ -40,8 +40,9 @@ class Coverage < ApplicationRecord
     # raise "errors"
     case grace_period
       when 0
-        self.loan_premium = ((loan_coverage/1000)*(rate*12)/12*6)
-        self.loan_premium = ((loan_coverage/1000)*((10.to_f/12).round(3)*12)/12*6) if rate == 0.83 #rate = (10/12) gives 0.833 instead of 0.83
+        self.loan_premium = ((loan_coverage/1000)*(rate*12)/12*term)
+        self.loan_premium = ((loan_coverage/1000)*((10.to_f/12).round(3)*12)/12*term) if rate == 0.83 #rate = (10/12) gives 0.833 instead of 0.83
+        # self.loan_premium = round_to_nearest(loan_premium, 0.05)
       else
         self.expiry = expiry + grace_period
         self.loan_premium = ( (loan_coverage/1000) * (rate * (term + grace_period) ) )
@@ -114,6 +115,10 @@ class Coverage < ApplicationRecord
         where(member: Member.where(branch_id: current_user.user_detail.branch_id)).limit(100)
       end
     end
+  end
+
+  def round_to_nearest(value, nearest)
+    (value / nearest).round * nearest
   end
 
   def coverage_lppi_premium

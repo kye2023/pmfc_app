@@ -1,3 +1,6 @@
+<% sw.present? %>
+<% se.present? %>
+<% age.present? %>
 <table class="table table-responsive table-sm table-light table-bordered table-hover">
     <thead>
         <tr>
@@ -16,18 +19,21 @@
     </thead>
     <tbody>
     <% 
+        cvg_cntr = 0
         msum_loan = 0
         mgt_loan = 0
         msum_prem = 0
         mgt_prem = 0
-        sw.each do |c| 
-            m_loan = c.loan_coverage
-            m_prem = c.loan_premium
-            hstatus = c.member.health_declaration
-            cncvg = c.center_name_id
+        if sw.present? == true
+            sw.each do |c| 
+                m_loan = c.loan_coverage
+                m_prem = c.loan_premium
+                hstatus = c.member.health_declaration
+                cncvg = c.center_name_id
+                cvg_cntr += 1
     %>
         <tr>
-            <th scope="row"><%= c.id %></th>
+            <th class="text-center" scope="row"><%= cvg_cntr %><%# c.id %></th>
             <td class="text-center"><%= c.loan_certificate %></td>
             <td>
                 <%= c.member.get_cmember %>
@@ -63,10 +69,14 @@
             </td>
             <% end %>
         </tr>
-    <% 
-        end 
-    %>
+        <% end %>
+    <% else %>
+        <tr>
+            <td colspan="8" class="text-center">No record(s) found...</td>
+        </tr>
+    <% end %>
     </tbody>
+    <% if sw.present? == true && age.present? == true %>
     <tfoot>
         <tr>
             <td colspan="3" class="text-end">Grand Total :</td>
@@ -107,5 +117,6 @@
             <% end %>
         </tr>
     </tfoot>
+    <% end %>
 </table>
 <%# console %>
