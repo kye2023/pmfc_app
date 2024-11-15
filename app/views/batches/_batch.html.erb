@@ -88,20 +88,25 @@
               </button>
               <ul class="dropdown-menu">
                 <%= link_to 'All', batch_url(batch, qry: "0", pln: pln, pth: "b1"), class: 'dropdown-item' %>
-                <%= link_to '18-65', batch_url(batch, qry: "1865", pln: pln, pth: "b1"), class: 'dropdown-item' %>
-                <%= link_to '66-70 350,000 and below', batch_url(batch, qry: "6670b", pln: pln, pth: "b1"), class: 'dropdown-item' %>
-                <%= link_to '66-70 350,001 and above', batch_url(batch, qry: "6670a", pln: pln, pth: "b1"), class: 'dropdown-item' %>
-                <%= link_to '71-75 350,000 and below', batch_url(batch, qry: "7175b", pln: pln, pth: "b1"), class: 'dropdown-item' %>
-                <%= link_to '71-75 350,001 and above', batch_url(batch, qry: "7175a", pln: pln, pth: "b1"), class: 'dropdown-item' %>
-                <%= link_to '76-80 350,000 and below', batch_url(batch, qry: "7680b", pln: pln, pth: "b1"), class: 'dropdown-item' %>
-                <%= link_to '75-80 350,001 and above', batch_url(batch, qry: "7680a", pln: pln, pth: "b1"), class: 'dropdown-item' %>
+                <% if pln == "0" %>
+                  <%= link_to '18-65', batch_url(batch, qry: "1865", pln: pln, pth: "b1"), class: 'dropdown-item' %>
+                  <%= link_to '66-70 350,000 and below', batch_url(batch, qry: "6670b", pln: pln, pth: "b1"), class: 'dropdown-item' %>
+                  <%= link_to '66-70 350,001 and above', batch_url(batch, qry: "6670a", pln: pln, pth: "b1"), class: 'dropdown-item' %>
+                  <%= link_to '71-75 350,000 and below', batch_url(batch, qry: "7175b", pln: pln, pth: "b1"), class: 'dropdown-item' %>
+                  <%= link_to '71-75 350,001 and above', batch_url(batch, qry: "7175a", pln: pln, pth: "b1"), class: 'dropdown-item' %>
+                  <%= link_to '76-80 350,000 and below', batch_url(batch, qry: "7680b", pln: pln, pth: "b1"), class: 'dropdown-item' %>
+                  <%= link_to '75-80 350,001 and above', batch_url(batch, qry: "7680a", pln: pln, pth: "b1"), class: 'dropdown-item' %>
+                <% elsif pln == "1" %>
+                  <%= link_to '0-119 (Residency)', batch_url(batch, qry: "0119", pln: pln, pth: "b1"), class: 'dropdown-item' %>
+                  <%= link_to '120 and Above (Residency)', batch_url(batch, qry: "120a", pln: pln, pth: "b1"), class: 'dropdown-item' %>
+                <% end %>
               </ul>
             </div>
           </div>
       </div>
       <% end %>
       <%# if params[:query].present? == true || age_r != "0" %>
-      <%#== pagy_bootstrap_nav(@pagy) %>
+      <%== pagy_bootstrap_nav(@pagy) %>
       <%# end %>
     </div>
     <!-- SEARCH -->

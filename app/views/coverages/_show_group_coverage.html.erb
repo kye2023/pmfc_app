@@ -97,25 +97,5 @@
         end 
     %>
     </tbody>
-    <tfoot>
-        <tr>
-            <td class="text-end" colspan="3">Grand Total (L) :</td>
-            <td class="text-center">
-                <div class="text-wrap fw-lighter">
-                   <% gt_life = gsum_life %>
-                    <small><%= to_curr(gt_life) %></small>
-                </div>
-            </td>
-            <td class="text-end" colspan="3">Total Gross Premuim Due :</td>
-            <td class="text-center">
-                <div class="text-wrap fw-lighter">
-                   <% gt_prem = gsum_prem %>
-                    <small><%= to_curr(gt_prem) %></small>
-                </div>
-            </td>
-            <% unless @batch.submit? %>
-            <td></td>
-            <% end %>
-        </tr>
-    </tfoot>
+    
 </table>

@@ -64,6 +64,10 @@ class BatchesController < ApplicationController
       @show_coverage = @batch.coverages.where(age: 76..80).where("loan_coverage <= 350000")
     when "7680a"
       @show_coverage = @batch.coverages.where(age: 76..80).where("loan_coverage > 350001")
+    when "0119"
+      @show_coverage = @batch.coverages.where("residency BETWEEN 0 AND 119")
+    when "120a"
+      @show_coverage = @batch.coverages.where("residency > 120")
     else
       @show_coverage = @batch.coverages.limit(100) #SELECT `coverages`.* FROM `coverages` WHERE `coverages`.`batch_id` = '28' LIMIT 100
     end
@@ -77,7 +81,7 @@ class BatchesController < ApplicationController
       # SELECT `coverages`.* FROM `coverages` INNER JOIN `members` ON `members`.`id` = `coverages`.`member_id` WHERE `coverages`.`batch_id` = '28' AND (members.last_name LIKE 'gaspar' OR members.first_name LIKE 'gaspar') LIMIT 100
     end
     
-    #@pagy, @show_coverage = pagy(@show_coverage, items: 25)
+    @pagy, @show_coverage = pagy(@show_coverage, items: 25)
 
     #download CSV
     respond_to do |format|
