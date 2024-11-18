@@ -8,65 +8,7 @@
 <%# psubs.size %>
 
 <div id="<%= dom_id batch %>">
-  <div class="row mb-3">
-    <div class="col-md-8">
-      <div class="card">
-        <div class="card-header">Batch</div>
-        <div class="card-body">
-            <!--Branch Info-->
-            <div class="mb-3">
-              <strong>Title:</strong>
-              <%= batch.title %> <br>
-              <strong>Branch:</strong>
-              <%= batch.branch %> <br>
-              <strong>Description:</strong>
-              <%= batch.description %> <br>
-              <!--<p class="text-primary"> Count: <%# batch.coverages.count %> </p>-->
-            </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-body">
-
-          <dl class="row">
-            <dt class="col-sm-5">Count</dt>
-            <dd class="col-sm-7"><%= batch.coverages.count %></dd>
-            <% 
-              lppi = 0
-              gyrt = 0
-              if pln == "0" 
-                lppi = batch.coverages.sum(:loan_premium)
-            %>
-            <dt class="col-sm-5">Plan Type</dt>
-            <dd class="col-sm-7">LPPI</dd>
-            <dt class="col-sm-5">Loan Coverage</dt>
-            <dd class="col-sm-7"><%= to_curr(batch.coverages.sum(:loan_coverage)) %></dd>
-            <dt class="col-sm-5">Gross Premium</dt>
-            <dd class="col-sm-7"><%= to_curr(lppi) %></dd>
-            <% 
-              else 
-                gyrt = batch.coverages.sum(:group_premium)+(batch.batch_coverage)
-            %>
-            <dt class="col-sm-5">Plan Type</dt>
-            <dd class="col-sm-7">GYRT/SGYRT</dd>
-            <dt class="col-sm-5">Gross Premium</dt>
-            <dd class="col-sm-7"><%= to_curr(gyrt) %></dd> 
-            <% end %>
-          </dl>
-          
-          <%# loan_premium = batch.coverages.sum(:loan_premium) %>
-            <%# principal_premium = batch.coverages.sum(:group_premium) %>
-            <%# dependent_premium = batch.dependent_coverages.sum(:premium) %>
-            <!-- <small> Loan Premium: <%#= to_curr(loan_premium) %> <br> Principal: <%#= to_curr(principal_premium) %> <br> Dependent: <%#= to_curr(dependent_premium) %></small> <br>
-            <strong>Total Premium: <%#= to_curr(loan_premium + principal_premium + dependent_premium) %></strong> -->
-            
-        </div>
-      </div>
-    </div>
-  </div>
-
+  
   <div class="row">
     
     <!-- SEARCH -->
@@ -126,4 +68,84 @@
     <%= render 'coverages/show_group_coverage', sw: @show_coverage %>
   <% end %>
   
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <!--<div class="card">
+        <!--<div class="card-header">Batch</div>--
+        <div class="card-body">
+            <!--Branch Info--
+            <div class="mb-3">
+              <strong>Title:</strong>
+              <%= batch.title %> <br>
+              <strong>Branch:</strong>
+              <%= batch.branch %> <br>
+              <strong>Description:</strong>
+              <%= batch.description %> <br>
+              <!--<p class="text-primary"> Count: <%# batch.coverages.count %> </p>--
+            </div>
+        </div>
+      </div>-->
+    </div>
+
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body">
+          <table class="table table-borderless">
+           <thead>
+              <tr><th><small>Count : <%= batch.batch_count_mbr %></small></th></tr>
+              <%  if pln == "0"  %>
+              <tr><th><small>Plan Type : LPPI</small></th></tr>
+              <tr><th><small>Sum Insured : <%= to_curr(batch.coverages.sum(:loan_coverage)) %></small></th></tr>
+              <% elsif pln == "1"  %>
+              <tr><th><small>Plan Type : SGYRT</small></th></tr>
+              <tr>
+                <% plife = 0 %>
+                <% dlife = 0 %>
+                <% tlife = 0 %>
+                <% @show_coverage.each do |sc| %>
+                  <% plife += sc.group_benefit.life %>
+                    <% sc.dependent_coverages.each do |dp| %> 
+                      <% dlife += dp.group_benefit.life %>
+                    <% end %> 
+                <% end %> 
+                <% tlife = plife + dlife %>
+                <th><small>Sum Insured : <%= to_curr(tlife) %></small></th>
+              </tr>
+              <% end %>
+            </thead>
+          </table>  
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body">
+          <table class="table table-borderless">
+              <thead>
+                <% 
+                  lppi = 0
+                  gyrt = 0
+                    if pln == "0"
+                    lppi = batch.coverages.sum(:loan_premium)
+                %>
+                <tr><th>Gross Premium : <%= to_curr(lppi) %></th></tr>
+                  <% 
+                    elsif pln == "1"
+                    # gyrt = batch.coverages.sum(:group_premium)+(batch.batch_coverage)
+                    gyrt = (batch.batch_cvg_pprm)+(batch.batch_cvg_dprm)
+                  %>
+                 <tr><th><small>Gross Premium : </small><small><%= to_curr(gyrt) %></small></th></tr>
+                 <tr><th><small>Less : Service Fee</small></th></tr>
+                 <tr><th><small>Total Net Premium Due : </small></th></tr>
+                <% 
+                  end 
+                %>
+              </thead>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>

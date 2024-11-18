@@ -30,15 +30,15 @@
     </dl>
   </div>
 
-<% lppi_status = @coverage.member.plan_lppi %>
-<% sgyrt_status = @coverage.member.plan_sgyrt %>
+<%= lppi_status = @coverage.member.plan_lppi %><br>
+<%= sgyrt_status = @coverage.member.plan_sgyrt %>
 
 <% if lppi_status == true && sgyrt_status == true %>
   <%#= "LPPI & SGYRT (active)" %>
   <%= render 'coverages/show_lppi_sgyrt', rcvgo: @coverage %>
 <% elsif lppi_status == true && sgyrt_status == false %>
   <%#= "LPPI (active)" %>
-  <%= render 'coverages/show_lppi', rcvgtr: @coverage %>
+  <%= render 'coverages/show_lppi', rcvgs: @coverage %>
 <% elsif lppi_status == false && sgyrt_status == true %>
   <%#= "SGYRT (active)" %>
   <%= render 'coverages/show_sgyrt', rcvgt: @coverage %>

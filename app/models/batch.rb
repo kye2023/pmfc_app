@@ -24,6 +24,35 @@ class Batch < ApplicationRecord
     return dc_prm
   end
 
+  def batch_count_mbr
+    c_mbr = 0
+    coverages.each do |cvg|
+      if cvg.member.plan_sgyrt == true
+        # cvg.id
+        c_mbr += 1
+      end
+    end
+    return c_mbr
+  end
+
+  def batch_cvg_pprm
+    pc_prm = 0
+    coverages.each do |cvg|
+      if cvg.member.plan_sgyrt == true
+        pc_prm += cvg.group_premium
+      end
+    end
+    return pc_prm
+  end
+
+  def batch_cvg_dprm
+    dc_prm = 0
+    coverages.each do |cvg|
+      dc_prm += cvg.dependent_coverages.sum(:premium)
+    end
+    return dc_prm
+  end
+
   def self.get_batches_index(admin, query, current_user)
     if query.present?
       if admin == true
@@ -92,5 +121,7 @@ class Batch < ApplicationRecord
       end
     end
   end
+
+
 
 end
