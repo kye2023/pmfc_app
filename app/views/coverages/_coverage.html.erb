@@ -1,12 +1,12 @@
 <% @coverage.id %>
 <% @coverage.batch_id %>
 <% @coverage.member_id %>
-
+<% @actvPlan %>
+<% @actvAge %>
 <div id="<%= dom_id coverage %>">
   <%#= content_tag :h3, coverage.member, class: "text-primary" %>
   
   <div class="row">
-
     <dl class="row col-md-4">
       <dt class="col-md-12">Insured <div class="text-wrap fw-lighter"><small><%= coverage.member %></small></div></dt>
       <dt class="col-md-12">Branch <div class="text-wrap fw-lighter"><small><%= coverage.batch.branch %></small></div></dt>
@@ -30,12 +30,12 @@
     </dl>
   </div>
 
-<%= lppi_status = @coverage.member.plan_lppi %><br>
-<%= sgyrt_status = @coverage.member.plan_sgyrt %>
+<% lppi_status = @coverage.member.plan_lppi %>
+<% sgyrt_status = @coverage.member.plan_sgyrt %>
 
 <% if lppi_status == true && sgyrt_status == true %>
   <%#= "LPPI & SGYRT (active)" %>
-  <%= render 'coverages/show_lppi_sgyrt', rcvgo: @coverage %>
+  <%= render 'coverages/show_lppi_sgyrt', rcvgo: @coverage, actplan: @actvPlan, actage: @actvAge %>
 <% elsif lppi_status == true && sgyrt_status == false %>
   <%#= "LPPI (active)" %>
   <%= render 'coverages/show_lppi', rcvgs: @coverage %>

@@ -24,15 +24,57 @@ class Batch < ApplicationRecord
     return dc_prm
   end
 
-  def batch_count_mbr
-    c_mbr = 0
-    coverages.each do |cvg|
-      if cvg.member.plan_sgyrt == true
-        # cvg.id
-        c_mbr += 1
+  #--------------------------------------------------------------------------------------------------------------------------
+
+  def bcount_mbr(plan)
+    c_imbr = 0
+    c_gmbr = 0
+
+    case plan
+    when "0"
+      coverages.each do |cvg|
+        if cvg.member.plan_lppi == true
+          c_imbr += 1
+        end
       end
+      return c_imbr
+    when "1"
+      coverages.each do |cvg|
+        if cvg.member.plan_sgyrt == true
+          c_gmbr += 1
+        end
+      end
+      return c_gmbr
     end
-    return c_mbr
+  end
+
+  def sum_insured_mbr(plan)
+    s_imbr = 0
+    s_gmbr = 0
+
+    case plan
+    when "0"
+      coverages.each do |cvg|
+        if cvg.member.plan_lppi == true
+          s_imbr += cvg.loan_coverage
+        end
+      end
+      return s_imbr
+    when "1"
+      plife = 0
+      dlife = 0
+      tlife = 0
+      coverages.each do |cvg|
+        if cvg.member.plan_sgyrt == true
+          plife += cvg.group_benefit.life
+          cvg.dependent_coverages.each do |dp|  
+            dlife += dp.group_benefit.life
+          end
+        end
+      end
+      s_gmbr = plife + dlife
+      return s_gmbr
+    end
   end
 
   def batch_cvg_pprm
@@ -52,6 +94,8 @@ class Batch < ApplicationRecord
     end
     return dc_prm
   end
+
+  #--------------------------------------------------------------------------------------------------------------------------
 
   def self.get_batches_index(admin, query, current_user)
     if query.present?

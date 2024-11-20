@@ -1,4 +1,4 @@
-<%# @batch.id %>
+<% @batch.id %>
 <% params[:query] %>
 <% age_r = params[:qry] %>
 <% pln = params[:pln] %>
@@ -15,7 +15,7 @@
     <div class="col-lg-8">
       <%= form_with( url: batch, method: :get ) do |form| %>
       <div class="input-group mb-3">
-      <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, batches_path, class: "btn btn-secondary" %>
+        <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, batches_path, class: "btn btn-secondary" %>
         <%= form.text_field :query, placeholder: 'Search by Name...', class: "form-control" %>
         <%= form.submit 'Search', class: "btn btn-success" %>
         <%= link_to "New Loan", new_coverage_path(b: batch, c: 0), class: "btn btn-primary", data: { turbo_frame: "remote_modal" } unless batch.submit? %>
@@ -23,6 +23,8 @@
         <%= link_to "Submit", batch_submit_batch_path(batch), class: "btn btn-outline-success" unless batch.submit? %>
         <%= link_to 'Download'.html_safe, batch_path(batch, format: :csv), class: 'btn btn-secondary' if batch.submit? %>
         <%= link_to 'Preview'.html_safe, batch_preview_batch_path(batch, pln: pln), class: 'btn btn-primary', :target => '_blank' if batch.submit? %>
+        <%= link_to '<i class="bi bi-arrow-repeat"></i>'.html_safe, batch_url(batch, qry: "0", pln: "0", pth: "b1"), class: "btn btn-secondary" if params[:query].present? %>
+          <% if params[:query].present? == false %>
           <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
             <div class="btn-group" role="group">
               <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -45,7 +47,15 @@
               </ul>
             </div>
           </div>
+          <% end %>
       </div>
+        <% if params[:query].present? == true %>
+          <%= form.hidden_field :pquery, value: params[:pquery] %>
+          <%= form.hidden_field :aquery, value: params[:aquery] %>
+        <% else %>
+          <%= form.hidden_field :pquery, value: pln %>
+          <%= form.hidden_field :aquery, value: age_r %>
+        <% end %>
       <% end %>
       <%# if params[:query].present? == true || age_r != "0" %>
       <%== pagy_bootstrap_nav(@pagy) %>
@@ -63,9 +73,9 @@
   <%#= render 'coverages/show_group_coverage', sw: @records %>
   
   <% if pln == "0" || params[:query].present? == true %>
-    <%= render 'coverages/show_loan_coverage', sw: @show_coverage, se: params[:query], age: params[:qry] %>
+    <%= render 'coverages/show_loan_coverage', sw: @show_coverage, se: params[:query], plan: pln, age: age_r %>
   <% elsif pln == "1" || params[:query].present? == true %>
-    <%= render 'coverages/show_group_coverage', sw: @show_coverage %>
+    <%= render 'coverages/show_group_coverage', sw: @show_coverage, se: params[:query], plan: pln, age: age_r %>
   <% end %>
   
   <div class="row mb-3">
@@ -92,25 +102,15 @@
         <div class="card-body">
           <table class="table table-borderless">
            <thead>
-              <tr><th><small>Count : <%= batch.batch_count_mbr %></small></th></tr>
-              <%  if pln == "0"  %>
+              <% if pln == "0" %>
+              <tr><th><small>Count : <%= batch.bcount_mbr(pln) %></small></th></tr>
               <tr><th><small>Plan Type : LPPI</small></th></tr>
-              <tr><th><small>Sum Insured : <%= to_curr(batch.coverages.sum(:loan_coverage)) %></small></th></tr>
-              <% elsif pln == "1"  %>
+              <!--<tr><th><small>Sum Insured : <%#= to_curr(batch.coverages.sum(:loan_coverage)) %></small></th></tr>-->
+              <tr><th><small>Sum Insured : <%= to_curr(batch.sum_insured_mbr(pln)) %></small></th></tr>
+              <% elsif pln == "1" %>
+              <tr><th><small>Count : <%= batch.bcount_mbr(pln) %></small></th></tr>
               <tr><th><small>Plan Type : SGYRT</small></th></tr>
-              <tr>
-                <% plife = 0 %>
-                <% dlife = 0 %>
-                <% tlife = 0 %>
-                <% @show_coverage.each do |sc| %>
-                  <% plife += sc.group_benefit.life %>
-                    <% sc.dependent_coverages.each do |dp| %> 
-                      <% dlife += dp.group_benefit.life %>
-                    <% end %> 
-                <% end %> 
-                <% tlife = plife + dlife %>
-                <th><small>Sum Insured : <%= to_curr(tlife) %></small></th>
-              </tr>
+              <tr><th><small>Sum Insured : <%= to_curr(batch.sum_insured_mbr(pln)) %></small></th></tr>
               <% end %>
             </thead>
           </table>  
@@ -126,10 +126,12 @@
                 <% 
                   lppi = 0
                   gyrt = 0
-                    if pln == "0"
-                    lppi = batch.coverages.sum(:loan_premium)
+                  if pln == "0"
+                  lppi = batch.coverages.sum(:loan_premium)
                 %>
                 <tr><th>Gross Premium : <%= to_curr(lppi) %></th></tr>
+                <tr><th><small>Less : Service Fee</small></th></tr>
+                <tr><th><small>Total Net Premium Due : </small></th></tr>
                   <% 
                     elsif pln == "1"
                     # gyrt = batch.coverages.sum(:group_premium)+(batch.batch_coverage)

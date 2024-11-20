@@ -1,3 +1,7 @@
+<% sw %>
+<% se %>
+<% plan %>
+<% age %>
 <table class="table table-responsive table-sm table-light table-bordered table-hover">
     <thead>
         <tr>
@@ -5,7 +9,6 @@
             <th class="text-center">Certificate</th>
             <th>Name</th>
             <th class="text-center">Coverage</th>
-            <!--<th class="text-center">Loan Amount</th>-->
             <th class="text-center">Effectivity</th>
             <th class="text-center">Expiry</th>
             <th class="text-center">Term</th>
@@ -19,18 +22,24 @@
     <% 
         gsum_life = 0
         gdsum_life = 0
+        
         gt_life = 0
         gsum_prem = 0
         gt_prem = 0
+        
         gplan_status = 0
+        plife = 0
+         cvg_cntr = 0
         sw.each do |c| 
             hstatus = c.member.health_declaration
             cncvg = c.center_name_id
             gplan_status = c.member.plan_sgyrt
+             cvg_cntr += 1
             if gplan_status == true
+                plife = c.group_benefit.life
     %>
         <tr>
-            <th class="text-center" scope="row"><%= c.id %></th>
+            <th class="text-center" scope="row"><%= cvg_cntr %><%# c.id %></th>
             <td class="text-center"><%= c.group_certificate %></td>
             <td>
                 <%= c.member.get_cmember %> 
@@ -54,7 +63,7 @@
                         <li> 
                             <%= d.dependent %> - <%= d.dependent.relationship %> 
                             <small>(<%= d.dependent.get_age(c.effectivity)  %> y/o)</small> <br>
-                            <% gdsum_life = d.group_benefit.life %>
+                            <%#= gdsum_life = d.group_benefit.life %>
                         </li>
                     <% end %>
                     </ul>
@@ -62,36 +71,36 @@
             </td>
             <td class="text-end">
                 <% cvgdp_status =  c.dependent_coverages.empty? %>
-                <% gsum_life += (c.group_benefit.life + gdsum_life) %>
                 <small>
                     <% if cvgdp_status == true %> 
-                    Principal SI/L: <%= to_curr(c.group_benefit.life) %> <br> 
-                    <%= content_tag :strong, "Total SI/L: " +  "#{to_curr(c.group_benefit.life)}" %> <br>
+                    Principal SI/L: <%= to_curr(plife) %> <br> 
+                    <%= content_tag :strong, "Total SI/L: " + "#{to_curr(plife)}" %> <br>
                     <% else %>
-                    Principal SI/L: <%= to_curr(c.group_benefit.life) %> <br> 
-                    Dependent SI/L: <%= to_curr(gdsum_life) %> <br>
-                    <%= content_tag :strong, "Total SI/L: " +  "#{to_curr(c.group_benefit.life + gdsum_life)}" %> <br>
+                    <% gsum_life = (plife + c.smcvg_idependent) %>
+                    Principal SI/L: <%= to_curr(plife) %><br> 
+                    Dependent SI/L: <%= to_curr(c.smcvg_idependent) %><br>
+                    <%= content_tag :strong, "Total SI/L: " + "#{to_curr(gsum_life)}" %><br>
                     <% end %>
                 </small>
             </td>
-            <!--<td class="text-center"><%# to_curr(c.loan_coverage) %></td>-->
             <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_shortdate(c.effectivity) %></small></div></td>
             <td class="text-center"><div class="text-wrap fw-lighter"><small><%= to_shortdate(c.expiry) %></small></div></td>
-            <td class="text-center"><div class="text-wrap fw-lighter"><%= c.term %> <br> <%= content_tag :small, "(GP:" + "#{c.grace_period})" unless c.grace_period.nil? %> </td>
+            <td class="text-center">
+                <div class="text-wrap fw-lighter"><%= c.term %> <br> <%= content_tag :small, "(GP:" + "#{c.grace_period})" unless c.grace_period.nil? %></div>
+            </td>
             <td class="text-end">
                 <% dependent_prem = c.dependent_coverages.sum(:premium) %>
-                <!--<%# content_tag :small, "Principal Premium: " +  "#{to_curr(c.loan_premium)}" %> <br>-->
                 <%= content_tag :small, "Group Premium: " +  "#{to_curr(c.group_premium)}" %> <br>
                 <% if c.dependent_coverages.count > 0 %>
                 <%= content_tag :small, "Dependent Premium: " +  "#{to_curr(dependent_prem)}" %> <br>
                 <% end %>
-                <!--<%# content_tag :strong, "Total Premium: " +  "#{to_curr(dependent_prem + c.loan_premium + c.group_premium)}" %> <br>-->
                 <% gsum_prem += (dependent_prem + c.group_premium) %>
                 <%= content_tag :strong, "Total Premium: " +  "#{to_curr(dependent_prem + c.group_premium)}" %> <br>
             </td>
             <% unless @batch.submit? %>
             <td class="text-center">
-                <%= link_to '<i class="bi bi-eye"></i>'.html_safe, c, class: 'btn btn-secondary btn-sm', data: { turbo_frame: "remote_modal" } %>
+                <!--<small><%= "LPPI: #{c.member.plan_lppi} | SGYRT: #{c.member.plan_sgyrt}" %> </small><br>-->
+                <%= link_to '<i class="bi bi-eye"></i>'.html_safe, coverage_path(c, plan: plan, age: age), class: 'btn btn-secondary btn-sm', data: { turbo_frame: "remote_modal" } %>
                 <%= link_to '<i class="bi bi-pencil-square"></i>'.html_safe, edit_coverage_path(c), class: 'btn btn-secondary btn-sm', data: { turbo_frame: "remote_modal" } %>
                 <%= link_to '<i class="bi bi-trash"></i>'.html_safe, c, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
             </td>

@@ -47,7 +47,10 @@ class BatchesController < ApplicationController
     age = params[:qry]
     plan = params[:pln]
     path = params[:pth]
+
     params[:query]
+    params[:pquery]
+    params[:aquery]
 
     case age
     when "1865"
@@ -74,7 +77,7 @@ class BatchesController < ApplicationController
 
     #search bar
     if params[:query].present?
-      @show_coverage = @batch.coverages.joins(:member).where("members.last_name LIKE ? OR members.first_name LIKE ?", "#{params[:query]}", "#{params[:query]}")
+      @show_coverage = @batch.coverages.joins(:member).where("members.last_name LIKE ? OR members.first_name LIKE ?", "%#{params[:query]}%", "%#{params[:query]}%")
       # SELECT `coverages`.* FROM `coverages` INNER JOIN `members` ON `members`.`id` = `coverages`.`member_id` WHERE `coverages`.`batch_id` = '28' AND (members.last_name LIKE 'gaspar' OR members.first_name LIKE 'gaspar')
 
       # @show_coverage = @show_coverage.joins(:member).where("members.last_name LIKE ? OR members.first_name LIKE ?", "#{params[:query]}", "#{params[:query]}")
@@ -91,7 +94,7 @@ class BatchesController < ApplicationController
       end
     end
     # raise "errors"
-   
+    
   end
 
   # GET /batches/new
