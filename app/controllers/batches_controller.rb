@@ -84,7 +84,7 @@ class BatchesController < ApplicationController
       # SELECT `coverages`.* FROM `coverages` INNER JOIN `members` ON `members`.`id` = `coverages`.`member_id` WHERE `coverages`.`batch_id` = '28' AND (members.last_name LIKE 'gaspar' OR members.first_name LIKE 'gaspar') LIMIT 100
     end
     
-    @pagy, @show_coverage = pagy(@show_coverage, items: 25)
+    #@pagy, @show_coverage = pagy(@show_coverage, items: 25)
 
     #download CSV
     respond_to do |format|

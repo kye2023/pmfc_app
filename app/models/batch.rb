@@ -26,21 +26,21 @@ class Batch < ApplicationRecord
 
   #--------------------------------------------------------------------------------------------------------------------------
 
-  def bcount_mbr(plan)
+  def bcount_mbr(arr, plan)
     c_imbr = 0
     c_gmbr = 0
 
     case plan
     when "0"
-      coverages.each do |cvg|
-        if cvg.member.plan_lppi == true
+      arr.each do |acvg|
+        if acvg.member.plan_lppi == true
           c_imbr += 1
         end
       end
       return c_imbr
     when "1"
-      coverages.each do |cvg|
-        if cvg.member.plan_sgyrt == true
+      arr.each do |acvg|
+        if acvg.member.plan_sgyrt == true
           c_gmbr += 1
         end
       end
@@ -48,15 +48,15 @@ class Batch < ApplicationRecord
     end
   end
 
-  def sum_insured_mbr(plan)
+  def sum_insured_mbr(arr, plan)
     s_imbr = 0
     s_gmbr = 0
 
     case plan
     when "0"
-      coverages.each do |cvg|
-        if cvg.member.plan_lppi == true
-          s_imbr += cvg.loan_coverage
+      arr.each do |ascvg|
+        if ascvg.member.plan_lppi == true
+          s_imbr += ascvg.loan_coverage
         end
       end
       return s_imbr
@@ -64,10 +64,10 @@ class Batch < ApplicationRecord
       plife = 0
       dlife = 0
       tlife = 0
-      coverages.each do |cvg|
-        if cvg.member.plan_sgyrt == true
-          plife += cvg.group_benefit.life
-          cvg.dependent_coverages.each do |dp|  
+      arr.each do |ascvg|
+        if ascvg.member.plan_sgyrt == true
+          plife += ascvg.group_benefit.life
+          ascvg.dependent_coverages.each do |dp|  
             dlife += dp.group_benefit.life
           end
         end
@@ -77,20 +77,20 @@ class Batch < ApplicationRecord
     end
   end
 
-  def batch_cvg_pprm
+  def batch_cvg_pprm(arr)
     pc_prm = 0
-    coverages.each do |cvg|
-      if cvg.member.plan_sgyrt == true
-        pc_prm += cvg.group_premium
+    arr.each do |bcvg|
+      if bcvg.member.plan_sgyrt == true
+        pc_prm += bcvg.group_premium
       end
     end
     return pc_prm
   end
 
-  def batch_cvg_dprm
+  def batch_cvg_dprm(arr)
     dc_prm = 0
-    coverages.each do |cvg|
-      dc_prm += cvg.dependent_coverages.sum(:premium)
+    arr.each do |dcvg|
+      dc_prm += dcvg.dependent_coverages.sum(:premium)
     end
     return dc_prm
   end
