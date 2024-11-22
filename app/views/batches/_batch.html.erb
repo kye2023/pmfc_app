@@ -50,16 +50,14 @@
           <% end %>
       </div>
         <% if params[:query].present? == true %>
-          <%= form.hidden_field :pquery, value: params[:pquery] %>
-          <%= form.hidden_field :aquery, value: params[:aquery] %>
+          <% form.text_field :pquery, value: params[:pquery] %>
+          <% form.text_field :aquery, value: params[:aquery] %>
         <% else %>
-          <%= form.hidden_field :pquery, value: pln %>
-          <%= form.hidden_field :aquery, value: age_r %>
+          <% form.text_field :pquery, value: pln %>
+          <% form.text_field :aquery, value: age_r %>
         <% end %>
       <% end %>
-      <%# if params[:query].present? == true || age_r != "0" %>
-      <%#== pagy_bootstrap_nav(@pagy) %>
-      <%# end %>
+      <%== pagy_bootstrap_nav(@pagy) %>
     </div>
     <!-- SEARCH -->
   
@@ -72,7 +70,7 @@
   <%#== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>
   <%#= render 'coverages/show_group_coverage', sw: @records %>
   
-  <% if pln == "0" || params[:query].present? == true %>
+  <%  if pln == "0" || params[:query].present? == true %>
     <%= render 'coverages/show_loan_coverage', sw: @show_coverage, se: params[:query], plan: pln, age: age_r %>
   <% elsif pln == "1" || params[:query].present? == true %>
     <%= render 'coverages/show_group_coverage', sw: @show_coverage, se: params[:query], plan: pln, age: age_r %>
@@ -103,14 +101,14 @@
           <table class="table table-borderless">
            <thead>
               <% if pln == "0" %>
-              <tr><th><small>Count : <%= batch.bcount_mbr(@show_coverage, pln) %></small></th></tr>
+              <tr><th><small>Count : <%= batch.bcount_mbr(@fcoverage, pln) %></small></th></tr>
               <tr><th><small>Plan Type : LPPI</small></th></tr>
               <!--<tr><th><small>Sum Insured : <%#= to_curr(batch.coverages.sum(:loan_coverage)) %></small></th></tr>-->
-              <tr><th><small>Sum Insured : <%= to_curr(batch.sum_insured_mbr(@show_coverage, pln)) %></small></th></tr>
+              <tr><th><small>Sum Insured : <%= to_curr(batch.sum_insured_mbr(@fcoverage, pln)) %></small></th></tr>
               <% elsif pln == "1" %>
-              <tr><th><small>Count : <%= batch.bcount_mbr(@show_coverage,pln) %></small></th></tr>
+              <tr><th><small>Count : <%= batch.bcount_mbr(@fcoverage,pln) %></small></th></tr>
               <tr><th><small>Plan Type : SGYRT</small></th></tr>
-              <tr><th><small>Sum Insured : <%= to_curr(batch.sum_insured_mbr(@show_coverage, pln)) %></small></th></tr>
+              <tr><th><small>Sum Insured : <%= to_curr(batch.sum_insured_mbr(@fcoverage, pln)) %></small></th></tr>
               <% end %>
             </thead>
           </table>  
@@ -127,7 +125,7 @@
                   lppi = 0
                   gyrt = 0
                   if pln == "0"
-                  lppi = @show_coverage.sum(:loan_premium)
+                  lppi = @fcoverage.sum(:loan_premium)
                 %>
                 <tr><th>Gross Premium : <%= to_curr(lppi) %></th></tr>
                 <tr><th><small>Less : Service Fee</small></th></tr>
@@ -135,7 +133,7 @@
                   <% 
                     elsif pln == "1"
                     # gyrt = batch.coverages.sum(:group_premium)+(batch.batch_coverage)
-                    gyrt = (batch.batch_cvg_pprm(@show_coverage))+(batch.batch_cvg_dprm(@show_coverage))
+                    gyrt = (batch.batch_cvg_pprm(@fcoverage))+(batch.batch_cvg_dprm(@fcoverage))
                   %>
                  <tr><th><small>Gross Premium : </small><small><%= to_curr(gyrt) %></small></th></tr>
                  <tr><th><small>Less : Service Fee</small></th></tr>
