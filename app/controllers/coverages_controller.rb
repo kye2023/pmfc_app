@@ -1,6 +1,6 @@
 class CoveragesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_coverage, only: %i[ show edit update destroy ]
+  before_action :set_coverage, only: %i[ show edit update destroy sgyrt_submit lppi_submit ]
   
 
   # GET /coverages or /coverages.json
@@ -43,6 +43,8 @@ class CoveragesController < ApplicationController
   # GET /coverages/1 or /coverages/1.json
   def show
     @actvID = params[:activeID]
+    @actvPlan = params[:plan]
+    @actvAge = params[:age]
   end
   
   # GET /coverages/new
@@ -261,6 +263,51 @@ class CoveragesController < ApplicationController
     # @coverages = Coverage.all
     @coverages = Coverage.get_coverages_index(current_user.admin, params[:query], current_user)
    
+  end
+
+  def sgyrt_submit 
+    @get_cvgId_ss = @coverage.id
+    @acplan = params[:aplan]
+    @acage = params[:aage]
+    if @get_cvgId_ss.present?
+      if @coverage.member.update(plan_sgyrt: 0)
+        # Perform the delete operation
+        @coverage.dependent_coverages.destroy_all # or use destroy_by if you have specific conditions
+        respond_to do |format| 
+          format.html { redirect_to batch_url(@batch, qry: @acage, pln: @acplan, pth: "b1"), notice: "Group successfully removed." }
+        end
+      else
+        respond_to do |format| 
+          format.html { redirect_to batch_url(@batch, qry: @acage, pln: @acplan, pth: "b1"), alert: "Unable to update member's plan." }
+        end
+      end
+    else
+      respond_to do |format| 
+        format.html { redirect_to batch_url(@batch, qry: @acage, pln: @acplan, pth: "b1"), alert: "Unable to save, No loan(s) recorded." }
+      end
+    end
+  end
+
+  def lppi_submit
+    @get_cvgId_ls = @coverage.id
+    @acplan = params[:aplan]
+    @acage = params[:aage]
+    if @get_cvgId_ls.present?
+      if @coverage.member.update(plan_lppi: 0)
+        # @coverage.dependent_coverages.destroy_all
+        respond_to do |format| 
+          format.html { redirect_to batch_url(@batch, qry: @acage, pln: @acplan, pth: "b1"), notice: "Group successfully removed." }
+        end
+      else
+        respond_to do |format| 
+          format.html { redirect_to batch_url(@batch, qry: @acage, pln: @acplan, pth: "b1"), alert: "Unable to update member's plan." }
+        end
+      end
+    else
+      respond_to do |format| 
+        format.html { redirect_to batch_url(@batch, qry: @acplan, pln: @acplan, pth: "b1"), alert: "Unable to save, No loan(s) recorded." }
+      end
+    end
   end
 
   private

@@ -24,6 +24,79 @@ class Batch < ApplicationRecord
     return dc_prm
   end
 
+  #--------------------------------------------------------------------------------------------------------------------------
+
+  def bcount_mbr(arr, plan)
+    c_imbr = 0
+    c_gmbr = 0
+
+    case plan
+    when "0"
+      arr.each do |acvg|
+        if acvg.member.plan_lppi == true
+          c_imbr += 1
+        end
+      end
+      return c_imbr
+    when "1"
+      arr.each do |acvg|
+        if acvg.member.plan_sgyrt == true
+          c_gmbr += 1
+        end
+      end
+      return c_gmbr
+    end
+  end
+
+  def sum_insured_mbr(arr, plan)
+    s_imbr = 0
+    s_gmbr = 0
+
+    case plan
+    when "0"
+      arr.each do |ascvg|
+        if ascvg.member.plan_lppi == true
+          s_imbr += ascvg.loan_coverage
+        end
+      end
+      return s_imbr
+    when "1"
+      plife = 0
+      dlife = 0
+      tlife = 0
+      arr.each do |ascvg|
+        if ascvg.member.plan_sgyrt == true
+          plife += ascvg.group_benefit.life
+          ascvg.dependent_coverages.each do |dp|  
+            dlife += dp.group_benefit.life
+          end
+        end
+      end
+      s_gmbr = plife + dlife
+      return s_gmbr
+    end
+  end
+
+  def batch_cvg_pprm(arr)
+    pc_prm = 0
+    arr.each do |bcvg|
+      if bcvg.member.plan_sgyrt == true
+        pc_prm += bcvg.group_premium
+      end
+    end
+    return pc_prm
+  end
+
+  def batch_cvg_dprm(arr)
+    dc_prm = 0
+    arr.each do |dcvg|
+      dc_prm += dcvg.dependent_coverages.sum(:premium)
+    end
+    return dc_prm
+  end
+
+  #--------------------------------------------------------------------------------------------------------------------------
+
   def self.get_batches_index(admin, query, current_user)
     if query.present?
       if admin == true
@@ -92,5 +165,7 @@ class Batch < ApplicationRecord
       end
     end
   end
+
+
 
 end

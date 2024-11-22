@@ -1,4 +1,4 @@
-<%# @batch.id %>
+<% @batch.id %>
 <% params[:query] %>
 <% age_r = params[:qry] %>
 <% pln = params[:pln] %>
@@ -8,72 +8,14 @@
 <%# psubs.size %>
 
 <div id="<%= dom_id batch %>">
-  <div class="row mb-3">
-    <div class="col-md-8">
-      <div class="card">
-        <div class="card-header">Batch</div>
-        <div class="card-body">
-            <!--Branch Info-->
-            <div class="mb-3">
-              <strong>Title:</strong>
-              <%= batch.title %> <br>
-              <strong>Branch:</strong>
-              <%= batch.branch %> <br>
-              <strong>Description:</strong>
-              <%= batch.description %> <br>
-              <!--<p class="text-primary"> Count: <%# batch.coverages.count %> </p>-->
-            </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-body">
-
-          <dl class="row">
-            <dt class="col-sm-5">Count</dt>
-            <dd class="col-sm-7"><%= batch.coverages.count %></dd>
-            <% 
-              lppi = 0
-              gyrt = 0
-              if pln == "0" 
-                lppi = batch.coverages.sum(:loan_premium)
-            %>
-            <dt class="col-sm-5">Plan Type</dt>
-            <dd class="col-sm-7">LPPI</dd>
-            <dt class="col-sm-5">Loan Coverage</dt>
-            <dd class="col-sm-7"><%= to_curr(batch.coverages.sum(:loan_coverage)) %></dd>
-            <dt class="col-sm-5">Gross Premium</dt>
-            <dd class="col-sm-7"><%= to_curr(lppi) %></dd>
-            <% 
-              else 
-                gyrt = batch.coverages.sum(:group_premium)+(batch.batch_coverage)
-            %>
-            <dt class="col-sm-5">Plan Type</dt>
-            <dd class="col-sm-7">GYRT/SGYRT</dd>
-            <dt class="col-sm-5">Gross Premium</dt>
-            <dd class="col-sm-7"><%= to_curr(gyrt) %></dd> 
-            <% end %>
-          </dl>
-          
-          <%# loan_premium = batch.coverages.sum(:loan_premium) %>
-            <%# principal_premium = batch.coverages.sum(:group_premium) %>
-            <%# dependent_premium = batch.dependent_coverages.sum(:premium) %>
-            <!-- <small> Loan Premium: <%#= to_curr(loan_premium) %> <br> Principal: <%#= to_curr(principal_premium) %> <br> Dependent: <%#= to_curr(dependent_premium) %></small> <br>
-            <strong>Total Premium: <%#= to_curr(loan_premium + principal_premium + dependent_premium) %></strong> -->
-            
-        </div>
-      </div>
-    </div>
-  </div>
-
+  
   <div class="row">
     
     <!-- SEARCH -->
     <div class="col-lg-8">
       <%= form_with( url: batch, method: :get ) do |form| %>
       <div class="input-group mb-3">
-      <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, batches_path, class: "btn btn-secondary" %>
+        <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, batches_path, class: "btn btn-secondary" %>
         <%= form.text_field :query, placeholder: 'Search by Name...', class: "form-control" %>
         <%= form.submit 'Search', class: "btn btn-success" %>
         <%= link_to "New Loan", new_coverage_path(b: batch, c: 0), class: "btn btn-primary", data: { turbo_frame: "remote_modal" } unless batch.submit? %>
@@ -81,6 +23,8 @@
         <%= link_to "Submit", batch_submit_batch_path(batch), class: "btn btn-outline-success" unless batch.submit? %>
         <%= link_to 'Download'.html_safe, batch_path(batch, format: :csv), class: 'btn btn-secondary' if batch.submit? %>
         <%= link_to 'Preview'.html_safe, batch_preview_batch_path(batch, pln: pln), class: 'btn btn-primary', :target => '_blank' if batch.submit? %>
+        <%= link_to '<i class="bi bi-arrow-repeat"></i>'.html_safe, batch_url(batch, qry: "#{params[:aquery]}", pln: "#{params[:pquery]}", pth: "b1"), class: "btn btn-secondary" if params[:query].present? %>
+          <% if params[:query].present? == false %>
           <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
             <div class="btn-group" role="group">
               <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -88,21 +32,32 @@
               </button>
               <ul class="dropdown-menu">
                 <%= link_to 'All', batch_url(batch, qry: "0", pln: pln, pth: "b1"), class: 'dropdown-item' %>
-                <%= link_to '18-65', batch_url(batch, qry: "1865", pln: pln, pth: "b1"), class: 'dropdown-item' %>
-                <%= link_to '66-70 350,000 and below', batch_url(batch, qry: "6670b", pln: pln, pth: "b1"), class: 'dropdown-item' %>
-                <%= link_to '66-70 350,001 and above', batch_url(batch, qry: "6670a", pln: pln, pth: "b1"), class: 'dropdown-item' %>
-                <%= link_to '71-75 350,000 and below', batch_url(batch, qry: "7175b", pln: pln, pth: "b1"), class: 'dropdown-item' %>
-                <%= link_to '71-75 350,001 and above', batch_url(batch, qry: "7175a", pln: pln, pth: "b1"), class: 'dropdown-item' %>
-                <%= link_to '76-80 350,000 and below', batch_url(batch, qry: "7680b", pln: pln, pth: "b1"), class: 'dropdown-item' %>
-                <%= link_to '75-80 350,001 and above', batch_url(batch, qry: "7680a", pln: pln, pth: "b1"), class: 'dropdown-item' %>
+                <% if pln == "0" %>
+                  <%= link_to '18-65', batch_url(batch, qry: "1865", pln: pln, pth: "b1"), class: 'dropdown-item' %>
+                  <%= link_to '66-70 350,000 and below', batch_url(batch, qry: "6670b", pln: pln, pth: "b1"), class: 'dropdown-item' %>
+                  <%= link_to '66-70 350,001 and above', batch_url(batch, qry: "6670a", pln: pln, pth: "b1"), class: 'dropdown-item' %>
+                  <%= link_to '71-75 350,000 and below', batch_url(batch, qry: "7175b", pln: pln, pth: "b1"), class: 'dropdown-item' %>
+                  <%= link_to '71-75 350,001 and above', batch_url(batch, qry: "7175a", pln: pln, pth: "b1"), class: 'dropdown-item' %>
+                  <%= link_to '76-80 350,000 and below', batch_url(batch, qry: "7680b", pln: pln, pth: "b1"), class: 'dropdown-item' %>
+                  <%= link_to '75-80 350,001 and above', batch_url(batch, qry: "7680a", pln: pln, pth: "b1"), class: 'dropdown-item' %>
+                <% elsif pln == "1" %>
+                  <%= link_to '0-119 (Residency)', batch_url(batch, qry: "0119", pln: pln, pth: "b1"), class: 'dropdown-item' %>
+                  <%= link_to '120 and Above (Residency)', batch_url(batch, qry: "120a", pln: pln, pth: "b1"), class: 'dropdown-item' %>
+                <% end %>
               </ul>
             </div>
           </div>
+          <% end %>
       </div>
+        <% if params[:query].present? == true %>
+          <% form.text_field :pquery, value: params[:pquery] %>
+          <% form.text_field :aquery, value: params[:aquery] %>
+        <% else %>
+          <% form.text_field :pquery, value: pln %>
+          <% form.text_field :aquery, value: age_r %>
+        <% end %>
       <% end %>
-      <%# if params[:query].present? == true || age_r != "0" %>
-      <%#== pagy_bootstrap_nav(@pagy) %>
-      <%# end %>
+      <%== pagy_bootstrap_nav(@pagy) %>
     </div>
     <!-- SEARCH -->
   
@@ -115,10 +70,82 @@
   <%#== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>
   <%#= render 'coverages/show_group_coverage', sw: @records %>
   
-  <% if pln == "0" || params[:query].present? == true %>
-    <%= render 'coverages/show_loan_coverage', sw: @show_coverage, se: params[:query], age: params[:qry] %>
+  <%  if pln == "0" || params[:query].present? == true %>
+    <%= render 'coverages/show_loan_coverage', sw: @show_coverage, se: params[:query], plan: pln, age: age_r %>
   <% elsif pln == "1" || params[:query].present? == true %>
-    <%= render 'coverages/show_group_coverage', sw: @show_coverage %>
+    <%= render 'coverages/show_group_coverage', sw: @show_coverage, se: params[:query], plan: pln, age: age_r %>
   <% end %>
   
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <!--<div class="card">
+        <!--<div class="card-header">Batch</div>--
+        <div class="card-body">
+            <!--Branch Info--
+            <div class="mb-3">
+              <strong>Title:</strong>
+              <%= batch.title %> <br>
+              <strong>Branch:</strong>
+              <%= batch.branch %> <br>
+              <strong>Description:</strong>
+              <%= batch.description %> <br>
+              <!--<p class="text-primary"> Count: <%# batch.coverages.count %> </p>--
+            </div>
+        </div>
+      </div>-->
+    </div>
+
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body">
+          <table class="table table-borderless">
+           <thead>
+              <% if pln == "0" %>
+              <tr><th><small>Count : <%= batch.bcount_mbr(@fcoverage, pln) %></small></th></tr>
+              <tr><th><small>Plan Type : LPPI</small></th></tr>
+              <!--<tr><th><small>Sum Insured : <%#= to_curr(batch.coverages.sum(:loan_coverage)) %></small></th></tr>-->
+              <tr><th><small>Sum Insured : <%= to_curr(batch.sum_insured_mbr(@fcoverage, pln)) %></small></th></tr>
+              <% elsif pln == "1" %>
+              <tr><th><small>Count : <%= batch.bcount_mbr(@fcoverage,pln) %></small></th></tr>
+              <tr><th><small>Plan Type : SGYRT</small></th></tr>
+              <tr><th><small>Sum Insured : <%= to_curr(batch.sum_insured_mbr(@fcoverage, pln)) %></small></th></tr>
+              <% end %>
+            </thead>
+          </table>  
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body">
+          <table class="table table-borderless">
+              <thead>
+                <% 
+                  lppi = 0
+                  gyrt = 0
+                  if pln == "0"
+                  lppi = @fcoverage.sum(:loan_premium)
+                %>
+                <tr><th>Gross Premium : <%= to_curr(lppi) %></th></tr>
+                <tr><th><small>Less : Service Fee</small></th></tr>
+                <tr><th><small>Total Net Premium Due : </small></th></tr>
+                  <% 
+                    elsif pln == "1"
+                    # gyrt = batch.coverages.sum(:group_premium)+(batch.batch_coverage)
+                    gyrt = (batch.batch_cvg_pprm(@fcoverage))+(batch.batch_cvg_dprm(@fcoverage))
+                  %>
+                 <tr><th><small>Gross Premium : </small><small><%= to_curr(gyrt) %></small></th></tr>
+                 <tr><th><small>Less : Service Fee</small></th></tr>
+                 <tr><th><small>Total Net Premium Due : </small></th></tr>
+                <% 
+                  end 
+                %>
+              </thead>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>

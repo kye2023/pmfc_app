@@ -1,0 +1,18 @@
+<% rcvgs %>
+  <table class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <th colspan="2">LPPI <%= link_to '<i class="bi bi-trash"></i>'.html_safe, @coverage, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?, this will delete all plan for this coverage." } %></th>
+      </tr>
+      <tr>
+        <th>Loan</th>
+        <th>Premium</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="table-secondary">
+        <td><%= to_curr(rcvgs.loan_coverage) %></td>
+        <td><%= to_curr(rcvgs.loan_premium) %></td>
+      </tr>
+    </tbody>
+  </table>

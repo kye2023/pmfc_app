@@ -132,6 +132,14 @@ class Coverage < ApplicationRecord
     #return coverage.group_benefits.life
   end
 
+  def smcvg_idependent
+    sum_dinsured = 0
+      dependent_coverages.each do |dcvg|
+        sum_dinsured += dcvg.group_benefit.life
+      end
+    return sum_dinsured
+  end
+
   # def alpharray(val)
   #   numalpha = Array["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
   #   return numalpha[val-1]

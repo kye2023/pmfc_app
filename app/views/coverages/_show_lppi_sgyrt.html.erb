@@ -1,0 +1,54 @@
+<% rcvgo %>
+<% actplan %>
+<% actage %>
+<table class="table table-bordered table-hover">
+  <thead>
+    <tr>
+      <th colspan="2">LPPI <%= link_to '<i class="bi bi-trash"></i>'.html_safe, lppi_submit_coverage_path(@coverage, aplan: actplan, aage: actage), class: "btn btn-danger btn-sm", method: :patch, data: { "turbo-method": :patch, turbo_confirm: "Are you sure to delete LPPI Coverage?" } %></th>
+    </tr>
+    <tr>
+      <th>Loan</th>
+      <th>Premium</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="table-secondary">
+      <td><%= to_curr(rcvgo.loan_coverage) %></td>
+      <td><%= to_curr(rcvgo.loan_premium) %></td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="table table-bordered table-hover">
+  <thead>
+    <tr>
+      <th colspan="5">SGYRT <%= link_to '<i class="bi bi-trash"></i>'.html_safe, sgyrt_submit_coverage_path(@coverage, aplan: actplan, aage: actage), class: "btn btn-danger btn-sm", method: :patch, data: { "turbo-method": :patch, turbo_confirm: "Are you sure to delete Group Coverage?" } %></th>
+    </tr>
+    <tr>
+      <th>Details</th>
+      <th class="text-center">Life</th>
+      <th class="text-center">Accidental</th>
+      <th class="text-center">Burial</th>
+      <th class="text-center">Premium</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%#= rcvgo.group_benefit_id? %>
+    <tr>
+      <td>Principal</td>
+      <td class="text-center"><%= to_curr(rcvgo.group_benefit.life) %></td>
+      <td class="text-center"><%= to_curr(rcvgo.group_benefit.add) %></td>
+      <td class="text-center"><%= to_curr(rcvgo.group_benefit.burial) %></td>
+      <td class="text-center"><%= to_curr(rcvgo.group_premium) %></td>
+    </tr>
+    <% rcvgo.dependent_coverages.each do |dc| %>
+    <tr class="table-secondary">
+      <td><small><%= dc.dependent %></small><span class="badge bg-light text-dark"><%= dc.dependent.relationship %></span></td>
+      <td class="text-center"><%= to_curr(dc.group_benefit.life) %></td>
+      <td class="text-center"><%= to_curr(dc.group_benefit.add) %></td>
+      <td class="text-center"><%= to_curr(dc.group_benefit.burial) %></td>
+      <td class="text-center"><%= to_curr(dc.premium) %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>

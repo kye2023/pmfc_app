@@ -1,8 +1,12 @@
+<% @coverage.id %>
+<% @coverage.batch_id %>
+<% @coverage.member_id %>
+<% @actvPlan %>
+<% @actvAge %>
 <div id="<%= dom_id coverage %>">
   <%#= content_tag :h3, coverage.member, class: "text-primary" %>
   
   <div class="row">
-
     <dl class="row col-md-4">
       <dt class="col-md-12">Insured <div class="text-wrap fw-lighter"><small><%= coverage.member %></small></div></dt>
       <dt class="col-md-12">Branch <div class="text-wrap fw-lighter"><small><%= coverage.batch.branch %></small></div></dt>
@@ -21,61 +25,23 @@
       <!--<dd class="col-md-6"></dd>-->
       <dt class="col-md-12">Expiry <div class="text-wrap fw-lighter"><small><%= to_shortdate(coverage.expiry) %></small></div></dt>
       <!--<dd class="col-md-6"></dd>-->
-      <dt class="col-md-12">Residency <div class="text-wrap fw-lighter"><small><%= coverage.residency %></small></div></dt>
+      <dt class="col-md-12">Residency <div class="text-wrap fw-lighter"><small><%= "#{coverage.residency} months" %></small></div></dt>
       <!--<dd class="col-md-6"></dd>-->
     </dl>
   </div>
 
-  <table class="table table-bordered table-hover">
-    <thead>
-      <tr>
-        <th colspan="2">LPPI</th>
-      </tr>
-      <tr>
-        <th>Loan</th>
-        <th>Premium</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr class="table-secondary">
-        <td><%= to_curr(coverage.loan_coverage) %></td>
-        <td><%= to_curr(coverage.loan_premium) %></td>
-      </tr>
-    </tbody>
-  </table>  
+<% lppi_status = @coverage.member.plan_lppi %>
+<% sgyrt_status = @coverage.member.plan_sgyrt %>
 
-  <table class="table table-bordered table-hover">
-    <thead>
-      <tr>
-        <th colspan="5">SGYRT</th>
-      </tr>
-      <tr>
-        <th>Details</th>
-        <th class="text-center">Life</th>
-        <th class="text-center">Accidental</th>
-        <th class="text-center">Burial</th>
-        <th class="text-center">Premium</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Principal</td>
-        <td class="text-center"><%= to_curr(coverage.group_benefit.life) %></td>
-        <td class="text-center"><%= to_curr(coverage.group_benefit.add) %></td>
-        <td class="text-center"><%= to_curr(coverage.group_benefit.burial) %></td>
-        <td class="text-center"><%= to_curr(coverage.group_premium) %></td>
-      </tr>
-      <% coverage.dependent_coverages.each do |dc| %>
-      <tr class="table-secondary">
-        <td><small><%= dc.dependent %></small><span class="badge bg-light text-dark"><%= dc.dependent.relationship %></span></td>
-        <td class="text-center"><%= to_curr(dc.group_benefit.life) %></td>
-        <td class="text-center"><%= to_curr(dc.group_benefit.add) %></td>
-        <td class="text-center"><%= to_curr(dc.group_benefit.burial) %></td>
-        <td class="text-center"><%= to_curr(dc.premium) %></td>
-      </tr>
-      <% end %>
-    </tbody>
-  </table>
-
+<% if lppi_status == true && sgyrt_status == true %>
+  <%#= "LPPI & SGYRT (active)" %>
+  <%= render 'coverages/show_lppi_sgyrt', rcvgo: @coverage, actplan: @actvPlan, actage: @actvAge %>
+<% elsif lppi_status == true && sgyrt_status == false %>
+  <%#= "LPPI (active)" %>
+  <%= render 'coverages/show_lppi', rcvgs: @coverage %>
+<% elsif lppi_status == false && sgyrt_status == true %>
+  <%#= "SGYRT (active)" %>
+  <%= render 'coverages/show_sgyrt', rcvgt: @coverage %>
+<% end %>
 
 </div>

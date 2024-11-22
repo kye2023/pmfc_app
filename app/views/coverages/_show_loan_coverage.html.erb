@@ -1,6 +1,7 @@
-<% sw.present? %>
-<% se.present? %>
-<% age.present? %>
+<% sw %>
+<% se %>
+<% plan %>
+<% age %>
 <table class="table table-responsive table-sm table-light table-bordered table-hover">
     <thead>
         <tr>
@@ -13,7 +14,7 @@
             <th class="text-center">Term</th>
             <th class="text-center">Premium</th>
             <% unless @batch.submit? %>
-            <th>Action</th>
+            <th class="text-center">Action</th>
             <% end %>
         </tr>
     </thead>
@@ -24,8 +25,11 @@
         mgt_loan = 0
         msum_prem = 0
         mgt_prem = 0
+        iplan_status = 0
         if sw.present? == true
             sw.each do |c| 
+            iplan_status = c.member.plan_lppi
+            if iplan_status == true
                 m_loan = c.loan_coverage
                 m_prem = c.loan_premium
                 hstatus = c.member.health_declaration
@@ -63,60 +67,20 @@
             <td class="text-center"><small><%= to_curr(m_prem) %><% msum_prem+= m_prem %></small></td>
             <% unless @batch.submit? %>
             <td class="text-center">
-                <!--<small>Status: <%#= c.status %></small> <br>-->
-                <%= link_to '<i class="bi bi-pencil-square"></i>'.html_safe, edit_coverage_path(c), class: "btn btn-secondary btn-sm", data: { turbo_frame: "remote_modal" } %> 
-                <%= link_to '<i class="bi bi-trash"></i>'.html_safe, c, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
+                <!--<small><%= "LPPI: #{c.member.plan_lppi} | SGYRT: #{c.member.plan_sgyrt}" %> </small><br>-->
+            <%= link_to '<i class="bi bi-eye"></i>'.html_safe, coverage_path(c, plan: plan, age: age), class: 'btn btn-secondary btn-sm', data: { turbo_frame: "remote_modal" } %>
+            <%= link_to '<i class="bi bi-pencil-square"></i>'.html_safe, edit_coverage_path(c), class: "btn btn-secondary btn-sm", data: { turbo_frame: "remote_modal" } %> 
+            <%= link_to '<i class="bi bi-trash"></i>'.html_safe, c, class: "btn btn-danger btn-sm", method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
             </td>
             <% end %>
         </tr>
+            <% end %>
         <% end %>
     <% else %>
         <tr>
-            <td colspan="8" class="text-center">No record(s) found...</td>
+            <td colspan="9" class="text-center">No record(s) found...</td>
         </tr>
     <% end %>
     </tbody>
-    <% if sw.present? == true && age.present? == true %>
-    <tfoot>
-        <tr>
-            <td colspan="3" class="text-end">Grand Total :</td>
-            <td class="text-center">
-                <div class="text-wrap fw-lighter">
-                    <% mgt_loan = msum_loan %>
-                    <small><%= to_curr(mgt_loan) %></small>
-                </div>
-            </td>
-            <td colspan="3" class="text-end">Total Gross Premium Due :</td>
-            <td class="text-center">
-                <div class="text-wrap fw-lighter">
-                   <% mgt_prem = msum_prem %>
-                    <small><%= to_curr(mgt_prem) %></small>
-                </div>
-            </td>
-            <% unless @batch.submit? %>
-            <td></td>
-            <% end %>
-        </tr>
-        <tr>
-            <td colspan="7" class="text-end">Less Service Fee :</td>
-            <td></td>
-            <% unless @batch.submit? %>
-            <td></td>
-            <% end %>
-        </tr>
-        <tr>
-            <td colspan="7" class="text-end">Total Net Premium Due :</td>
-            <td class="text-center">
-                 <div class="text-wrap fw-lighter">
-                   <% mgt_prem = msum_prem %>
-                    <small><%= to_curr(mgt_prem) %></small>
-                </div>
-            </td>
-            <% unless @batch.submit? %>
-            <td></td>
-            <% end %>
-        </tr>
-    </tfoot>
-    <% end %>
 </table>
 <%# console %>

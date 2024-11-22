@@ -72,9 +72,18 @@
             <% else %>
             <div class="text-wrap fw-bold"><strong><%= member.get_cmember.upcase %></strong></div>
             <% end %>
+            <div class="text-wrap fw-light"><small>Coverage availed: <%= member.coverages.count %> | Residency: <%= member.coverages.sum(:term) %></small></div>
             <div class="text-wrap fw-light">
-              <!--<small> Birth Date: <%# to_shortdate(member.birth_date) %> | Membership: <%# to_shortdate(member.date_membership) %></small>-->
-              <small>Coverage availed: <%= member.coverages.count %> | Residency: <%= member.coverages.sum(:term) %></small>
+              <% if member.plan_lppi? == true %>
+              <small><i class="bi bi-file-text"></i> LPPI: <%= '<i class="bi bi-check-lg"></i>'.html_safe %></small>
+              <% elsif member.plan_lppi? == false %>
+              <small><i class="bi bi-file-text"></i> LPPI: <%= '<i class="bi bi-x-lg"></i>'.html_safe %></small>
+              <% end %>
+              <% if member.plan_sgyrt? == true %>
+              <small><i class="bi bi-file-text"></i> SGYRT: <%= '<i class="bi bi-check-lg"></i>'.html_safe %></small>
+              <% elsif member.plan_sgyrt? == false %>
+              <small><i class="bi bi-file-text"></i> SGYRT: <%= '<i class="bi bi-x-lg"></i>'.html_safe %></small>
+              <% end %>
             </div>
           </td>
           <td>

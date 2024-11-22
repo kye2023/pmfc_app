@@ -24,6 +24,9 @@ Rails.application.routes.draw do
 
   resources :coverages do
     get :selected, on: :member
+    patch :sgyrt_submit, on: :member # This is a PATCH route
+    patch :lppi_submit, on: :member
+    # get :sgyrt_submit, on: :member # This is a GET route
     get :check_residency
     get :coverage_history
     get :coverage_premium_benefits
