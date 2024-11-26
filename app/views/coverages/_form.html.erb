@@ -13,7 +13,7 @@
 				<% if current_user.admin? %>
 				<%= f.association :member, label: "Member", input_html: { data: { controller: 'ts--select', action: 'change->select#member_select', select_target: "coverageMember" } } %>
 				<% else %>
-				<%= f.association :member, collection: Member.where(branch_id: current_user.user_detail.branch_id), label: "Member", input_html: { data: { controller: 'ts--select', action: 'change->select#member_select', select_target: "coverageMember" } } %>
+				<%= f.association :member, collection: Member.load_members(current_user), label: "Member", input_html: { data: { controller: 'ts--select', action: 'change->select#member_select', select_target: "coverageMember" } } %>
 				<% end %>
 				<!--Select-M-->
 			<div>

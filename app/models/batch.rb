@@ -98,19 +98,55 @@ class Batch < ApplicationRecord
   #--------------------------------------------------------------------------------------------------------------------------
 
   def self.get_batches_index(admin, query, current_user)
-    if query.present?
+    if query.present? 
+      # search/text_field/query has value
       if admin == true
         where("title LIKE ?", "%#{query}%")
       else
         where("title LIKE ? OR description LIKE ?", "%#{query}%", "%#{query}%").where(branch_id: current_user.user_detail.branch_id)
       end
-    else
+    else 
+      # search/text_field/query is empty
       if admin == true
         limit(100).all
       else
         where(branch_id: current_user.user_detail.branch_id).limit(100)
       end
+
     end
+  end
+
+  def self.get_batches_query(bId, query, current_user, age_group)
+    
+    if query.present? == true
+      # raise "errors"
+      mbr = Member.where("last_name LIKE ? OR first_name LIKE ?", "%#{query}%", "%#{query}%")
+      bId.coverages.where(member_id: mbr.pluck(:id))
+    else
+      case age_group
+      when "1865"
+        bId.coverages.where(age: 18..65)
+      when "6670b"
+        bId.coverages.where(age: 66..70).where("loan_coverage <= 350000")
+      when "6670a"
+        bId.coverages.where(age: 66..70).where("loan_coverage > 350001")
+      when "7175b"
+        bId.coverages.where(age: 71..75).where("loan_coverage <= 350000")
+      when "7175a"
+        bId.coverages.where(age: 71..75).where("loan_coverage > 350001")
+      when "7680b"
+        bId.coverages.where(age: 76..80).where("loan_coverage <= 350000")
+      when "7680a"
+        bId.coverages.where(age: 76..80).where("loan_coverage > 350001")
+      when "0119"
+        bId.coverages.where("residency BETWEEN 0 AND 119")
+      when "120a"
+        bId.coverages.where("residency > 120")
+      else
+        bId.coverages
+      end
+    end
+
   end
 
   def batch_csv(batch_id) 

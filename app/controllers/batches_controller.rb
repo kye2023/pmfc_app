@@ -26,12 +26,6 @@ class BatchesController < ApplicationController
     @batches = Batch.get_batches_index(current_user.admin, params[:query], current_user)
 
     @pagy, @batches = pagy(@batches, items: 10)
-
-    # if current_user.admin == true
-    #   @batches = Batch.all
-    # else
-    #   @batches = Batch.where(branch_id: current_user.user_detail.branch_id)
-    # end
    
     respond_to do |format|
       format.html
@@ -52,37 +46,13 @@ class BatchesController < ApplicationController
     params[:pquery]
     params[:aquery]
 
-    case age
-    when "1865"
-      @show_coverage = @batch.coverages.where(age: 18..65)
-    when "6670b"
-      @show_coverage = @batch.coverages.where(age: 66..70).where("loan_coverage <= 350000")
-    when "6670a"
-      @show_coverage = @batch.coverages.where(age: 66..70).where("loan_coverage > 350001")
-    when "7175b"
-      @show_coverage = @batch.coverages.where(age: 71..75).where("loan_coverage <= 350000")
-    when "7175a"
-      @show_coverage = @batch.coverages.where(age: 71..75).where("loan_coverage > 350001")
-    when "7680b"
-      @show_coverage = @batch.coverages.where(age: 76..80).where("loan_coverage <= 350000")
-    when "7680a"
-      @show_coverage = @batch.coverages.where(age: 76..80).where("loan_coverage > 350001")
-    when "0119"
-      @show_coverage = @batch.coverages.where("residency BETWEEN 0 AND 119")
-    when "120a"
-      @show_coverage = @batch.coverages.where("residency > 120")
+    bId = Batch.find(params[:id])
+    if params[:query].present? && params[:pquery].present? == true && params[:aquery].present? == true
+      @show_coverage = Batch.get_batches_query(bId, params[:query], current_user, params[:aquery])
     else
-      @show_coverage = @batch.coverages.limit(100) #SELECT `coverages`.* FROM `coverages` WHERE `coverages`.`batch_id` = '28' LIMIT 100
+      @show_coverage = Batch.get_batches_query(bId, params[:query], current_user, age)
     end
-
-    #search bar
-    if params[:query].present?
-      @show_coverage = @batch.coverages.joins(:member).where("members.last_name LIKE ? OR members.first_name LIKE ?", "%#{params[:query]}%", "%#{params[:query]}%")
-      # SELECT `coverages`.* FROM `coverages` INNER JOIN `members` ON `members`.`id` = `coverages`.`member_id` WHERE `coverages`.`batch_id` = '28' AND (members.last_name LIKE 'gaspar' OR members.first_name LIKE 'gaspar')
-
-      # @show_coverage = @show_coverage.joins(:member).where("members.last_name LIKE ? OR members.first_name LIKE ?", "#{params[:query]}", "#{params[:query]}")
-      # SELECT `coverages`.* FROM `coverages` INNER JOIN `members` ON `members`.`id` = `coverages`.`member_id` WHERE `coverages`.`batch_id` = '28' AND (members.last_name LIKE 'gaspar' OR members.first_name LIKE 'gaspar') LIMIT 100
-    end
+    
     
     @fcoverage = @show_coverage
     @pagy, @show_coverage = pagy(@show_coverage, items: 25)

@@ -111,8 +111,7 @@ class CoveragesController < ApplicationController
         @coverage.compute_age
         respond_to do |format|
           if @coverage.save
-            dependent_coverage_save
-            #format.html { redirect_to @batch, notice: "Coverage was successfully created." }
+            verify_plan(@coverage)
             if @member.present? == true  
               format.html { redirect_to batch_url(@coverage.batch_id, qry: 0, pln: 0, pth: "b1"), notice: "Coverage was successfully created." }
             else    
@@ -134,6 +133,23 @@ class CoveragesController < ApplicationController
       end
     
     end
+  end
+
+  def verify_plan(arr)
+    lppi_status = arr.member.plan_lppi
+    sgyrt_status = arr.member.plan_sgyrt
+    
+    if lppi_status == true && sgyrt_status == true
+      # return "dependent save"
+      dependent_coverage_save
+    elsif lppi_status == true && sgyrt_status == false
+      # update/remove (group) records from coverage
+      # return "LPPI (active)"
+    elsif lppi_status == false && sgyrt_status == true  
+      # update/remove (lppi) records from coverage
+      # return "SGYRT (active)"
+    end   
+    
   end
 
   def dependent_coverage_save
@@ -179,9 +195,12 @@ class CoveragesController < ApplicationController
   
   # DELETE /coverages/1 or /coverages/1.json
   def destroy
+   @dplan = params[:plan]
+   @dage = params[:age]
+    # raise "errors"
     @coverage.destroy
     respond_to do |format|
-      format.html { redirect_to batch_url(@batch, qry: 0, pln: 0, pth: "b1"), notice: "Coverage was successfully destroyed." }
+      format.html { redirect_to batch_url(@batch, qry: @dage, pln: @dplan, pth: "b1"), notice: "Coverage was successfully destroyed." }
       format.json { head :no_content }
     end
   end

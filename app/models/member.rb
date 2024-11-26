@@ -64,6 +64,10 @@ class Member < ApplicationRecord
     end
   end
 
+  def self.load_members(current_user)
+    where(branch_id: current_user.user_detail.branch_id)
+  end
+
 
 end
 
