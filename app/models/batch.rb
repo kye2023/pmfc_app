@@ -121,7 +121,29 @@ class Batch < ApplicationRecord
     if query.present? == true
       # raise "errors"
       mbr = Member.where("last_name LIKE ? OR first_name LIKE ?", "%#{query}%", "%#{query}%")
-      bId.coverages.where(member_id: mbr.pluck(:id))
+      case age_group
+      when "1865"
+        bId.coverages.where(age: 18..65)
+      when "6670b"
+        bId.coverages.where(age: 66..70).where("loan_coverage <= 350000")
+      when "6670a"
+        bId.coverages.where(age: 66..70).where("loan_coverage > 350001")
+      when "7175b"
+        bId.coverages.where(age: 71..75).where("loan_coverage <= 350000")
+      when "7175a"
+        bId.coverages.where(age: 71..75).where("loan_coverage > 350001")
+      when "7680b"
+        bId.coverages.where(age: 76..80).where("loan_coverage <= 350000")
+      when "7680a"
+        bId.coverages.where(age: 76..80).where("loan_coverage > 350001")
+      when "0119"
+        bId.coverages.where("residency BETWEEN 0 AND 119")
+      when "120a"
+        bId.coverages.where("residency > 120").where(member_id: mbr.pluck(:id))
+      else
+        bId.coverages.where(member_id: mbr.pluck(:id))
+      end
+
     else
       case age_group
       when "1865"
@@ -148,6 +170,45 @@ class Batch < ApplicationRecord
     end
 
   end
+
+  def get_service_fee(prem, age_r, sfee)
+    csfee = 0
+    if sfee.present? == true
+      case age_r
+      when "1865"
+        csfee = (prem * (sfee / 100)).round(2)
+      when "0119"
+        csfee = (prem * (sfee / 100)).round(2)
+      when "120a"
+        csfee = (prem * (sfee / 100)).round(2)
+      else
+        csfee = 0
+      end
+    else
+      csfee = 0
+    end
+    return csfee
+  end
+
+  def total_net_premium(prem, age_r, sfee)
+    tnprem = 0
+    if sfee.present? == true 
+      case age_r
+        when "1865"
+          tnprem = (prem - sfee)
+        when "0119"
+          tnprem = (prem - sfee)
+        when "120a"
+          tnprem = (prem - sfee)
+        else
+          tnprem = prem
+        end
+    else
+      tnprem = prem
+    end
+    return tnprem
+  end
+
 
   def batch_csv(batch_id) 
     @batch = Batch.find(batch_id)

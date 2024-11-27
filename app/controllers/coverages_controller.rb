@@ -143,9 +143,12 @@ class CoveragesController < ApplicationController
       # return "dependent save"
       dependent_coverage_save
     elsif lppi_status == true && sgyrt_status == false
+      arr.update(plan_sgyrt: 0)
+      arr.dependent_coverages.destroy_all
       # update/remove (group) records from coverage
       # return "LPPI (active)"
     elsif lppi_status == false && sgyrt_status == true  
+      arr.update(plan_lppi: 0)
       # update/remove (lppi) records from coverage
       # return "SGYRT (active)"
     end   
@@ -313,7 +316,7 @@ class CoveragesController < ApplicationController
     @acage = params[:aage]
     if @get_cvgId_ls.present?
       if @coverage.member.update(plan_lppi: 0)
-        # @coverage.dependent_coverages.destroy_all
+        @coverage.update(plan_lppi: 0)
         respond_to do |format| 
           format.html { redirect_to batch_url(@batch, qry: @acage, pln: @acplan, pth: "b1"), notice: "Group successfully removed." }
         end

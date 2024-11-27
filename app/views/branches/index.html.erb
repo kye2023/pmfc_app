@@ -1,5 +1,7 @@
 <%= content_tag :h1, "List of Branches" %>
-
+<%= "Admin : #{current_user.admin?}" %><br>
+<%= current_user.email %><br>
+<%= current_user.user_detail.branch %><br>
 <% if current_user.admin? %>
 <div class="text-end mb-3">
   <%= link_to new_branch_path, class: 'btn btn-primary' do %>
@@ -39,9 +41,10 @@
               # total_premium = (individual_plan+group_plan)
             %>
             <small class="text-muted">
-              <%= 
+              <%#= 
                 "Centers: "+"#{branch.center_names.count(:id)}"+" | Remittance: "+"#{branch.count_branch_id(branch.id)}"+" | Premium: "+"LPPI("+"#{to_curr(individual_plan)}"+") SGYRT ("+"#{to_curr(group_plan)}"+")"
               %> 
+              <%= "Centers: "+"#{branch.center_names.count(:id)}"+" | Remittance: "+"#{branch.count_branch_id(branch.id)}" %>
             </small>
           </div>
         </td>
