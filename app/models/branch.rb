@@ -1,9 +1,11 @@
 class Branch < ApplicationRecord
-    validates_presence_of :name, :service_fee
+    validates_presence_of :name
     has_many :batches
     has_many :center_names
 
-    SFEE = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+    validates :service_fee, numericality: { greater_than: 0 }   
+
+    SFEE = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 
     def to_s 
         name

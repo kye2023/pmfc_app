@@ -41,13 +41,15 @@
             <th>#</th>
             <th>Batch</th>
             <th class="text-center">Count</th>
-            <th class="text-end">LPPI Premium</th>
-            <th class="text-end">Group Premium</th>
+            <th class="text-center">LPPI Premium</th>
+            <th class="text-center">Group Premium</th>
             <!--<th></th>-->
           </tr>
         </thead>
         <tbody>
             <% 
+              # raise "errors"
+              cvg_cnt = 0
               slppi = 0
               ssgyrt = 0
               bcount = 0
@@ -57,47 +59,45 @@
           <tr>
             <th scope="row"><%= batch.id %></th>
             <td><%= batch.title %> <strong><%= batch.branch %></strong> <br> <%= batch.description %></td>
-            <td class="text-center"><%= batch.coverages.count %></td>
-            <td class="text-end">
+            <td class="text-center"><% bcvg = batch.coverages.count %><% cvg_cnt += bcvg %><%= bcvg %></td>
+            <td class="text-center">
               <% 
               lppi = 0
-              lppi = batch.coverages.sum(:loan_premium)
+              # lppi = batch.coverages.sum(:loan_premium)
+              lppi = batch.coverages.where(plan_lppi: true).sum(:loan_premium)
               slppi += lppi
               %>
               <% if lppi == 0 %>
-              <%# link_to '<i class="bi bi-file-plus"></i>'.html_safe+" Add Coverage", batch_url(batch, qry: 0, pln: 0, pth: "br1-"+"#{@branch.id}"), class: 'btn btn-secondary btn-sm' %>
               <div class="text-wrap fw-lighter"><small>-</small></div>
               <% else %>
-              <%# link_to '<i class="bi bi-eye-fill"></i>'.html_safe+" #{to_curr(lppi)}", batch_url(batch, qry: 0, pln: 0, pth: "br1-"+"#{@branch.id}"), class: 'btn btn-secondary btn-sm' %>
               <div class="text-wrap fw-lighter"><small><%= to_curr(lppi) %></small></div>
               <% end %>
             </td>
-            <td class="text-end">
+            <td class="text-center">
               <%
                 gyrt = 0
-                gyrt = batch.coverages.sum(:group_premium)+(batch.batch_coverage)
+                gyrt = batch.coverages.where(plan_sgyrt: true).sum(:group_premium)+(batch.batch_coverage)
                 ssgyrt += gyrt
               %>
               <% if gyrt == 0 %>
-                <%# link_to '<i class="bi bi-file-plus"></i>'.html_safe+" Add Coverage", batch_url(batch, qry: 0, pln: 1, pth: "br1-"+"#{@branch.id}"), class: 'btn btn-secondary btn-sm' %>
                 <div class="text-wrap fw-lighter"><small>-</small></div>
               <% else %>
-                <%# link_to '<i class="bi bi-eye-fill"></i>'.html_safe+" #{to_curr(gyrt)}", batch_url(batch, qry: 0, pln: 1, pth: "br1-"+"#{@branch.id}"), class: 'btn btn-secondary btn-sm' %>
                 <div class="text-wrap fw-lighter"><small><%= to_curr(gyrt) %></small></div>
               <% end %>
             </td>
           </tr>
             <% end %>
         </tbody>
-        <% if current_user.admin? == false %>
+        <%# if current_user.admin? == false %>
         <tfoot>
           <tr>
-            <td class="text-end" colspan="3"><p><strong>Total:</strong></p></td>
-            <td class="text-end"><p><strong><%= to_curr(slppi) %></strong></p></td>
-            <td class="text-end"><p><strong><%= to_curr(ssgyrt) %></strong></p></td>
+            <td class="text-end" colspan="2"><p><strong>Total:</strong></p></td>
+            <td class="text-center"><p><strong><%= to_numdelimit(cvg_cnt) %></strong></p></td>
+            <td class="text-center"><p><strong><%= to_curr(slppi) %></strong></p></td>
+            <td class="text-center"><p><strong><%= to_curr(ssgyrt) %></strong></p></td>
           </tr>
         </tfoot>
-        <% end %>
+        <%# end %>
       </table>
     </div>    
   </div>

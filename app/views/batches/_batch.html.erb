@@ -50,11 +50,11 @@
           <% end %>
       </div>
         <% if params[:query].present? == true %>
-          <% form.text_field :pquery, value: params[:pquery] %>
-          <% form.text_field :aquery, value: params[:aquery] %>
+          <%= form.hidden_field :pquery, value: params[:pquery] %>
+          <%= form.hidden_field :aquery, value: params[:aquery] %>
         <% else %>
-          <% form.text_field :pquery, value: pln %>
-          <% form.text_field :aquery, value: age_r %>
+          <%= form.hidden_field :pquery, value: pln %>
+          <%= form.hidden_field :aquery, value: age_r %>
         <% end %>
       <% end %>
       <%== pagy_bootstrap_nav(@pagy) %>
@@ -69,48 +69,38 @@
 
   <%#== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>
   <%#= render 'coverages/show_group_coverage', sw: @records %>
-  
-  <%  if pln == "0" || params[:query].present? == true %>
+  <%#= "Age group : #{age_r.present?} | Plan : #{pln.present?} | SE : #{params[:query].present?}"  %><br>
+  <%#= "Age group : #{params[:aquery].present?} | Plan : #{params[:pquery].present?} | SE : #{params[:query].present?}"  %>
+
+  <% if pln == "0" || params[:pquery] == "0" %>
     <%= render 'coverages/show_loan_coverage', sw: @show_coverage, se: params[:query], plan: pln, age: age_r %>
-  <% elsif pln == "1" || params[:query].present? == true %>
+  <% elsif pln == "1" || params[:pquery] == "1" %>
     <%= render 'coverages/show_group_coverage', sw: @show_coverage, se: params[:query], plan: pln, age: age_r %>
   <% end %>
+
+ 
   
   <div class="row mb-3">
     <div class="col-md-6">
-      <!--<div class="card">
-        <!--<div class="card-header">Batch</div>--
-        <div class="card-body">
-            <!--Branch Info--
-            <div class="mb-3">
-              <strong>Title:</strong>
-              <%= batch.title %> <br>
-              <strong>Branch:</strong>
-              <%= batch.branch %> <br>
-              <strong>Description:</strong>
-              <%= batch.description %> <br>
-              <!--<p class="text-primary"> Count: <%# batch.coverages.count %> </p>--
-            </div>
-        </div>
-      </div>-->
+      <!--column-6-->
     </div>
-
+  <% if age_r != "0" %>
     <div class="col-md-3">
       <div class="card">
         <div class="card-body">
           <table class="table table-borderless">
-           <thead>
-              <% if pln == "0" %>
-              <tr><th><small>Count : <%= batch.bcount_mbr(@fcoverage, pln) %></small></th></tr>
-              <tr><th><small>Plan Type : LPPI</small></th></tr>
+            <!--<thead>-->
+              <% if pln == "0" && %>
+              <tr><td><small>Count : <%= batch.bcount_mbr(@fcoverage, pln) %></small></td></tr>
+              <tr><td><small>Plan Type : LPPI</small></td></tr>
               <!--<tr><th><small>Sum Insured : <%#= to_curr(batch.coverages.sum(:loan_coverage)) %></small></th></tr>-->
-              <tr><th><small>Sum Insured : <%= to_curr(batch.sum_insured_mbr(@fcoverage, pln)) %></small></th></tr>
+              <tr><td><small>Sum Insured : <%= to_curr(batch.sum_insured_mbr(@fcoverage, pln)) %></small></td></tr>
               <% elsif pln == "1" %>
-              <tr><th><small>Count : <%= batch.bcount_mbr(@fcoverage,pln) %></small></th></tr>
-              <tr><th><small>Plan Type : SGYRT</small></th></tr>
-              <tr><th><small>Sum Insured : <%= to_curr(batch.sum_insured_mbr(@fcoverage, pln)) %></small></th></tr>
+              <tr><td><small>Count : <%= batch.bcount_mbr(@fcoverage,pln) %></small></td></tr>
+              <tr><td><small>Plan Type : SGYRT</small></td></tr>
+              <tr><td><small>Sum Insured : <%= to_curr(batch.sum_insured_mbr(@fcoverage, pln)) %></small></td></tr>
               <% end %>
-            </thead>
+            <!--</thead>-->
           </table>  
         </div>
       </div>
@@ -120,32 +110,35 @@
       <div class="card">
         <div class="card-body">
           <table class="table table-borderless">
-              <thead>
+              <!--<thead>-->
                 <% 
                   lppi = 0
                   gyrt = 0
+                  rsfee = 0
+                  tnprem = 0
+                  br_sfee = batch.branch.service_fee
                   if pln == "0"
-                  lppi = @fcoverage.sum(:loan_premium)
+                    lppi = @fcoverage.sum(:loan_premium)
                 %>
-                <tr><th>Gross Premium : <%= to_curr(lppi) %></th></tr>
-                <tr><th><small>Less : Service Fee</small></th></tr>
-                <tr><th><small>Total Net Premium Due : </small></th></tr>
+                <tr><td>Gross Premium : <small><%= to_curr(lppi) %></small></td></tr>
+                <tr><td class="text-danger">(Less Service Fee) : <small><% rsfee = batch.get_service_fee(lppi, age_r ,br_sfee) %><%= to_curr(rsfee) %></small></td></tr>
+                <tr><td>Total Net Premium Due : <small><% tnprem = batch.total_net_premium(lppi, age_r, rsfee) %><%= to_curr(tnprem) %></small></td></tr>
                   <% 
                     elsif pln == "1"
                     # gyrt = batch.coverages.sum(:group_premium)+(batch.batch_coverage)
                     gyrt = (batch.batch_cvg_pprm(@fcoverage))+(batch.batch_cvg_dprm(@fcoverage))
                   %>
-                 <tr><th><small>Gross Premium : </small><small><%= to_curr(gyrt) %></small></th></tr>
-                 <tr><th><small>Less : Service Fee</small></th></tr>
-                 <tr><th><small>Total Net Premium Due : </small></th></tr>
+                 <tr><td>Gross Premium : <small><%= to_curr(gyrt) %></small></td></tr>
+                 <tr><td class="text-danger">Less : Service Fee <small><% rsfee = batch.get_service_fee(gyrt, age_r, br_sfee) %><%= to_curr(rsfee) %></small></td></tr>
+                 <tr><td>Total Net Premium Due : <small><% tnprem = batch.total_net_premium(gyrt, age_r, rsfee) %><%= to_curr(tnprem) %></small></td></tr>
                 <% 
                   end 
                 %>
-              </thead>
+              <!--</thead>-->
           </table>
         </div>
       </div>
     </div>
-
+  <% end %>
   </div>
 </div>

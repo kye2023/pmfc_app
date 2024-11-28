@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_10_14_035713) do
+ActiveRecord::Schema[7.0].define(version: 2024_11_26_040520) do
   create_table "batches", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "title"
     t.text "description"
@@ -37,6 +37,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_14_035713) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "service_fee", precision: 10, scale: 2
+    t.decimal "age_1865", precision: 10, scale: 2
+    t.decimal "age_6670b", precision: 10, scale: 2
+    t.decimal "age_6670a", precision: 10, scale: 2
+    t.decimal "age_7175b", precision: 10, scale: 2
+    t.decimal "age_7175a", precision: 10, scale: 2
+    t.decimal "age_7680b", precision: 10, scale: 2
+    t.decimal "age_7680a", precision: 10, scale: 2
+    t.decimal "res_0119", precision: 10, scale: 2
+    t.decimal "res_120a", precision: 10, scale: 2
   end
 
   create_table "center_names", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -69,6 +78,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_14_035713) do
     t.integer "grace_period"
     t.decimal "substandard_rate", precision: 10, scale: 2
     t.bigint "center_name_id"
+    t.boolean "plan_lppi", default: true
+    t.boolean "plan_sgyrt", default: true
     t.index ["center_name_id"], name: "index_coverages_on_center_name_id"
     t.index ["group_benefit_id"], name: "index_coverages_on_group_benefit_id"
   end

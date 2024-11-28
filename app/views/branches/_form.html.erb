@@ -9,14 +9,12 @@
     <%= f.input :address %>
     <%= f.input :contact_no %>
     <%= f.input :email %>
-    <% 
-      if @branch.service_fee.present? == true 
-      svfee = @branch.service_fee
-    %>
-      <%= f.input :service_fee, label: "Service Fee (%)", selected: svfee, input_html: { data: { select_target: "#" }  } %>
-    <% else %>
-      <%= f.input :service_fee, label: "Service Fee (%)", collection: Branch::SFEE, input_html: { data: { select_target: "#" }  } %>
-    <% end %>
+      <% if @branch.service_fee.present? == true %>
+      <% svfee = @branch.service_fee %>
+    <%= f.input :service_fee, label: "Service Fee (%)", collection: Branch::SFEE, selected: svfee.to_i, input_html: { data: { select_target: "#" }  } %>
+      <% else %>
+    <%= f.input :service_fee, label: "Service Fee (%)", collection: Branch::SFEE, input_html: { data: { select_target: "#" }  } %>
+      <% end %>
   </div>
 
   <div class="form-actions">

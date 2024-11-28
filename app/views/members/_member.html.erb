@@ -21,7 +21,7 @@
     <div class="card-body">
       <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, members_path, class: 'btn btn-primary btn-sm' %> |
       <%= link_to new_dependent_path(m: member), class: 'btn btn-primary btn-sm' do %> New Dependent <% end %> | 
-      <%= link_to '<i class="bi bi-pencil-square"></i>'.html_safe, edit_member_path(@member), class: 'btn btn-primary btn-sm' %> |
+      <%= link_to '<i class="bi bi-pencil-square"></i>'.html_safe, edit_member_path(@member), data: { turbo_frame:"remote_modal" }, class: 'btn btn-primary btn-sm' %> |
       <%= link_to '<i class="bi bi-trash"></i>'.html_safe, @member, class: 'btn btn-danger btn-sm', method: :delete, data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" } %>
     </div>
   </div>
