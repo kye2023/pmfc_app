@@ -21,7 +21,7 @@
     <div class="row">
       <%= f.input :last_name, wrapper_html: { class: "col-md-4" } %>
       <%= f.input :first_name, wrapper_html: { class: "col-md-4" } %>
-      <%= f.input :middle_name, wrapper_html: { class: "col-md-2" } %>
+      <%= f.input :middle_name, label: "M.I", wrapper_html: { class: "col-md-2" } %>
       <%= f.input :suffix, wrapper_html: { class: "col-md-2" } %>
     </div>
     
@@ -29,7 +29,7 @@
     <div class="row">
       <div class="col-md-6">
         <%= f.label :birth_date %>
-        <%= f.date_field :birth_date, class: "bdate_pick" %>
+        <%= f.date_field :birth_date, class: "#bdate_pick" %>
       </div>
       <!--<div class="col-md-6">
         <%#= f.label :date_membership %>
@@ -45,10 +45,22 @@
       <%= f.input :mobile_no, wrapper_html: { class: "col-md-6" } %>
       <%= f.input :email, wrapper_html: { class: "col-md-6" } %>
     </div>
-    <div class="row">
-      <%= f.input :health_declaration, wrapper_html: { class: "col-md-12" } %>
-    </div>
+    <div class="row"><%= f.input :health_declaration, wrapper_html: { class: "col-md-12" } %></div>
 
+    <!--Plan-Activation-->
+    <% if current_user.admin == true %>
+    <div class="card">
+      <h3 class="card-header">Plan</h3>
+      <div class="card-body">
+        <div class="row">
+          <%= f.input :plan_lppi, label: "LPPI", wrapper_html: { class: "col-md-6" } %>
+          <%= f.input :plan_sgyrt, label: "SGYRT", wrapper_html: { class: "col-md-6" } %>
+        </div>
+      </div>
+    </div>
+    <% end %>
+    <!--Plan-Activation-->
+    <br>
     <!--Nested-Cocoon-->
     <div class="card">
       <h3 class="card-header">Dependents</h3>
@@ -63,9 +75,7 @@
       </div>
     </div>
     </div>
-    
     <!--Nested-Cocoon-->
-
   </div>
   <br>
   <br>

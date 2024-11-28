@@ -88,7 +88,7 @@
     <div class="col-md-3">
       <div class="card">
         <div class="card-body">
-          <table class="table table-bordered">
+          <table class="table table-borderless">
             <!--<thead>-->
               <% if pln == "0" && %>
               <tr><td><small>Count : <%= batch.bcount_mbr(@fcoverage, pln) %></small></td></tr>
@@ -109,7 +109,7 @@
     <div class="col-md-3">
       <div class="card">
         <div class="card-body">
-          <table class="table table-bordered">
+          <table class="table table-borderless">
               <!--<thead>-->
                 <% 
                   lppi = 0
@@ -121,7 +121,7 @@
                     lppi = @fcoverage.sum(:loan_premium)
                 %>
                 <tr><td>Gross Premium : <small><%= to_curr(lppi) %></small></td></tr>
-                <tr><td>(Less Service Fee) : <small><% rsfee = batch.get_service_fee(lppi, age_r ,br_sfee) %><%= to_curr(rsfee) %></small></td></tr>
+                <tr><td class="text-danger">(Less Service Fee) : <small><% rsfee = batch.get_service_fee(lppi, age_r ,br_sfee) %><%= to_curr(rsfee) %></small></td></tr>
                 <tr><td>Total Net Premium Due : <small><% tnprem = batch.total_net_premium(lppi, age_r, rsfee) %><%= to_curr(tnprem) %></small></td></tr>
                   <% 
                     elsif pln == "1"
@@ -129,7 +129,7 @@
                     gyrt = (batch.batch_cvg_pprm(@fcoverage))+(batch.batch_cvg_dprm(@fcoverage))
                   %>
                  <tr><td>Gross Premium : <small><%= to_curr(gyrt) %></small></td></tr>
-                 <tr><td>Less : Service Fee <small><% rsfee = batch.get_service_fee(gyrt, age_r, br_sfee) %><%= to_curr(rsfee) %></small></td></tr>
+                 <tr><td class="text-danger">Less : Service Fee <small><% rsfee = batch.get_service_fee(gyrt, age_r, br_sfee) %><%= to_curr(rsfee) %></small></td></tr>
                  <tr><td>Total Net Premium Due : <small><% tnprem = batch.total_net_premium(gyrt, age_r, rsfee) %><%= to_curr(tnprem) %></small></td></tr>
                 <% 
                   end 

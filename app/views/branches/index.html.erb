@@ -1,7 +1,8 @@
 <%= content_tag :h1, "List of Branches" %>
-<%= "Admin : #{current_user.admin?}" %><br>
-<%= current_user.email %><br>
-<%= current_user.user_detail.branch %><br>
+<%# "Admin : #{current_user.admin?}" %>
+<%# current_user.email %>
+<%# current_user.user_detail.branch %>
+
 <% if current_user.admin? %>
 <div class="text-end mb-3">
   <%= link_to new_branch_path, class: 'btn btn-primary' do %>

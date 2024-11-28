@@ -19,7 +19,9 @@ class Batch < ApplicationRecord
   def batch_coverage
     dc_prm = 0
     coverages.each do |cvg|
-      dc_prm += cvg.dependent_coverages.sum(:premium)
+      if cvg.plan_sgyrt? == true
+        dc_prm += cvg.dependent_coverages.sum(:premium)
+      end
     end
     return dc_prm
   end

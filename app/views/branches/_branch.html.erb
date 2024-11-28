@@ -48,6 +48,7 @@
         </thead>
         <tbody>
             <% 
+              # raise "errors"
               cvg_cnt = 0
               slppi = 0
               ssgyrt = 0
@@ -62,7 +63,8 @@
             <td class="text-center">
               <% 
               lppi = 0
-              lppi = batch.coverages.sum(:loan_premium)
+              # lppi = batch.coverages.sum(:loan_premium)
+              lppi = batch.coverages.where(plan_lppi: true).sum(:loan_premium)
               slppi += lppi
               %>
               <% if lppi == 0 %>
@@ -74,7 +76,7 @@
             <td class="text-center">
               <%
                 gyrt = 0
-                gyrt = batch.coverages.sum(:group_premium)+(batch.batch_coverage)
+                gyrt = batch.coverages.where(plan_sgyrt: true).sum(:group_premium)+(batch.batch_coverage)
                 ssgyrt += gyrt
               %>
               <% if gyrt == 0 %>

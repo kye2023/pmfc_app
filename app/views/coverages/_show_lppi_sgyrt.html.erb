@@ -4,7 +4,7 @@
 <table class="table table-bordered table-hover">
   <thead>
     <tr>
-      <th colspan="2">LPPI <%= link_to '<i class="bi bi-trash"></i>'.html_safe, lppi_submit_coverage_path(@coverage, aplan: actplan, aage: actage), class: "btn btn-danger btn-sm", method: :patch, data: { "turbo-method": :patch, turbo_confirm: "Are you sure to delete LPPI Coverage?" } %></th>
+      <th colspan="2">LPPI <%= link_to '<i class="bi bi-trash"></i>'.html_safe, lppi_submit_coverage_path(@coverage, aplan: actplan, aage: actage), class: "btn btn-danger btn-sm", method: :patch, data: { "turbo-method": :patch, turbo_confirm: "Are you sure to delete LPPI Coverage?" } unless @batch.submit? %></th>
     </tr>
     <tr>
       <th>Loan</th>
