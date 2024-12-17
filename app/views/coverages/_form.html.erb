@@ -56,7 +56,8 @@
 				</div>
 				<br>
 				<div class="row">
-					<%= f.input :residency, wrapper_html: { class: "col-md-3", hidden: true }, input_html: { data: { select_target: "residencyInput" }  }  %>
+				<%= f.input :residency, as: :integer, wrapper_html: { class: "col-md-3", hidden: false }, input_html: { data: { select_target: "residencyInput" }, 
+					required: true, min: 0, step: 1  } %>
 				<% if @get_cvg_sts.present? && @get_cvg_sts[0,1] == "N" %>
 				<% cstatus = "R" %>
 					<%= f.input :status, wrapper_html: { class: "col-md-3" }, collection: [['New','N'],['Renewal','R']], selected: cstatus, input_html: { data: { select_target: "statusInput" }  }, include_blank: true %>

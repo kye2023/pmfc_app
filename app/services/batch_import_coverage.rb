@@ -31,85 +31,91 @@ class BatchImportCoverage
       formatted_efdate = get_dformatted(nil, r_cef_date, "effectivity") 
       formatted_cbdate = get_dformatted(r_cbdate, nil, "birth_date") 
       
+      center_id = verify_center(cvg_cname)
+      # raise "errors"
+      
+      if center_id.present? == true 
       # CHECK EXISTING MEMBER, RETURN id IF EXIST
       mmbr_data = Member.where(last_name: principal_lname, first_name: principal_fname, birth_date: formatted_cbdate).where(Member.arel_table[:middle_name].matches("#{principal_mname[0]}%")).first
       
-      if mmbr_data.present? == true && mmbr_data.id.nil? == false
-        #CHECK if DB member meet the params from excel row
-        check_coverage = Coverage.where("effectivity  LIKE ?", "#{Date.today.year}%").where(member_id: mmbr_data.id)
-        
-        if check_coverage.present? == true
-          # CHECK for latest coverage
-          # raise "errors"
-          retrieve_coverage = check_coverage.order(:effectivity,:expiry).last
-          cov_aging = retrieve_coverage.coverage_aging
+        if mmbr_data.present? == true && mmbr_data.id.nil? == false
+          #CHECK if DB member meet the params from excel row
+          check_coverage = Coverage.where("effectivity  LIKE ?", "#{Date.today.year}%").where(member_id: mmbr_data.id)
+          
+          if check_coverage.present? == true
+            # CHECK for latest coverage
+            retrieve_coverage = check_coverage.order(:effectivity,:expiry).last
+            cov_aging = retrieve_coverage.coverage_aging
 
-          center_id = verify_center(cvg_cname)
-          gresidency = verify_residency(mmbr_data, cvg_resdncy)
+            # center_id = verify_center(cvg_cname)
+            gresidency = verify_residency(mmbr_data, cvg_resdncy)
 
-          coverage_hash = 
-          {
-            batch_id: @batch_id,member_id: mmbr_data.id,loan_certificate: row["CERTNO"] == nil ? nil : row["CERTNO"],age: row["AGE"] == nil ? nil : row["AGE"],
-            loan_coverage: row["AMOUNTOFLOAN"] == nil ? nil : row["AMOUNTOFLOAN"],effectivity: formatted_efdate,grace_period: row["GRACEPERIOD"] == nil ? nil : row["GRACEPERIOD"],term: row["TERM"] == nil ? nil : row["TERM"],residency: gresidency,status: row["STATUS"] == nil ? nil : row["STATUS"],center_name_id: center_id
-          }
+            coverage_hash = 
+            {
+              batch_id: @batch_id,member_id: mmbr_data.id,loan_certificate: row["CERTNO"] == nil ? nil : row["CERTNO"],age: row["AGE"] == nil ? nil : row["AGE"],
+              loan_coverage: row["AMOUNTOFLOAN"] == nil ? nil : row["AMOUNTOFLOAN"],effectivity: formatted_efdate,grace_period: row["GRACEPERIOD"] == nil ? nil : row["GRACEPERIOD"],term: row["TERM"] == nil ? nil : row["TERM"],residency: gresidency,status: row["STATUS"] == nil ? nil : row["STATUS"],center_name_id: center_id
+            }
 
-          if cov_aging <= 0
-            
-            chk_fr_cvg = check_coverage.where(loan_coverage: coverage_hash[:loan_coverage], effectivity: coverage_hash[:effectivity], term: coverage_hash[:term] )
-            if chk_fr_cvg.present? == true
+            if cov_aging <= 0
               
-              row["up_STATUS"] = "Existing"
-              row["cvgID"] = retrieve_coverage.id
-              next
+              chk_fr_cvg = check_coverage.where(loan_coverage: coverage_hash[:loan_coverage], effectivity: coverage_hash[:effectivity], term: coverage_hash[:term] )
+              if chk_fr_cvg.present? == true
+                
+                row["up_STATUS"] = "Existing"
+                row["cvgID"] = retrieve_coverage.id
+                next
+              else
+                # CHECK for VALIDITY (for renewal or existing)
+                icoverage = Coverage.new(coverage_hash)
+                # Calls method from coverage model
+                icoverage.compute_age
+                icoverage.save!
+                scoverage = Coverage.find_by(batch_id: @batch_id, member_id: mmbr_data.id)
+                cdpndnt = dependent_coverage_save(scoverage.id, mmbr_data.id, scoverage.residency, scoverage.term)  
+                row["up_STATUS"] = "Renewed"
+                row["cvgID"] = retrieve_coverage.id
+                next
+              end
+
             else
-              # CHECK for VALIDITY (for renewal or existing)
-              icoverage = Coverage.new(coverage_hash)
-              # Calls method from coverage model
-              icoverage.compute_age
-              icoverage.save!
-              scoverage = Coverage.find_by(batch_id: @batch_id, member_id: mmbr_data.id)
-              cdpndnt = dependent_coverage_save(scoverage.id, mmbr_data.id, scoverage.residency, scoverage.term)  
-              row["up_STATUS"] = "Renewed"
+              
+              row["up_STATUS"] = "Active"
               row["cvgID"] = retrieve_coverage.id
               next
+
             end
 
           else
-            
-            row["up_STATUS"] = "Active"
-            row["cvgID"] = retrieve_coverage.id
+            # CHECK for OLD coverage (effectivity, expiry, loan_coverage)
+            # center_id = verify_center(cvg_cname)
+            coverage_new_hash = 
+            {
+              batch_id: @batch_id,member_id: mmbr_data.id,loan_certificate: row["CERTNO"] == nil ? nil : row["CERTNO"],age: row["AGE"] == nil ? nil : row["AGE"],
+              loan_coverage: row["AMOUNTOFLOAN"] == nil ? nil : row["AMOUNTOFLOAN"],effectivity: formatted_efdate,grace_period: row["GRACEPERIOD"] == nil ? nil : row["GRACEPERIOD"],term: row["TERM"] == nil ? nil : row["TERM"],residency: row["RESIDENCY"],status: row["STATUS"] == nil ? nil : row["STATUS"],
+              center_name_id: center_id
+            }
+            iicoverage = Coverage.new(coverage_new_hash)
+            # Calls method from coverage model
+            iicoverage.compute_age
+            iicoverage.save!
+            scoverage = Coverage.find_by(batch_id: @batch_id, member_id: mmbr_data.id)
+            cdpndnt = dependent_coverage_save(scoverage.id, mmbr_data.id, scoverage.residency, scoverage.term)
+            row["up_STATUS"] = "New"
+            row["cvgID"] = "-"
             next
-
           end
 
         else
-          # CHECK for OLD coverage (effectivity, expiry, loan_coverage)
-          center_id = verify_center(cvg_cname)
-          coverage_new_hash = 
-          {
-            batch_id: @batch_id,member_id: mmbr_data.id,loan_certificate: row["CERTNO"] == nil ? nil : row["CERTNO"],age: row["AGE"] == nil ? nil : row["AGE"],
-            loan_coverage: row["AMOUNTOFLOAN"] == nil ? nil : row["AMOUNTOFLOAN"],effectivity: formatted_efdate,grace_period: row["GRACEPERIOD"] == nil ? nil : row["GRACEPERIOD"],term: row["TERM"] == nil ? nil : row["TERM"],residency: row["RESIDENCY"],status: row["STATUS"] == nil ? nil : row["STATUS"],
-            center_name_id: center_id
-          }
-          iicoverage = Coverage.new(coverage_new_hash)
-          # Calls method from coverage model
-          iicoverage.compute_age
-          iicoverage.save!
-          scoverage = Coverage.find_by(batch_id: @batch_id, member_id: mmbr_data.id)
-          cdpndnt = dependent_coverage_save(scoverage.id, mmbr_data.id, scoverage.residency, scoverage.term)
-          row["up_STATUS"] = "New"
+          #SKIP THIS ROW IF TRUE/no record(s) found, count as non-enrolled
+          row["up_STATUS"] = "Unlisted"
           row["cvgID"] = "-"
           next
         end
-
       else
-
-        #SKIP THIS ROW IF TRUE/no record(s) found, count as non-enrolled
-        row["up_STATUS"] = "Unlisted"
+        row["up_STATUS"] = "No_Center_Name"
         row["cvgID"] = "-"
-        next
-        
-      end
+        next    
+      end  
       
     end
    
