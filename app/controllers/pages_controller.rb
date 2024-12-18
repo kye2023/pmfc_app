@@ -16,8 +16,8 @@ class PagesController < ApplicationController
     @cntcvg.each do |ccvg|
       
       chk_cvg = Coverage.where(member_id: ccvg.member_id)
-      ret_cvg = chk_cvg.order(:effectivity,:expiry).last
-      cov_aging = ret_cvg.coverage_aging
+      # ret_cvg = chk_cvg.order(:effectivity,:expiry).last
+      cov_aging = ccvg.coverage_aging
 
       cn_aging = cov_aging
       if cn_aging <= 0
@@ -28,8 +28,12 @@ class PagesController < ApplicationController
     end
 
     # Count member
-    @cntmember = Member.count(:id)
-
+    if current_user.admin? == true
+      @cntmember = Member.count(:id)
+    else
+      @cntmember = Member.where(branch_id: current_user.user_detail.branch_id).count(:id)
+    end
+    
   end
   
   def home
