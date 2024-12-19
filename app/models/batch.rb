@@ -125,7 +125,7 @@ class Batch < ApplicationRecord
       mbr = Member.where("last_name LIKE ? OR first_name LIKE ?", "%#{query}%", "%#{query}%")
       case age_group
       when "1865"
-        bId.coverages.where(age: 18..65)
+        bId.coverages.where(age: 18..65).where(member_id: mbr.pluck(:id))
       when "6670b"
         bId.coverages.where(age: 66..70).where("loan_coverage <= 350000")
       when "6670a"
@@ -139,9 +139,9 @@ class Batch < ApplicationRecord
       when "7680a"
         bId.coverages.where(age: 76..80).where("loan_coverage > 350001")
       when "0119"
-        bId.coverages.where("residency BETWEEN 0 AND 119")
+        bId.coverages.where("residency BETWEEN 0 AND 119").where(member_id: mbr.pluck(:id))
       when "120a"
-        bId.coverages.where("residency > 120").where(member_id: mbr.pluck(:id))
+        bId.coverages.where("residency > 119").where(member_id: mbr.pluck(:id))
       else
         bId.coverages.where(member_id: mbr.pluck(:id))
       end
@@ -165,7 +165,7 @@ class Batch < ApplicationRecord
       when "0119"
         bId.coverages.where("residency BETWEEN 0 AND 119")
       when "120a"
-        bId.coverages.where("residency > 120")
+        bId.coverages.where("residency > 119")
       else
         bId.coverages
       end

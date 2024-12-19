@@ -1,8 +1,8 @@
 class CoveragesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_coverage, only: %i[ show edit update destroy sgyrt_submit lppi_submit ]
-  
 
+  include Pagy::Backend
   # GET /coverages or /coverages.json
   def index
 
@@ -12,28 +12,28 @@ class CoveragesController < ApplicationController
     @coverages = Coverage.get_coverages_index(current_user.admin, params[:query], current_user)
     # raise "errors"
 
-    if params[:query].present? == true
-      @cntcvg = Coverage.get_coverages_index(current_user.admin, params[:query]=nil, current_user)
-    else
-      @cntcvg = @coverages
-    end
+    # if params[:query].present? == true
+    #   @cntcvg = Coverage.get_coverages_index(current_user.admin, params[:query]=nil, current_user)
+    # else
+    #   @cntcvg = @coverages
+    # end
 
-    @cn_exp_cvg = 0
-    @cn_act_cvg = 0
+    # @cn_exp_cvg = 0
+    # @cn_act_cvg = 0
     
-    @cntcvg.each do |ccvg|
+    # @cntcvg.each do |ccvg|
       
-      chk_cvg = Coverage.where(member_id: ccvg.member_id)
-      ret_cvg = chk_cvg.order(:effectivity,:expiry).last
-      cov_aging = ret_cvg.coverage_aging
+    #   chk_cvg = Coverage.where(member_id: ccvg.member_id)
+    #   ret_cvg = chk_cvg.order(:effectivity,:expiry).last
+    #   cov_aging = ret_cvg.coverage_aging
 
-      cn_aging = cov_aging
-      if cn_aging <= 0
-        @cn_exp_cvg += 1
-      elsif
-        @cn_act_cvg += 1  
-      end
-    end
+    #   cn_aging = cov_aging
+    #   if cn_aging <= 0
+    #     @cn_exp_cvg += 1
+    #   elsif
+    #     @cn_act_cvg += 1  
+    #   end
+    # end
 
     #set pagination 
     @pagy, @coverages = pagy(@coverages, items: 25)
@@ -280,11 +280,54 @@ class CoveragesController < ApplicationController
 
   end
 
-  def renewal
+  def loan
+    require 'pagy/extras/bootstrap'
+    require 'pagy/extras/array'
+    @lse_params = params[:query]
+    @coverages = Coverage.get_coverages_index(current_user.admin, @lse_params, current_user)
+
+    @cn_exp_cvg = 0
+    @cn_act_cvg = 0
+    @cvg_loan = []
     
-    # @coverages = Coverage.all
-    @coverages = Coverage.get_coverages_index(current_user.admin, params[:query], current_user)
-   
+    @coverages.each do |ccvg|
+      cov_aging = ccvg.coverage_aging
+      cn_aging = cov_aging
+      if cn_aging > 0
+        @cn_act_cvg += 1  
+        @cvg_loan << ccvg
+      else
+        @cn_exp_cvg += 1
+      end
+    end
+
+    @pagy, @cvg_loan = pagy_array(@cvg_loan, items: 25)
+    
+  end
+
+  def renewal
+    require 'pagy/extras/bootstrap'
+    require 'pagy/extras/array'
+    @rse_params = params[:query]
+    @coverages = Coverage.get_coverages_index(current_user.admin, @rse_params, current_user)
+
+    @cn_exp_cvg = 0
+    @cn_act_cvg = 0
+    @cvg_renewal = []
+
+    @coverages.each do |ccvg|
+      cov_aging = ccvg.coverage_aging
+      cn_aging = cov_aging
+      if cn_aging <= 0
+        @cn_exp_cvg += 1
+        @cvg_renewal << ccvg
+      else
+        @cn_act_cvg += 1 
+      end
+    end
+
+    @pagy, @cvg_renewal = pagy_array(@cvg_renewal, items: 25)
+
   end
 
   def sgyrt_submit 
