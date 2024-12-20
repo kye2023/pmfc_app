@@ -94,3 +94,6 @@ gem 'capistrano-rbenv', '~> 2.1', '>= 2.1.4'
 gem "pry", "~> 0.14.2"
 gem 'prawn-rails'
 gem "matrix", "~> 0.4.2"
+
+gem "ed25519"
+gem "bcrypt_pbkdf"
