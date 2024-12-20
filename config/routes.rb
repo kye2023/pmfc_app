@@ -31,6 +31,7 @@ Rails.application.routes.draw do
     get :coverage_history
     get :coverage_premium_benefits
     collection do
+      get :loan
       get :renewal
     end
   end

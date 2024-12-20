@@ -37,10 +37,18 @@
      </div>-->
     </div><br>
     <!--Date-Picker-->
+    
     <div class="row">
-      <%= f.input :civil_status , collection: ['Single', 'Married', 'Widowed', 'Divorced'], include_blank: true, wrapper_html: { class: "col-md-6" } %>
-      <%= f.input :gender , collection: [['Male','M'],['Female','F']], include_blank: true, wrapper_html: { class: "col-md-6" } %>
+      <% if @member.gender.present? == true %>
+        <% mgender = @member.gender[0] %>
+        <%= f.input :civil_status , collection: ['Single', 'Married', 'Widowed', 'Divorced'], include_blank: true, wrapper_html: { class: "col-md-6" } %>
+        <%= f.input :gender, collection: [['Male','M'],['Female','F']], selected: mgender, include_blank: true, wrapper_html: { class: "col-md-6" } %>
+      <% else %>
+        <%= f.input :civil_status , collection: ['Single', 'Married', 'Widowed', 'Divorced'], include_blank: true, wrapper_html: { class: "col-md-6" } %>
+        <%= f.input :gender, collection: [['Male','M'],['Female','F']], include_blank: true, wrapper_html: { class: "col-md-6" } %>  
+      <% end %>
     </div>
+    
     <div class="row">
       <%= f.input :mobile_no, wrapper_html: { class: "col-md-6" } %>
       <%= f.input :email, wrapper_html: { class: "col-md-6" } %>
@@ -48,7 +56,7 @@
     <div class="row"><%= f.input :health_declaration, wrapper_html: { class: "col-md-12" } %></div>
 
     <!--Plan-Activation-->
-    <% if current_user.admin == true %>
+    <%# if current_user.admin == true %>
     <div class="card">
       <h3 class="card-header">Plan</h3>
       <div class="card-body">
@@ -58,7 +66,7 @@
         </div>
       </div>
     </div>
-    <% end %>
+    <%# end %>
     <!--Plan-Activation-->
     <br>
     <!--Nested-Cocoon-->

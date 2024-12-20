@@ -23,6 +23,8 @@
                 <use xlink:href="#collection"></use>
               </svg>
             </div>
+            <!--<%#= current_user.admin? %><br>
+            <%#= current_user.user_detail.branch_id %>-->
             <h1 class="fw-semibold mb-0 text-body-emphasis"><%= to_numdelimit(@cntmember) %></h1>
             <p class="text-body-secondary">Enrolled Members</p>
             <%= link_to members_path, data: { turbo_method: :get }, class: 'btn btn-primary btn-sm position-relative' do %>
@@ -49,12 +51,14 @@
                 <use xlink:href="#gear-fill"></use>
               </svg>
             </div>
-            <h1 class="fw-semibold mb-0 text-body-emphasis">Soon</h1>
-            <p class="text-body-secondary">Coverages</p>
-            <!--<a href="#" class="btn btn-primary btn-sm">See more</a>-->
+            <h1 class="fw-semibold mb-0 text-body-emphasis"><%= to_numdelimit(@cn_act_cvg) %></h1>
+            <p class="text-body-secondary">Loan</p>
+            <%= link_to loan_coverages_path, data: { turbo_method: :get }, class: 'btn btn-primary btn-sm position-relative' do %>
+                See more
+              <% end %>
           </div>
 
-          <div class="col d-flex flex-column gap-2">
+          <!--<div class="col d-flex flex-column gap-2">
             <div class="feature-icon-small d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-4 rounded-3">
               <svg class="bi" width="1em" height="1em">
                 <use xlink:href="#speedometer"></use>
@@ -62,8 +66,8 @@
             </div>
             <h1 class="fw-semibold mb-0 text-body-emphasis">Soon</h1>
             <p class="text-body-secondary">Loan</p>
-            <!--<a href="#" class="btn btn-primary btn-sm">See more</a>-->
-          </div>
+            --<a href="#" class="btn btn-primary btn-sm">See more</a>--
+          </div>-->
 
       </div>
     </div>

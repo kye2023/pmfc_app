@@ -73,8 +73,9 @@ class BatchesController < ApplicationController
     @batch = Batch.new
   end
 
-  def import_cov
-  end
+  # def import_cov
+
+  # end
 
   # GET /batches/1/edit
   def edit
@@ -151,6 +152,7 @@ class BatchesController < ApplicationController
     batch_id = params[:p]
     import_service = ImportService.new(:batch, params[:file], batch_id)
     import_message = import_service.import
+    # raise "errors"
     # redirect_to batches_path, notice: import_message
     if import_message.present? && import_message == "No file uploaded"
       flash[:notice] = "No file uploaded"
@@ -166,17 +168,19 @@ class BatchesController < ApplicationController
         bdate = r["BIRTHDATE"]
         arr_sts = r["up_STATUS"]
         cId = r["cvgID"]
+        cntr = r["CENTER_NAME"]
+        itrm = r["TERM"]
         ul_name = "#{lname}"+", "+"#{fname}"+", "+"#{mname}"
         mcount+=1
 
         if arr_sts == "Unlisted"
-          # ucount+=1
-          "#{mcount}. #{ul_name} - #{arr_sts} (Member enrollment required.)"
-          # ul_arname << [lname, fname, mname, bdate]
-          # "#{ucount}. #{ul_name} - #{arr_sts} #{view_context.link_to('Enroll', new_member_path(unlisted: ul_arname), target: '_blank')}"
-          # ucount.to_s+". "+lname+", "+fname+" "+mname+" - "+r["up_STATUS"]+"#{view_context.link_to('Enroll', new_member_path(unlisted: import_message[mcount-1]), target: '_blank')}"
+          "#{mcount}. #{ul_name} - #{arr_sts} (Member not found, enrollment required.)"
         elsif arr_sts == "Active"
           "#{mcount}. #{ul_name} - #{view_context.link_to("#{arr_sts}", coverage_path(cId, activeID: cId), target: '_blank')}"
+        elsif arr_sts == "No_Center_Name"
+          "#{mcount}. #{ul_name} - (#{cntr} not found, enrollment required.)"
+        elsif arr_sts == "Invalid_term"
+          "#{mcount}. #{ul_name} - (#{itrm}mos. not match, please verify.)"
         end
 
       end.compact 
@@ -190,27 +194,32 @@ class BatchesController < ApplicationController
       flash_unlisted = status_count["Unlisted"]
       flash_new = status_count["New"]
       flash_active = status_count["Active"]
+      flash_ncname = status_count["No_Center_Name"]
+      flash_iterm = status_count["Invalid_term"]
 
       flash_names = status_names.map { |status_names| "#{status_names}<br>" }.join
     
-      flash[:notice] = "Import successful. <br><br> Active : #{flash_active} <br> Existing : #{flash_existing} <br> Renewed : #{flash_renewal} <br> Unlisted : #{flash_unlisted} <br> New : #{flash_new} <br>"
+      flash[:notice] = "Import successful. <br><br> Active : #{flash_active} <br> Existing : #{flash_existing} <br> Renewed : #{flash_renewal} <br> Unlisted : #{flash_unlisted} <br> New : #{flash_new} <br> Center Name: #{flash_ncname} <br> Invalid Term : #{flash_iterm}"
 
-      if flash_unlisted.present? == true && flash_unlisted > 0 || flash_active.present? == true && flash_active > 0
+      if flash_unlisted.present? == true && flash_unlisted > 0 || flash_active.present? == true && flash_active > 0 || flash_ncname.present? == true && flash_ncname > 0 || flash_iterm.present? == true && flash_iterm > 0
+        
         # flash[:notice] += flash_names
         flash[:notice] += "<br>#{view_context.link_to('View Remark(s)', unlisted_preview_batch_path(batch_id, unlisted: flash_names), data: {turbo_frame: "remote_modal"})}"
+      
       end
 
       redirect_to batches_path
+
     end
     
   end
 
-  def import_coverages
-    # batch_id = @batch.id
-    # import_service = ImportService.new(:coverage, params[:file], batch_id)
-    # import_message = import_service.import
-    # redirect_to batches_path, notice: import_message
-  end
+  # def import_coverages
+  #   # batch_id = @batch.id
+  #   # import_service = ImportService.new(:coverage, params[:file], batch_id)
+  #   # import_message = import_service.import
+  #   # redirect_to batches_path, notice: import_message
+  # end
 
   def batch_download
    # require 'prawn/manual_builder'

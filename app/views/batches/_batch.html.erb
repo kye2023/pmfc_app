@@ -69,7 +69,7 @@
 
   <%#== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>
   <%#= render 'coverages/show_group_coverage', sw: @records %>
-  <%#= "Age group : #{age_r.present?} | Plan : #{pln.present?} | SE : #{params[:query].present?}"  %><br>
+  <%#= "Age group : #{age_r.present?} | Plan : #{pln.present?} | SE : #{params[:query].present?}"  %>
   <%#= "Age group : #{params[:aquery].present?} | Plan : #{params[:pquery].present?} | SE : #{params[:query].present?}"  %>
 
   <% if pln == "0" || params[:pquery] == "0" %>
@@ -78,7 +78,7 @@
     <%= render 'coverages/show_group_coverage', sw: @show_coverage, se: params[:query], plan: pln, age: age_r %>
   <% end %>
 
- 
+  <%== pagy_bootstrap_nav(@pagy) %>
   
   <div class="row mb-3">
     <div class="col-md-6">
@@ -90,7 +90,7 @@
         <div class="card-body">
           <table class="table table-borderless">
             <!--<thead>-->
-              <% if pln == "0" && %>
+              <% if pln == "0" %>
               <tr><td><small>Count : <%= batch.bcount_mbr(@fcoverage, pln) %></small></td></tr>
               <tr><td><small>Plan Type : LPPI</small></td></tr>
               <!--<tr><th><small>Sum Insured : <%#= to_curr(batch.coverages.sum(:loan_coverage)) %></small></th></tr>-->

@@ -1,26 +1,28 @@
-<%# content_tag :h1, "List of Loans x(#{@cn_act_cvg})" %>
-<%= content_tag :h1, "List of Loans (Individual)" %>
-  <!--Search-->
+<%= content_tag :h1, "Loans" %>
+<%# @coverages.size %>
+<%# @cvg_loan.size %>
+<!--Search-->
     <div class="col-lg-12">
-      <%= form_with( url: coverages_path, method: :get, data: {turbo_frame: "search_loan"} ) do |form| %>
+      <%= form_with( url: loan_coverages_path, method: :get, data: {turbo_frame: "search_loan"} ) do |form| %>
       <div class="input-group mb-3">
+        <%= link_to '<i class="bi bi-arrow-repeat"></i>'.html_safe, loan_coverages_path, class: "btn btn-secondary" if @lse_params.present? %>
         <%= form.text_field :query, placeholder: 'Search by last name...', class: "form-control" %>
         <%= form.submit 'Search', class: "btn btn-success" %>
-        <!--Renewal-Btn--
-         <%#= link_to renewal_coverages_path, data: { turbo_method: :get }, class: 'btn btn-primary position-relative' do %>
+        <!--Renewal-Btn-->
+         <%= link_to renewal_coverages_path, data: { turbo_method: :get }, class: 'btn btn-primary position-relative' do %>
             Renewals
             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-              <%#= @cn_exp_cvg %>
+              <%= @cn_exp_cvg %>
             </span>
-          <%# end %>
-        --Renewal-Btn-->
+          <% end %>
+        <!--Renewal-Btn-->
       </div>
       <% end %>
       <%== pagy_bootstrap_nav(@pagy) %>
       <%== pagy_info(@pagy) %>
     </div>
   <!--Search-->
-  <div>
+<div>
   <table class="table table-striped table-bordered table-hover">
     <thead>
       <tr>
@@ -37,28 +39,23 @@
         cbdate = ""
         cterm = 0
         cvgcount = 0
-        @coverages.each do |coverage| 
-        # raise "errors"
-          # chk_cvg = Coverage.where(member_id: coverage.member_id)
-          
-          # ret_cvg = chk_cvg.order(:effectivity, :expiry).last
+        @cvg_loan.each do |coverage| 
           cov_aging = coverage.coverage_aging
           
           cn_aging = cov_aging
-          #if cn_aging > 0
-            cvgcount += 1
-            cbatch = coverage.batch.title
-            crate = coverage.rate
-            cmember = coverage.member.get_cmember
-            # cbdate = coverage.member.get_formatted_bday
-            # c_age = coverage.member.compute_member_age(coverage.member.birth_date)
+          cvgcount += 1
+          cbatch = coverage.batch.title
+          crate = coverage.rate
+          cmember = coverage.member.get_cmember
+          # cbdate = coverage.member.get_formatted_bday
+          # c_age = coverage.member.compute_member_age(coverage.member.birth_date)
            
-            cterm = coverage.term
-            csuninsurge = coverage.loan_coverage
-            cpremium = coverage.loan_premium
+          cterm = coverage.term
+          csuninsurge = coverage.loan_coverage
+          cpremium = coverage.loan_premium
       %>
         <tr id="cvg_loan">
-          <th scope="row" class="text-center"><%= coverage.id %><%# "#{coverage.id}"+" - #{cov_aging}" %><%# cvgcount %></th>
+          <th scope="row" class="text-center"><%= coverage.id %><%#= "#{coverage.id}"+" - #{cvgcount}" %><%# cvgcount %></th>
           <td>
             <div class="badge bg-primary text-wrap" style="width: 6rem;"><%= coverage.loan_certificate %></div>
             <div class="text-wrap fw-lighter"><strong><%= cmember.upcase %></strong></div>
@@ -77,8 +74,8 @@
             <div class="badge bg-primary text-wrap" style="width: 6rem;"><%= coverage.coverage_aging_status(cn_aging) %></div>
             <% end %>
             <div class="text-wrap fw-lighter"><small>Coverage: <%= cbatch %></small></div>
-            <div class="text-wrap fw-lighter"><small>Sum Insured: <%= csuninsurge %></small></div>
-            <div class="text-wrap fw-lighter"><small>Premium: <%= cpremium %></small></div>
+            <div class="text-wrap fw-lighter"><small>Sum Insured: <%= to_curr(csuninsurge) %></small></div>
+            <div class="text-wrap fw-lighter"><small>Premium: <%= to_curr(cpremium) %></small></div>
             <div class="text-wrap fw-lighter"><small>Rate: <%= crate %></small></div>
           </td>   
           <td>
@@ -88,7 +85,6 @@
           </td>
 
         </tr>
-        <%# end %>
       <% end %>
     </tbody>
   </table>
