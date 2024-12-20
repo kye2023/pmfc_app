@@ -1,5 +1,5 @@
 class CoveragesController < ApplicationController
-  before_action :authenticate_user!
+  # before_action :authenticate_user!
   before_action :set_coverage, only: %i[ show edit update destroy sgyrt_submit lppi_submit ]
 
   include Pagy::Backend

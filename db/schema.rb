@@ -11,7 +11,7 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.0].define(version: 2024_11_26_040520) do
-  create_table "batches", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "batches", charset: "utf8mb4", force: :cascade do |t|
     t.string "title"
     t.text "description"
     t.datetime "created_at", null: false
@@ -21,14 +21,14 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_26_040520) do
     t.index ["branch_id"], name: "index_batches_on_branch_id"
   end
 
-  create_table "benefits", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "benefits", charset: "utf8mb4", force: :cascade do |t|
     t.string "name"
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "branches", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "branches", charset: "utf8mb4", force: :cascade do |t|
     t.string "name"
     t.text "description"
     t.string "address"
@@ -48,7 +48,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_26_040520) do
     t.decimal "res_120a", precision: 10, scale: 2
   end
 
-  create_table "center_names", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "center_names", charset: "utf8mb4", force: :cascade do |t|
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -56,7 +56,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_26_040520) do
     t.index ["branch_id"], name: "index_center_names_on_branch_id"
   end
 
-  create_table "coverages", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "coverages", charset: "utf8mb4", force: :cascade do |t|
     t.string "batch_id"
     t.string "member_id"
     t.string "loan_certificate"
@@ -84,7 +84,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_26_040520) do
     t.index ["group_benefit_id"], name: "index_coverages_on_group_benefit_id"
   end
 
-  create_table "dependent_coverages", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "dependent_coverages", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "coverage_id"
     t.bigint "dependent_id"
     t.bigint "member_id"
@@ -100,7 +100,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_26_040520) do
     t.index ["member_id"], name: "index_dependent_coverages_on_member_id"
   end
 
-  create_table "dependents", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "dependents", charset: "utf8mb4", force: :cascade do |t|
     t.string "member_id"
     t.string "last_name"
     t.string "first_name"
@@ -116,7 +116,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_26_040520) do
     t.string "suffix"
   end
 
-  create_table "group_benefits", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "group_benefits", charset: "utf8mb4", force: :cascade do |t|
     t.string "member_type"
     t.integer "residency_floor"
     t.integer "residency_ceiling"
@@ -127,7 +127,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_26_040520) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "group_premia", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "group_premia", charset: "utf8mb4", force: :cascade do |t|
     t.string "member_type"
     t.integer "term"
     t.integer "residency_floor"
@@ -137,7 +137,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_26_040520) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "members", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "members", charset: "utf8mb4", force: :cascade do |t|
     t.string "last_name"
     t.string "first_name"
     t.string "middle_name"
@@ -157,21 +157,21 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_26_040520) do
     t.index ["branch_id"], name: "index_members_on_branch_id"
   end
 
-  create_table "posts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "posts", charset: "utf8mb4", force: :cascade do |t|
     t.string "title"
     t.string "body"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "premium_rates", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "premium_rates", charset: "utf8mb4", force: :cascade do |t|
     t.string "batch_id"
     t.integer "premium"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "user_details", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "user_details", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "branch_id"
     t.string "last_name"
@@ -186,7 +186,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_26_040520) do
     t.index ["user_id"], name: "index_user_details_on_user_id"
   end
 
-  create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "users", charset: "utf8mb4", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"

@@ -1,5 +1,5 @@
 class BatchesController < ApplicationController
-  before_action :authenticate_user!
+  # before_action :authenticate_user!
   before_action :set_batch, only: %i[ show edit update destroy import_cov batch_submit batch_preview]
   
   require 'csv'

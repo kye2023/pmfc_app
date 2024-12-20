@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   include Pagy::Backend
+  before_action :authenticate_user!
 
   protected
   # Overwriting the sign_out redirect path method for unapproved users

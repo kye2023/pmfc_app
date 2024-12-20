@@ -1,5 +1,5 @@
 class DependentsController < ApplicationController
-  before_action :authenticate_user!
+  # before_action :authenticate_user!
   before_action :set_dependent, only: %i[ show edit update destroy ]
 
   # GET /dependents or /dependents.json

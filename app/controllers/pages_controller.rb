@@ -1,5 +1,5 @@
 class PagesController < ApplicationController
-  before_action :authenticate_user!
+  # before_action :authenticate_user!
   def index
     @coverages = Coverage.get_coverages_index(current_user.admin, params[:query], current_user)
 
