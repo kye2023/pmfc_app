@@ -103,10 +103,6 @@ class CoveragesController < ApplicationController
     end
 
     if params[:memberBtn]
-      # form->member Button
-      # @batch = Batch.find(params[:b])
-      # @coverage = @batch.coverages.build(coverage_params)
-      # raise "error"
       if @coverage.valid?
         @coverage.compute_age
         respond_to do |format|
@@ -132,7 +128,12 @@ class CoveragesController < ApplicationController
         end
       end
     
+    elsif params[:lppiBtn]  
+
+    elsif params[:lppiBtn]  
+
     end
+
   end
 
   def verify_plan(arr)

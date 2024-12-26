@@ -1,14 +1,12 @@
+<%# @member.id.present? %>
 <%# @ulist.present? %>
-<%= simple_form_for(@member, data: { controller: "flatpickr" }) do |f| %>
+<%#= simple_form_for(@member, data: { controller: "flatpickr" }) do |f| %>
+<%= simple_form_for(@member) do |f| %>
   <%= f.error_notification %>
   <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
 
+<div class="container" data-controller="flatpickr" data-select-url="<%= members_path() %>">
   <div class="form-inputs">
-    <%# if( @member.member_id != nil ) then %>
-    <%#= f.input :member_id %>
-    <%# else %>
-    <%#= f.input :member_id, input_html: { :value => generate_member_id } %>
-    <%# end %>
     
     <!--Select-->
     <% if current_user.admin? %>
@@ -63,6 +61,7 @@
         <div class="row">
           <%= f.input :plan_lppi, label: "LPPI", wrapper_html: { class: "col-md-6" } %>
           <%= f.input :plan_sgyrt, label: "SGYRT", wrapper_html: { class: "col-md-6" } %>
+          <%#= f.check_box :plan_lppi, data: { action: "flatpickr#toggle" } %>
         </div>
       </div>
     </div>
@@ -88,7 +87,8 @@
   <br>
   <br>
   <div class="form-actions">
-    <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, members_path, class: "btn btn-secondary" %>
+    <%#= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, members_path, class: "btn btn-secondary" %>
     <%= f.button :submit, class: "btn btn-primary" %>
   </div>
+</div>
 <% end %>
