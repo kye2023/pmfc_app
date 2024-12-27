@@ -30,6 +30,8 @@ Rails.application.routes.draw do
     get :check_residency
     get :coverage_history
     get :coverage_premium_benefits
+    get :individual_only
+    get :group_only
     collection do
       get :loan
       get :renewal

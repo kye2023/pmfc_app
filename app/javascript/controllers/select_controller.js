@@ -5,7 +5,7 @@ import flatpickr from "flatpickr"
 // Connects to data-controller="select"
 export default class extends Controller {
 
-  static targets = ["memberID","lcertInput","gcertInput","residencyInput","coverageHistory","coveragePremium","statusInput","termInput","gpInput","loanInput","coverageMember","cvgEdate","coverageCenter","coverageBatch","buttonBoth","buttonLoan","buttonGroup","divLoanCertificate","divGroupCertificate"]
+  static targets = ["memberID","lcertInput","gcertInput","residencyInput","coverageHistory","coveragePremium","statusInput","termInput","gpInput","loanInput","coverageMember","cvgEdate","coverageCenter","coverageBatch","txtBatch","buttonBoth","buttonLoan","buttonGroup","divLoanCertificate","divGroupCertificate"]
   timeoutId = 0
   connect() {
     console.log("connected", this.element)
@@ -382,15 +382,67 @@ export default class extends Controller {
 
   }
 
-  create_individual() {
+  create_individual() 
+  {
+    let comboMember = this.coverageMemberTarget.selectedOptions[0].value
+    let comboCenter = this.coverageCenterTarget.selectedOptions[0].value
+    let tBatch = this.txtBatchTarget.value
+    let indCert = this.lcertInputTarget.value
+    let eDate = this.cvgEdateTarget.value
+    let textResidency = this.residencyInputTarget.value
+    let textStatus = this.statusInputTarget.value
+    let textTerm = this.termInputTarget.value
+    let textGracePeriod = this.gpInputTarget.value
+    let textLoan = this.loanInputTarget.value
 
+    if(comboMember == "" || comboCenter == "" || indCert == "" || textResidency == "" || textStatus == "" || textTerm == "" || textGracePeriod == "" || textLoan == "") 
+    {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "All fields required."
+      });
+    }
+    else
+    {
+      console.log(comboMember+", "+comboCenter+" : "+indCert+" | "+textResidency+" | "+textStatus+" | "+textTerm+" | "+textGracePeriod)
+      fetch(`/coverages/${comboMember}/individual_only/?cmember=${comboMember}&cbatch=${tBatch}&ccenter=${comboCenter}&icert=${indCert}&edate=${eDate}&residency=${textResidency}&cstatus=${textStatus}&cterm=${textTerm}&gperiod=${textGracePeriod}&loansamount=${textLoan}`)
+      .then(response => response.json())
+      .then(data => {
+
+        console.log(data)
+        if( data.pstatus == true )
+        {
+          Swal.fire({
+            icon: "success",
+            title: "Record has been saved, Please refresh the page",
+            showConfirmButton: false,
+            timer: 1500
+          });
+          this.coverageMemberTarget.selectedIndex = -1
+          this.coverageCenterTarget.selectedIndex = -1
+          this.txtBatchTarget.value = ""
+          this.lcertInputTarget.value = ""
+          this.cvgEdateTarget.value = ""
+          this.residencyInputTarget.value = ""
+          this.statusInputTarget.value = ""
+          this.termInputTarget.value = ""
+          this.gpInputTarget.value = ""
+          this.loanInputTarget.value = ""
+        }
+      
+      }).catch(error => console.error(error));
+    }
   }
 
-  create_group() {
+  create_group() 
+  {
     console.log("create_group")
     let comboMember = this.coverageMemberTarget.selectedOptions[0].value
     let comboCenter = this.coverageCenterTarget.selectedOptions[0].value
+    let tBatch = this.txtBatchTarget.value
     let groupCert = this.gcertInputTarget.value
+    let eDate = this.cvgEdateTarget.value
     let textResidency = this.residencyInputTarget.value
     let textStatus = this.statusInputTarget.value
     let textTerm = this.termInputTarget.value
@@ -405,9 +457,34 @@ export default class extends Controller {
     }
     else
     {
-      alert(comboMember+", "+comboCenter+" : "+groupCert+" | "+textResidency+" | "+textStatus+" | "+textTerm+" | "+textGracePeriod)
+      console.log(comboMember+", "+comboCenter+" : "+groupCert+" | "+textResidency+" | "+textStatus+" | "+textTerm+" | "+textGracePeriod)
+      fetch(`/coverages/${comboMember}/group_only/?cmember=${comboMember}&cbatch=${tBatch}&ccenter=${comboCenter}&gcert=${groupCert}&edate=${eDate}&residency=${textResidency}&cstatus=${textStatus}&cterm=${textTerm}&gperiod=${textGracePeriod}`)
+      .then(response => response.json())
+      .then(data => {
+
+        console.log(data)
+        if( data.pstatus == true )
+        {
+          Swal.fire({
+            icon: "success",
+            title: "Record has been saved, Please refresh the page",
+            showConfirmButton: false,
+            timer: 1500
+          });
+          this.coverageMemberTarget.selectedIndex = -1
+          this.coverageCenterTarget.selectedIndex = -1
+          this.txtBatchTarget.value = ""
+          this.gcertInputTarget.value = ""
+          this.cvgEdateTarget.value = ""
+          this.residencyInputTarget.value = ""
+          this.statusInputTarget.value = ""
+          this.termInputTarget.value = ""
+          this.gpInputTarget.value = ""
+        }
+      
+      }).catch(error => console.error(error));
+
     }
-    
   }
 
 

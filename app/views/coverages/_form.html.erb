@@ -1,4 +1,4 @@
-<%# url %>
+<%#= url %>
 <%#= "BatchID: #{@batch.present?}"+" MemberID: #{@member.present?}"%>
 <%= simple_form_for(@coverage, url: url, method: meth) do |f| %>
   <!--<p style="color: green"><%# notice %></p>-->
@@ -37,6 +37,7 @@
 								<%= f.association :center_name, collection: CenterName.all, label: "Center Name", label_method: :description, input_html: { data: { select_target: "coverageCenter" } }  %>
 								<% else %>
 								<%= f.association :center_name, collection: CenterName.where(branch_id: current_user.user_detail.branch_id), label: "Center Name", label_method: :description, input_html: { data: { select_target: "coverageCenter" } }  %>
+								<%= f.input :batch_id, selected: @batch.id, wrapper_html: { hidden: true }, input_html: { data: { select_target: "txtBatch" } } %>
 								<% end %>
 								<!--Select-CN-->
 							<% end %>
@@ -99,7 +100,7 @@
 									<%= f.input :term, wrapper_html: { class: "col-md-3"}, collection: Coverage::TERMS, input_html: { data: { select_target: "termInput" }  } %>
 									<%= f.input :grace_period, as: :integer, wrapper_html: { class: "col-md-3" }, input_html: { data: { select_target: "gpInput" }, 
 									required: true, min: 0, step: 1   }  %>
-									<%= f.input :loan_coverage, wrapper_html: { class: "col-md-12 txtLoan"}, input_html: { data: { action: 'input->select#show_benefits' }, select_target: "loanInput"  } %>
+									<%= f.input :loan_coverage, wrapper_html: { class: "col-md-12 txtLoan"}, input_html: { data: { action: 'input->select#show_benefits', select_target: "loanInput" }  } %>
 							</div>
 							<!--Level-4-Inputs-->
 						</div>
@@ -119,7 +120,7 @@
 									<%= f.button :submit, 'Add Center', name:'centerBtn', class: "btn btn-warning centerBtn", data: { action: 'click->select#add_center' } %>
 								</div>
 								<div id="btnLoan" data-select-target="buttonLoan" hidden>
-									<%= f.button :submit, 'Create LPPI only', name: 'lppiBtn', class: "btn btn-primary lppiBtn", data: { action: 'click->select#create_group' } %>
+									<%= f.button :submit, 'Create LPPI only', name: 'lppiBtn', class: "btn btn-primary lppiBtn", data: { action: 'click->select#create_individual' } %>
 									<%= f.button :submit, 'Add Center', name:'centerBtn', class: "btn btn-warning centerBtn", data: { action: 'click->select#add_center' } %>
 								</div>
 								<div id="btnGroup" data-select-target="buttonGroup" hidden>
