@@ -49,7 +49,7 @@ class Member < ApplicationRecord
   end
   
   def self.get_members_index(admin, query, current_user)
-    if query.present?
+    if query.present? == true
       if admin == true
         where("last_name LIKE ?", "%#{query}%").limit(25)
       else
@@ -57,7 +57,7 @@ class Member < ApplicationRecord
       end
     else
       if admin == true
-        limit(100).all
+        all
       else
         where(branch_id: current_user.user_detail.branch_id).limit(100)
       end

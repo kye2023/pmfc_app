@@ -4,7 +4,11 @@
   <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
 
   <div class="form-inputs">
+  <% if current_user.admin? %>
     <%= f.association :branch %>
+  <% else %>  
+    <%= f.association :branch, selected: current_user.user_detail.branch_id, wrapper_html: { hidden: true } %>
+  <% end %>  
     <%= f.input :description %>
   </div>
 

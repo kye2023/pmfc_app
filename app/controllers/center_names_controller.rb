@@ -4,7 +4,8 @@ class CenterNamesController < ApplicationController
 
   # GET /center_names or /center_names.json
   def index
-    @center_names = CenterName.all
+    # @center_names = CenterName.all
+    @center_names = CenterName.get_cname_index(current_user.admin, params[:query], current_user)
   end
 
   # GET /center_names/1 or /center_names/1.json

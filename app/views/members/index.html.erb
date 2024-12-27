@@ -30,6 +30,9 @@
       <!--Add Member-->
       <%= link_to new_member_path, data: { turbo_frame:"remote_modal" }, class: 'btn btn-primary' do %> New Member <% end %>
       <!--Add Member-->
+      <!--Add Dependent-->
+      <%= link_to 'Add Dependent <i class="bi bi-arrow-bar-right"></i>'.html_safe, dependents_path, class: "btn btn-secondary" %>
+      <!--Add Dependent-->
     </div>
     <% end %>
       <%== pagy_bootstrap_nav(@pagy) %>

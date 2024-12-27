@@ -76,5 +76,21 @@ class Dependent < ApplicationRecord
     ((Date.today - self.birth_date.to_date) / 365).round
   end
 
+  def self.get_dependents_index(admin, query, current_user)
+    if query.present?
+      if admin == true
+        where("last_name LIKE ? OR first_name LIKE ?", "%#{query}%", "%#{query}%")
+      else
+        where(member: Member.where(branch_id: current_user.user_detail.branch_id).where("description LIKE ?", "%#{query}%"))
+      end
+    else
+      if admin == true
+        all
+      else
+        where(member: Member.where(branch_id: current_user.user_detail.branch_id))
+      end
+    end
+  end
+
 
 end

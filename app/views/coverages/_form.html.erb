@@ -1,111 +1,156 @@
-<%#<%# url %<br>
-<%# "BatchID: #{@batch.present?}"+" MemberID: #{@member.present?}" %<br>%>
+<%#= url %>
+<%#= "BatchID: #{@batch.present?}"+" MemberID: #{@member.present?}"%>
 <%= simple_form_for(@coverage, url: url, method: meth) do |f| %>
   <!--<p style="color: green"><%# notice %></p>-->
 	<div class="container" data-controller="select" data-select-url="<%= coverages_path() %>">
-	  <div class="row align-items-start">
-		<div class="col-lg-6">
-			<%= f.error_notification %>
-			<%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
-			<!--Form Field-->
-			<div class="form-inputs">
-				<!--Select-M-->
-				<% if current_user.admin? %>
-				<%= f.association :member, label: "Member", input_html: { data: { controller: 'ts--select', action: 'change->select#member_select', select_target: "coverageMember" } } %>
-				<% else %>
-				<%= f.association :member, collection: Member.load_members(current_user), label: "Member", input_html: { data: { controller: 'ts--select', action: 'change->select#member_select', select_target: "coverageMember" } } %>
-				<% end %>
-				<!--Select-M-->
-			<div>
-      <% if @member.present? == true %>
-      <div class="row">
-				<!--Select-CN-->
-				<% if current_user.admin? %>
-				<%= f.association :center_name, collection: CenterName.all, label: "Center Name", label_method: :description, input_html: { data: { select_target: "coverageCenter" } }, wrapper_html: { class: "col-md-6" }  %>
-				<% else %>
-				<%= f.association :center_name, collection: CenterName.where(branch_id: current_user.user_detail.branch_id), label: "Center Name", label_method: :description, input_html: { data: { select_target: "coverageCenter" } }, wrapper_html: { class: "col-md-6" }  %>
-				<% end %>
-				<!--Select-CN-->
-				<!--Select-Batch-->
-				<%= f.association :batch, collection: Batch.where(submit: 0), label: "Batch Coverage", label_method: :title, input_html: { data: { select_target: "coverageBatch" } }, wrapper_html: { class: "col-md-6" }  %>
-				<!--Select-Batch-->
-      </div>
-      <% elsif @batch.present? == true %>
-        <!--Select-CN-->
-				<% if current_user.admin? %>
-				<%= f.association :center_name, collection: CenterName.all, label: "Center Name", label_method: :description, input_html: { data: { select_target: "coverageCenter" } }  %>
-				<% else %>
-				<%= f.association :center_name, collection: CenterName.where(branch_id: current_user.user_detail.branch_id), label: "Center Name", label_method: :description, input_html: { data: { select_target: "coverageCenter" } }  %>
-				<% end %>
-				<!--Select-CN-->
-      <% end %>
+		<div class="row align-items-start">
+			<div class="col-lg-6">
+				<%= f.error_notification %>
+				<%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+					<!--Form Field-->
+					<div class="form-inputs">
+						<!--Select-M-->
+						<% if current_user.admin? %>
+						<%= f.association :member, label: "Member", input_html: { data: { controller: 'ts--select', action: 'change->select#member_select', select_target: "coverageMember" } } %>
+						<% else %>
+						<%= f.association :member, collection: Member.load_members(current_user), label: "Member", input_html: { data: { controller: 'ts--select', action: 'change->select#member_select', select_target: "coverageMember" } } %>
+						<% end %>
+						<!--Select-M-->
+						<div>
+							<% if @member.present? == true %>
+							<div class="row">
+								<!--Select-CN-->
+								<% if current_user.admin? %>
+								<%= f.association :center_name, collection: CenterName.all, label: "Center Name", label_method: :description, input_html: { data: { select_target: "coverageCenter" } }, wrapper_html: { class: "col-md-6" }  %>
+								<% else %>
+								<%= f.association :center_name, collection: CenterName.where(branch_id: current_user.user_detail.branch_id), label: "Center Name", label_method: :description, input_html: { data: { select_target: "coverageCenter" } }, wrapper_html: { class: "col-md-6" }  %>
+								<% end %>
+								<!--Select-CN-->
 
-				<div class="row">
-				<%= f.input :loan_certificate, wrapper_html: { class: "col-md-6" }  %>
-				<%= f.input :group_certificate, wrapper_html: { class: "col-md-6" }  %>
-				</div>
-				<div class="row">
-					<div class="col-md-6">
-					  <%= f.label :effectivity %>
-					  <%= f.date_field :effectivity, data: { select_target: "cvgEdate" } %>
+								<!--Select-Batch-->
+								<%= f.association :batch, collection: Batch.where(submit: 0), label: "Batch Coverage", label_method: :title, input_html: { data: { select_target: "coverageBatch" } }, wrapper_html: { class: "col-md-6" }  %>
+								<!--Select-Batch-->
+							</div>
+							<% elsif @batch.present? == true %>
+								<!--Select-CN-->
+								<% if current_user.admin? %>
+								<%= f.association :center_name, collection: CenterName.all, label: "Center Name", label_method: :description, input_html: { data: { select_target: "coverageCenter" } }  %>
+								<% else %>
+								<%= f.association :center_name, collection: CenterName.where(branch_id: current_user.user_detail.branch_id), label: "Center Name", label_method: :description, input_html: { data: { select_target: "coverageCenter" } }  %>
+								<%= f.input :batch_id, selected: @batch.id, wrapper_html: { hidden: true }, input_html: { data: { select_target: "txtBatch" } } %>
+								<% end %>
+								<!--Select-CN-->
+							<% end %>
+
+							<!--Plan-toggle-->
+								<div class="card">
+									<div class="card-body">
+										<div class="row">
+											<div class="col-md-4">
+												<div class="form-check">
+													<%= f.radio_button :status, 'BOTH', class: 'form-check-input', data: { action: "select#plan_toggle" }, checked: true %>
+													<%= f.label :status_both, 'LPPI & SGYRT', class: 'form-check-label' %>
+												</div>
+											</div>
+											<div class="col-md-4">
+												<div class="form-check">
+													<%= f.radio_button :status, 'LPPI', class: 'form-check-input', data: { action: "select#plan_toggle" } %>
+													<%= f.label :status_lppi, 'LPPI only', class: 'form-check-label' %>
+												</div>
+											</div>
+											<div class="col-md-4">
+												<div class="form-check">
+													<%= f.radio_button :status, 'SGYRT', class: 'form-check-input', data: { action: "select#plan_toggle" } %>
+													<%= f.label :status_sgyrt, 'SGYRT only', class: 'form-check-label' %>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							<!--Plan-toggle-->
+								<br>
+							<!--Level-3-Inputs-->
+							<div class="row">
+								<%= f.input :loan_certificate, wrapper_html: { class: "col-md-6 txtLCert" }, input_html: { data: { select_target: "lcertInput" } } %>
+								<%= f.input :group_certificate, wrapper_html: { class: "col-md-6 txtGCert" }, input_html: { data: { select_target: "gcertInput" } }  %>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<%= f.label :effectivity %>
+									<%= f.date_field :effectivity, data: { select_target: "cvgEdate" } %>
+								</div>
+								<div class="col-md-6">
+									<%#= f.label :expiry %>
+									<%#= f.date_field :expiry %>
+								</div>
+							</div>
+							<!--Level-3-Inputs-->
+								<br>
+							<!--Level-4-Inputs-->	
+							<div class="row">
+								<%= f.input :residency, as: :integer, wrapper_html: { class: "col-md-3", hidden: false }, input_html: { data: { select_target: "residencyInput" }, 
+									required: true, min: 0, step: 1  } %>
+								<% if @get_cvg_sts.present? && @get_cvg_sts[0,1] == "N" %>
+								<% cstatus = "R" %>
+									<%= f.input :status, wrapper_html: { class: "col-md-3" }, collection: [['New','N'],['Renewal','R']], selected: cstatus, input_html: { data: { select_target: "statusInput" }  }, include_blank: true %>
+								<% else %>
+								<% cstatus = "R" %>
+									<%= f.input :status, wrapper_html: { class: "col-md-3" }, collection: [['New','N'],['Renewal','R']], selected: cstatus, input_html: { data: { select_target: "statusInput" }  }, include_blank: true %>		
+								<% end %>
+									<%= f.input :term, wrapper_html: { class: "col-md-3"}, collection: Coverage::TERMS, input_html: { data: { select_target: "termInput" }  } %>
+									<%= f.input :grace_period, as: :integer, wrapper_html: { class: "col-md-3" }, input_html: { data: { select_target: "gpInput" }, 
+									required: true, min: 0, step: 1   }  %>
+									<%= f.input :loan_coverage, wrapper_html: { class: "col-md-12 txtLoan"}, input_html: { data: { action: 'input->select#show_benefits', select_target: "loanInput" }  } %>
+							</div>
+							<!--Level-4-Inputs-->
+						</div>
+
+						<% @coverage.id? %>
+						<% if @coverage.id? == true %>
+							<% hstatus = @coverage.member.health_declaration %>
+							<% if !hstatus.nil? && hstatus.size > 3 %>
+								<div class="col-md-6"><%= f.input :substandard_rate %></div>
+							<% end %>
+						<% end %>
+						
+						<!--Member-Btn-Container-->
+						<div class="form-actions">
+								<div id="btnBoth" data-select-target="buttonBoth">
+									<%= f.button :submit, 'Create LPPI & SGYRT', name: 'memberBtn', class: "btn btn-primary memberBtn" %>
+									<%= f.button :submit, 'Add Center', name:'centerBtn', class: "btn btn-warning centerBtn", data: { action: 'click->select#add_center' } %>
+								</div>
+								<div id="btnLoan" data-select-target="buttonLoan" hidden>
+									<%= f.button :submit, 'Create LPPI only', name: 'lppiBtn', class: "btn btn-primary lppiBtn", data: { action: 'click->select#create_individual' } %>
+									<%= f.button :submit, 'Add Center', name:'centerBtn', class: "btn btn-warning centerBtn", data: { action: 'click->select#add_center' } %>
+								</div>
+								<div id="btnGroup" data-select-target="buttonGroup" hidden>
+									<%= f.button :submit, 'Create SGYRT only', name: 'sgyrtBtn', class: "btn btn-primary sgyrtBtn", data: { action: 'click->select#create_group' } %>
+									<%= f.button :submit, 'Add Center', name:'centerBtn', class: "btn btn-warning centerBtn", data: { action: 'click->select#add_center' } %>
+								</div>
+								
+								<% if @member.present? == true %>
+								<%= f.button :submit, 'Add Batch', name:'batchBtn', class: "btn btn-info batchBtn", data: { action: 'click->select#add_coverage' } %>
+								<% end %>
+						</div>
+						<!--Member-Btn-Container-->
+
 					</div>
-					<div class="col-md-6">
-					  <%#= f.label :expiry %>
-					  <%#= f.date_field :expiry %>
+					<!--Form Field-->
+			</div>
+			<div class="col-lg-6">
+				<div id="cvgHistory" data-select-target="coverageHistory">
+					<div class="card">
+					<div><%= render 'coverages/show_prev_loan', rCvg: nil %></div>
 					</div>
 				</div>
 				<br>
-				<div class="row">
-				<%= f.input :residency, as: :integer, wrapper_html: { class: "col-md-3", hidden: false }, input_html: { data: { select_target: "residencyInput" }, 
-					required: true, min: 0, step: 1  } %>
-				<% if @get_cvg_sts.present? && @get_cvg_sts[0,1] == "N" %>
-				<% cstatus = "R" %>
-					<%= f.input :status, wrapper_html: { class: "col-md-3" }, collection: [['New','N'],['Renewal','R']], selected: cstatus, input_html: { data: { select_target: "statusInput" }  }, include_blank: true %>
-				<% else %>
-				<% cstatus = "R" %>
-					<%= f.input :status, wrapper_html: { class: "col-md-3" }, collection: [['New','N'],['Renewal','R']], selected: cstatus, input_html: { data: { select_target: "statusInput" }  }, include_blank: true %>		
-				<% end %>
-					<%= f.input :term, wrapper_html: { class: "col-md-3"}, collection: Coverage::TERMS, input_html: { data: { select_target: "termInput" }  } %>
-					<%= f.input :grace_period, as: :integer, wrapper_html: { class: "col-md-3" }, input_html: { data: { select_target: "gpInput" }, 
-					required: true, min: 0, step: 1   }  %>
-					<%= f.input :loan_coverage, wrapper_html: { class: "col-md-12"}, input_html: { data: { action: 'input->select#show_benefits' }  } %>
+				<div id="cvgPremium" data-select-target="coveragePremium">
+					<div class="card">
+					<div><%= render 'coverages/show_premium', sCvg: nil %></div>
+					</div>
 				</div>
 			</div>
-
-			<% @coverage.id? %>
-			<% if @coverage.id? == true %>
-				<% hstatus = @coverage.member.health_declaration %>
-				<% if !hstatus.nil? && hstatus.size > 3 %>
-					<div class="col-md-6"><%= f.input :substandard_rate %></div>
-				<% end %>
-			<% end %>
-				  
-				<!--Member-Btn-Container-->
-				<div class="form-actions">
-					<%= f.button :submit, name: 'memberBtn', class: "btn btn-primary memberBtn" %>
-					<%= f.button :submit, 'Add Center', name:'centerBtn', class: "btn btn-warning centerBtn", data: { action: 'click->select#add_center' } %>
-					<% if @member.present? == true %>
-					<%= f.button :submit, 'Add Batch', name:'batchBtn', class: "btn btn-info batchBtn", data: { action: 'click->select#add_coverage' } %>
-					<% end %>
-				</div>
-				<!--Member-Btn-Container-->
-			</div>
-			<!--Form Field-->
-		</div>
-		<div class="col-lg-6">
-			<div id="cvgHistory" data-select-target="coverageHistory">
-			  <div class="card">
-				<div><%= render 'coverages/show_prev_loan', rCvg: nil %></div>
-			  </div>
-			</div>
-			<br>
-			<div id="cvgPremium" data-select-target="coveragePremium">
-			   <div class="card">
-				<div><%= render 'coverages/show_premium', sCvg: nil %></div>
-			  </div>
-			</div>
-		</div>
-		
-	  </div>  
+			
+		</div>  
 	</div>
 <% end %>

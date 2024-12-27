@@ -101,12 +101,10 @@ class CoveragesController < ApplicationController
       @member = Member.find(params[:m])
       @coverage = @member.coverages.build(coverage_params)
     end
+    
+    @coverage.button_name = params.keys.find { |key| key.end_with?('Btn') }
 
     if params[:memberBtn]
-      # form->member Button
-      # @batch = Batch.find(params[:b])
-      # @coverage = @batch.coverages.build(coverage_params)
-      # raise "error"
       if @coverage.valid?
         @coverage.compute_age
         respond_to do |format|
@@ -132,47 +130,10 @@ class CoveragesController < ApplicationController
         end
       end
     
-    end
-  end
-
-  def verify_plan(arr)
-    lppi_status = arr.member.plan_lppi
-    sgyrt_status = arr.member.plan_sgyrt
-    
-    if lppi_status == true && sgyrt_status == true
-      # return "dependent save"
-      dependent_coverage_save
-    elsif lppi_status == true && sgyrt_status == false
-      arr.update(plan_sgyrt: 0)
-      arr.dependent_coverages.destroy_all
-      # update/remove (group) records from coverage
-      # return "LPPI (active)"
-    elsif lppi_status == false && sgyrt_status == true  
-      arr.update(plan_lppi: 0)
-      # update/remove (lppi) records from coverage
-      # return "SGYRT (active)"
-    end   
-    
-  end
-
-  def dependent_coverage_save
-    #Add record to dependent coverage
-    @coverage.member.dependents.each do |dependent|
-      dep_coverage = DependentCoverage.new
-      dep_coverage.coverage_id = @coverage.id
-      dep_coverage.dependent_id = dependent.id
-      dep_coverage.member_id = @coverage.member_id
-
-      dprel = dependent.relationship.strip
-
-      gp = GroupPremium.where('? between residency_floor and residency_ceiling', @coverage.residency)
-      dep_coverage.premium = gp.find_by(member_type: dprel, term: @coverage.term).premium unless gp.nil?
-
-      gb = GroupBenefit.where('? between residency_floor and residency_ceiling', @coverage.residency)
-      dep_coverage.group_benefit_id = gb.find_by(member_type: dprel).id
-      
-      dep_coverage.save!
-     
+    elsif params[:lppiBtn]  
+        # code for saving coverage with lppi button
+    elsif params[:sgyrtBtn]  
+        # code for saving coverage with sgyrt button
     end
 
   end
@@ -277,6 +238,153 @@ class CoveragesController < ApplicationController
     # raise "error"
 
     render turbo_stream: [ turbo_stream.update(@ptarget, partial: "coverages/show_premium", locals: { sCvg: @coveragePremiumBenefits }) ]
+
+  end
+
+  def individual_only
+    # /coverages/${comboMember}/individual_only/?cmember=${comboMember}&cbatch=${tBatch}&ccenter=${comboCenter}&icert=${indCert}&edate=${eDate}&residency=${textResidency}&cstatus=${textStatus}&cterm=${textTerm}&gperiod=${textGracePeriod}&loansamount=${textLoan}
+    mId = params[:cmember]
+    bId = params[:cbatch]
+    cId = params[:ccenter]
+    indCert = params[:icert]
+    cEdate = params[:edate]
+    residency = params[:residency]
+    cStats = params[:cstatus]
+    cTerm = params[:cterm]
+    gpreriod = params[:gperiod]
+    tLoan = params[:loansamount]
+
+    @coverageGroupOnly = Coverage.new(member_id: mId, batch_id: bId, loan_certificate: indCert, effectivity: cEdate, residency: residency, status: cStats, term: cTerm, grace_period: gpreriod, center_name_id: cId, loan_certificate: 0, loan_coverage: tLoan, rate: 0, plan_lppi: true, plan_sgyrt: false)
+    @coverageGroupOnly.compute_age
+    @coverageGroupOnly.save
+    verify_plan_group_only(@coverageGroupOnly)
+
+    render json: { 
+      mmbrID: mId, 
+      residency: residency, 
+      pstatus: @coverageGroupOnly.persisted?
+    }
+    
+  end
+
+  def group_only
+    # cmember=${comboMember}&ccenter=${comboCenter}&gcert=${groupCert}&residency=${textResidency}&cstatus=${textStatus}&cterm=${textTerm}&gperiod=${textGracePeriod}
+    mId = params[:cmember]
+    bId = params[:cbatch]
+    cId = params[:ccenter]
+    groupCert = params[:gcert]
+    cEdate = params[:edate]
+    residency = params[:residency]
+    cStats = params[:cstatus]
+    cTerm = params[:cterm]
+    gpreriod = params[:gperiod]
+    
+    @coverageGroupOnly = Coverage.new(member_id: mId, batch_id: bId, group_certificate: groupCert, effectivity: cEdate, residency: residency, status: cStats, term: cTerm, grace_period: gpreriod, center_name_id: cId, loan_certificate: 0, loan_premium: 0, loan_coverage: 0, rate: 0, plan_lppi: false, plan_sgyrt: true)
+    @coverageGroupOnly.compute_group_only
+    @coverageGroupOnly.save
+    verify_plan_individual_only(@coverageGroupOnly)
+
+    render json: { 
+      mmbrID: mId, 
+      residency: residency, 
+      pstatus: @coverageGroupOnly.persisted?
+    }
+  end
+
+  def verify_plan(arr)
+    lppi_status = arr.member.plan_lppi
+    sgyrt_status = arr.member.plan_sgyrt
+    
+    if lppi_status == true && sgyrt_status == true
+      # return "dependent save"
+      dependent_coverage_save
+    elsif lppi_status == true && sgyrt_status == false
+      arr.update(plan_sgyrt: 0)
+      arr.dependent_coverages.destroy_all
+      # update/remove (group) records from coverage
+      # return "LPPI (active)"
+    elsif lppi_status == false && sgyrt_status == true  
+      arr.update(plan_lppi: 0)
+      dependent_coverage_save
+      # update/remove (lppi) records from coverage
+      # return "SGYRT (active)"
+    end   
+    
+  end
+
+  def verify_plan_group_only(arr)
+    lppi_status = arr.plan_lppi
+    sgyrt_status = arr.plan_sgyrt
+    
+    if lppi_status == true && sgyrt_status == true
+      dcoverage_group_only(arr)
+    elsif lppi_status == true && sgyrt_status == false
+      arr.member.update(plan_sgyrt: 0)
+      arr.dependent_coverages.destroy_all
+    elsif lppi_status == false && sgyrt_status == true  
+      arr.member.update(plan_lppi: 0)
+      dcoverage_group_only(arr)
+    end   
+    
+  end
+
+  def verify_plan_individual_only(arr)
+    lppi_status = arr.plan_lppi
+    sgyrt_status = arr.plan_sgyrt
+    
+    if lppi_status == true && sgyrt_status == true
+      dcoverage_group_only(arr)
+    elsif lppi_status == true && sgyrt_status == false
+      arr.member.update(plan_sgyrt: 0)
+      arr.dependent_coverages.destroy_all
+    elsif lppi_status == false && sgyrt_status == true  
+      arr.member.update(plan_lppi: 0)
+      dcoverage_group_only(arr)
+    end   
+    
+  end
+
+  def dependent_coverage_save
+    #Add record to dependent coverage
+    @coverage.member.dependents.each do |dependent|
+      dep_coverage = DependentCoverage.new
+      dep_coverage.coverage_id = @coverage.id
+      dep_coverage.dependent_id = dependent.id
+      dep_coverage.member_id = @coverage.member_id
+
+      dprel = dependent.relationship.strip
+
+      gp = GroupPremium.where('? between residency_floor and residency_ceiling', @coverage.residency)
+      dep_coverage.premium = gp.find_by(member_type: dprel, term: @coverage.term).premium unless gp.nil?
+
+      gb = GroupBenefit.where('? between residency_floor and residency_ceiling', @coverage.residency)
+      dep_coverage.group_benefit_id = gb.find_by(member_type: dprel).id
+      
+      dep_coverage.save!
+     
+    end
+
+  end
+
+  def dcoverage_group_only(arr)
+    #Add record to dependent coverage
+    arr.member.dependents.each do |dependent|
+      dep_coverage = DependentCoverage.new
+      dep_coverage.coverage_id = arr.id
+      dep_coverage.dependent_id = dependent.id
+      dep_coverage.member_id = arr.member_id
+
+      dprel = dependent.relationship.strip
+
+      gp = GroupPremium.where('? between residency_floor and residency_ceiling', arr.residency)
+      dep_coverage.premium = gp.find_by(member_type: dprel, term: arr.term).premium unless gp.nil?
+
+      gb = GroupBenefit.where('? between residency_floor and residency_ceiling', arr.residency)
+      dep_coverage.group_benefit_id = gb.find_by(member_type: dprel).id
+      
+      dep_coverage.save!
+     
+    end
 
   end
 

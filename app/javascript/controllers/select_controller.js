@@ -5,7 +5,7 @@ import flatpickr from "flatpickr"
 // Connects to data-controller="select"
 export default class extends Controller {
 
-  static targets = ["memberID","residencyInput","coverageHistory","coveragePremium","statusInput","termInput","gpInput","coverageMember","cvgEdate","coverageCenter","coverageBatch"]
+  static targets = ["memberID","lcertInput","gcertInput","residencyInput","coverageHistory","coveragePremium","statusInput","termInput","gpInput","loanInput","coverageMember","cvgEdate","coverageCenter","coverageBatch","txtBatch","buttonBoth","buttonLoan","buttonGroup","divLoanCertificate","divGroupCertificate"]
   timeoutId = 0
   connect() {
     console.log("connected", this.element)
@@ -157,7 +157,7 @@ export default class extends Controller {
   
           const html = `
               <select id="branch-select">
-                <option value="">Select a Center</option>
+                <option value="">Select a Branch</option>
                 ${Object.keys(branchOptions).map((id) => `<option value="${id}">${branchOptions[id]}</option>`).join('')}
               </select>
               <input type="text" id="center-input" placeholder="Enter Title">
@@ -257,7 +257,7 @@ export default class extends Controller {
   
           const html = `
               <select id="batch-select" class="swal2-input">
-                <option value="">Select a Batch</option>
+                <option value="">Select a Branch</option>
                 ${Object.keys(batchesOptions).map((id) => `<option value="${id}">${batchesOptions[id]}</option>`).join('')}
               </select>
               <input type="text" id="title-input" placeholder="Enter Title" class="swal2-input">
@@ -323,6 +323,168 @@ export default class extends Controller {
     get(`${urlID}/${bId}/add_new_batch?Id=${bId}&title=${btitle}&desc=${bdesc}&target=${btarget}`, {
       responseKind: "turbo-stream"
     })
+  }
+
+  plan_toggle(event) 
+  {
+
+    // radiobutton
+    const iSelected = event.target.value
+    // console.log("Selected radio button value:", iSelected);
+    let btnBoth = this.buttonBothTarget
+    let btnLoan = this.buttonLoanTarget
+    let btnGroup = this.buttonGroupTarget
+
+    // let mbutton2 = document.querySelector('.memberBtn');
+    let txtLoan = document.querySelector('.txtLoan')
+    let txtLCert = document.querySelector('.txtLCert')
+    let txtGCert = document.querySelector('.txtGCert')
+
+    if (iSelected == "BOTH") {
+      console.log(iSelected);
+      // button control
+      btnBoth.hidden = false
+      btnLoan.hidden = true
+      btnGroup.hidden = true
+
+      // text control A
+      txtLCert.hidden = false
+      txtGCert.hidden = false
+      // text control B
+      txtLoan.hidden = false
+    }
+    else if(iSelected == "LPPI") {
+      console.log(iSelected);
+      // button control
+      btnBoth.hidden = true
+      btnLoan.hidden = false
+      btnGroup.hidden = true
+      
+      // text control A
+      txtLCert.hidden = false
+      txtGCert.hidden = true
+      // text control B
+      txtLoan.hidden = false
+    }
+    else if(iSelected == "SGYRT") {
+      console.log(iSelected);
+      // button control
+      btnBoth.hidden = true
+      btnLoan.hidden = true
+      btnGroup.hidden = false
+
+      // text control A
+      txtLCert.hidden = true
+      txtGCert.hidden = false
+      // text control B
+      txtLoan.hidden = true
+    }
+
+  }
+
+  create_individual() 
+  {
+    let comboMember = this.coverageMemberTarget.selectedOptions[0].value
+    let comboCenter = this.coverageCenterTarget.selectedOptions[0].value
+    let tBatch = this.txtBatchTarget.value
+    let indCert = this.lcertInputTarget.value
+    let eDate = this.cvgEdateTarget.value
+    let textResidency = this.residencyInputTarget.value
+    let textStatus = this.statusInputTarget.value
+    let textTerm = this.termInputTarget.value
+    let textGracePeriod = this.gpInputTarget.value
+    let textLoan = this.loanInputTarget.value
+
+    if(comboMember == "" || comboCenter == "" || indCert == "" || textResidency == "" || textStatus == "" || textTerm == "" || textGracePeriod == "" || textLoan == "") 
+    {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "All fields required."
+      });
+    }
+    else
+    {
+      console.log(comboMember+", "+comboCenter+" : "+indCert+" | "+textResidency+" | "+textStatus+" | "+textTerm+" | "+textGracePeriod)
+      fetch(`/coverages/${comboMember}/individual_only/?cmember=${comboMember}&cbatch=${tBatch}&ccenter=${comboCenter}&icert=${indCert}&edate=${eDate}&residency=${textResidency}&cstatus=${textStatus}&cterm=${textTerm}&gperiod=${textGracePeriod}&loansamount=${textLoan}`)
+      .then(response => response.json())
+      .then(data => {
+
+        console.log(data)
+        if( data.pstatus == true )
+        {
+          Swal.fire({
+            icon: "success",
+            title: "Record has been saved, Please refresh the page",
+            showConfirmButton: false,
+            timer: 1500
+          });
+          this.coverageMemberTarget.selectedIndex = -1
+          this.coverageCenterTarget.selectedIndex = -1
+          this.txtBatchTarget.value = ""
+          this.lcertInputTarget.value = ""
+          this.cvgEdateTarget.value = ""
+          this.residencyInputTarget.value = ""
+          this.statusInputTarget.value = ""
+          this.termInputTarget.value = ""
+          this.gpInputTarget.value = ""
+          this.loanInputTarget.value = ""
+        }
+      
+      }).catch(error => console.error(error));
+    }
+  }
+
+  create_group() 
+  {
+    console.log("create_group")
+    let comboMember = this.coverageMemberTarget.selectedOptions[0].value
+    let comboCenter = this.coverageCenterTarget.selectedOptions[0].value
+    let tBatch = this.txtBatchTarget.value
+    let groupCert = this.gcertInputTarget.value
+    let eDate = this.cvgEdateTarget.value
+    let textResidency = this.residencyInputTarget.value
+    let textStatus = this.statusInputTarget.value
+    let textTerm = this.termInputTarget.value
+    let textGracePeriod = this.gpInputTarget.value
+    if(comboMember == "" || comboCenter == "" || groupCert == "" || textResidency == "" || textStatus == "" || textTerm == "" || textGracePeriod == "") 
+    {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "All fields required."
+      });
+    }
+    else
+    {
+      console.log(comboMember+", "+comboCenter+" : "+groupCert+" | "+textResidency+" | "+textStatus+" | "+textTerm+" | "+textGracePeriod)
+      fetch(`/coverages/${comboMember}/group_only/?cmember=${comboMember}&cbatch=${tBatch}&ccenter=${comboCenter}&gcert=${groupCert}&edate=${eDate}&residency=${textResidency}&cstatus=${textStatus}&cterm=${textTerm}&gperiod=${textGracePeriod}`)
+      .then(response => response.json())
+      .then(data => {
+
+        console.log(data)
+        if( data.pstatus == true )
+        {
+          Swal.fire({
+            icon: "success",
+            title: "Record has been saved, Please refresh the page",
+            showConfirmButton: false,
+            timer: 1500
+          });
+          this.coverageMemberTarget.selectedIndex = -1
+          this.coverageCenterTarget.selectedIndex = -1
+          this.txtBatchTarget.value = ""
+          this.gcertInputTarget.value = ""
+          this.cvgEdateTarget.value = ""
+          this.residencyInputTarget.value = ""
+          this.statusInputTarget.value = ""
+          this.termInputTarget.value = ""
+          this.gpInputTarget.value = ""
+        }
+      
+      }).catch(error => console.error(error));
+
+    }
   }
 
 

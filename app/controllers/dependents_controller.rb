@@ -4,11 +4,14 @@ class DependentsController < ApplicationController
 
   # GET /dependents or /dependents.json
   def index
-    if params[:query].present?
-      @dependents = Dependent.where("last_name LIKE ?", "%#{params[:query]}%")
-    else
-      @dependents = Dependent.all
-    end
+    # if params[:query].present?
+    #   @dependents = Dependent.where("last_name LIKE ?", "%#{params[:query]}%")
+    # else
+    #   @dependents = Dependent.all
+    # end
+
+    @dependents = Dependent.get_dependents_index(current_user.admin, params[:query], current_user)
+
   end
 
   # GET /dependents/1 or /dependents/1.json

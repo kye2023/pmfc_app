@@ -1,4 +1,6 @@
 class Coverage < ApplicationRecord
+  attr_accessor :button_name
+
   belongs_to :batch
   # belongs_to :member, optional: true
   belongs_to :member
@@ -8,7 +10,7 @@ class Coverage < ApplicationRecord
   # validates_presence_of :member_id, :loan_certificate, :effectivity, :term, :grace_period, :status
   validates_presence_of :member_id, :loan_certificate, :effectivity, :term, :status
   # validates :grace_period, numericality: { only_integer: true }
-  validates :loan_coverage, numericality: { greater_than: 0 }
+  validates :loan_coverage, numericality: { greater_than: 0 }, if: :member_button_pressed?
 
   TERMS = [3, 4, 5, 6, 9, 12, 18, 24, 30, 36]
 
@@ -59,6 +61,22 @@ class Coverage < ApplicationRecord
     
   end
   
+  def compute_group_only
+    age_in_days = (effectivity - member.birth_date).to_i
+    age_in_years = (age_in_days / 365.0).round
+    self.age = age_in_years
+
+    self.expiry = effectivity >> term
+    self.expiry = expiry + grace_period
+      
+    gp = GroupPremium.where('? between residency_floor and residency_ceiling', self.residency)
+    self.group_premium = gp.find_by(member_type: 'principal', term: self.term).premium unless gp.nil?
+
+    gb = GroupBenefit.where('? between residency_floor and residency_ceiling', self.residency)
+    self.group_benefit_id = gb.find_by(member_type: 'principal').id
+    
+  end
+
   def coverage_aging
     today = Date.today
     #c_aging = ((exdate.to_date - efdate.to_date) / 31).round
@@ -140,5 +158,10 @@ class Coverage < ApplicationRecord
   #   return numalpha[val-1]
   # end
 
+  private
+
+  def member_button_pressed?
+    button_name == 'memberBtn'
+  end
 
 end

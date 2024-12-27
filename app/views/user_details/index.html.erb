@@ -20,11 +20,12 @@
     <tbody>
       <% @user_details.each do |user_detail| %>
         <tr>
-
-        <th scope="row"><%= user_detail.id %></th>
-        <td><%= user_detail.last_name %>, <%= user_detail.first_name %> <%= user_detail.middle_initial %> <%= content_tag :span, 'Admin', class: "badge rounded-pill bg-info text-dark" if user_detail.user.admin %> <br>
-        <small><%= user_detail.contact_no %> | <%= user_detail.branch %> <%= content_tag :span, 'Disable', class: "badge rounded-pill bg-warning text-dark" unless user_detail.user.approved %></small></td>
-    
+          <%#= user_detail.user.admin %>
+          <th scope="row"><%= user_detail.id %></th>
+          <td>
+            <%= user_detail.last_name %>, <%= user_detail.first_name %> <%= user_detail.middle_initial %> <%= content_tag :span, 'Admin', class: "badge rounded-pill bg-info text-dark" if user_detail.user.admin %> <br>
+          <small><%= user_detail.contact_no %> | <%= user_detail.branch %> <%= content_tag :span, 'Disable', class: "badge rounded-pill bg-warning text-dark" unless user_detail.user.approved %></small>
+          </td>
           <td>
             <%= link_to 'View', user_detail, class: 'btn btn-secondary btn-sm' %>
             <%= link_to 'Edit', edit_user_detail_path(user_detail), class: 'btn btn-secondary btn-sm' %>
