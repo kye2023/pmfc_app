@@ -51,6 +51,7 @@ class BatchesController < ApplicationController
       @show_coverage = Batch.get_batches_query(bId, params[:query], current_user, params[:aquery])
     else
       @show_coverage = Batch.get_batches_query(bId, params[:query], current_user, age)
+      # @count_coverage = Batch.count_batches_agroup(bId, params[:query], current_user, age)
     end
     
     
