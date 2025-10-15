@@ -11,6 +11,9 @@ class DependentsController < ApplicationController
     # end
 
     @dependents = Dependent.get_dependents_index(current_user.admin, params[:query], current_user)
+    
+    #set pagination
+    @pagy, @dependents = pagy(@dependents, items: 10)
 
   end
 
@@ -90,7 +93,6 @@ class DependentsController < ApplicationController
 
   def import
     brn_id = current_user.user_detail.branch_id
-
     import_service = ImportService.new(:dependent,params[:file],brn_id)
     import_message = import_service.import
     # redirect_to dependents_path, notice: import_message
@@ -98,10 +100,22 @@ class DependentsController < ApplicationController
       flash[:notice] = "No file uploaded"
       redirect_to dependents_path
     else
+      mcount = 0
       status_names = import_message.map do |r|
-        lname = r["LASTNAME"].upcase
-        fname = r["FIRSTNAME"].upcase
+        lname = r["LASTNAME"].capitalize
+        fname = r["FIRSTNAME"].capitalize
         mname = r["MI"].upcase
+        reln = r["RELATIONSHIP"].capitalize
+        rmks = r["Remarks"].capitalize
+        c_age = r["Current Age"]
+        arr_sts = r["STATUS"]
+        ul_name = "#{lname}"+", "+"#{fname}"+", "+"#{mname}"
+        mcount+=1
+
+        if arr_sts == "Invalid"
+          "#{mcount}. #{ul_name} | #{reln} | - #{arr_sts} age, (#{c_age})"
+        end
+
       end.compact 
 
       status_count = import_message.group_by { |message| message["STATUS"] }.map { |status, messages| [status, messages.size] }.to_h
@@ -109,11 +123,21 @@ class DependentsController < ApplicationController
       # raise "errors"
 
       flash_existing = status_count["Existing"]
-      flash_uploaded = status_count["Uploaded"]
+      flash_unlisted = status_count["Unlisted"]
+      flash_new = status_count["New"]
+      flash_invalid = status_count["Invalid"]
 
-      flash_names = status_names.map { |status_names| "#{status_names}<br>" }.join
-    
-      flash[:notice] = "Import successful. <br><br> Existing :"+flash_existing.to_s+"<br> Uploaded :"+flash_uploaded.to_s
+      # flash[:notice] = "Import successful. <br><br> Existing :"+flash_existing.to_s+"<br> Uploaded :"+flash_uploaded.to_s
+      flash[:notice] = "Import successful. <br><br> Existing : #{flash_existing} <br> Unlisted : #{flash_unlisted} <br> New : #{flash_new} <br> Invalid : #{flash_invalid}"
+
+      if flash_invalid.present? == true && flash_invalid > 0
+
+        # import_message.select { |hash| hash['STATUS'] == 'Invalid' }
+        flash_names = status_names.map { |status_names| "#{status_names}<br>" }.join
+        flash[:notice] += "<br>#{view_context.link_to('View Remark(s)', invalid_preview_dependent_path(brn_id, invalid: flash_names), data: {turbo_frame: "remote_modal"})}"
+        
+      end
+
       redirect_to dependents_path
     end
 

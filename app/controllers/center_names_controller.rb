@@ -6,11 +6,20 @@ class CenterNamesController < ApplicationController
   def index
     # @center_names = CenterName.all
     @center_names = CenterName.get_cname_index(current_user.admin, params[:query], current_user)
+    @pagy, @center_names = pagy(@center_names, items: 10)
   end
 
   # GET /center_names/1 or /center_names/1.json
   def show
-  
+    require 'pagy/extras/bootstrap'
+    @center_name
+    @scname
+    # raise "error"
+    cnarr = @center_name
+    @scname = CenterName.get_cname_show(cnarr, current_user.admin, params[:squery], current_user)
+    
+    #set pagination
+    @pagy, @scname = pagy(@scname, items: 10)
   end
 
   # GET /center_names/new
