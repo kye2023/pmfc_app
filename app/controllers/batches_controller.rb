@@ -30,7 +30,10 @@ class BatchesController < ApplicationController
     respond_to do |format|
       format.html
       format.csv do 
-        send_data Batch.to_csv, filename: Date.today.to_s, content_type: 'text/csv'
+        # send_data Batch.to_csv, filename: Date.today.to_s, content_type: 'text/csv'
+        send_data batch_csv(@batch.id), 
+                filename: "#{@batch.name}-#{Date.today}.csv", 
+                type: 'text/csv'
       end
     end
 
@@ -51,6 +54,7 @@ class BatchesController < ApplicationController
       @show_coverage = Batch.get_batches_query(bId, params[:query], current_user, params[:aquery])
     else
       @show_coverage = Batch.get_batches_query(bId, params[:query], current_user, age)
+      # @count_coverage = Batch.count_batches_agroup(bId, params[:query], current_user, age)
     end
     
     
@@ -145,6 +149,17 @@ class BatchesController < ApplicationController
       @find_batch.save
       @batch_title = Batch.where(submit: 0)
       render turbo_stream: [ turbo_stream.update(@btarget, partial: "batches/load_bselect", locals: { lBname: @batch_title }) ]
+    end
+  end
+
+  def age_group
+    
+    bId = Batch.find(params[:id])
+    aGp = params[:agp]
+    bId.destroy_batches_agroup(aGp)
+    # raise "errors"
+    respond_to do |format| 
+      format.html { redirect_to batch_url(bId, qry: 0, pln: 0, pth: "b1"), notice: "Age Group successfully deleted." }
     end
   end
 

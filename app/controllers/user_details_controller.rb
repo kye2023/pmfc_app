@@ -28,7 +28,7 @@ class UserDetailsController < ApplicationController
     respond_to do |format|
       if @user_detail.save
         # format.html { redirect_to root_path, notice: "User detail was successfully created." }
-        format.html { redirect_to user_detail_path, notice: "User detail was successfully created." }
+        format.html { redirect_to user_details_path, notice: "User detail was successfully created." }
         format.json { render :show, status: :created, location: @user_detail }
       else
         format.html { render :new, status: :unprocessable_entity }

@@ -173,6 +173,58 @@ class Batch < ApplicationRecord
 
   end
 
+  def count_batches_agroup(age_group)
+    
+    if age_group.present? == true
+      
+        case age_group
+        when "1865"
+          coverages.where(age: 18..65).count(:id)
+        when "6670b"
+          coverages.where(age: 66..70).where("loan_coverage <= 350000").count(:id)
+        when "6670a"
+          coverages.where(age: 66..70).where("loan_coverage > 350001").count(:id)
+        when "7175b"
+          coverages.where(age: 71..75).where("loan_coverage <= 350000").count(:id)
+        when "7175a"
+          coverages.where(age: 71..75).where("loan_coverage > 350001").count(:id)
+        when "7680b"
+          coverages.where(age: 76..80).where("loan_coverage <= 350000").count(:id)
+        when "7680a"
+          coverages.where(age: 76..80).where("loan_coverage > 350001").count(:id)
+        when "0119"
+          coverages.where("residency BETWEEN 0 AND 119").count(:id)
+        when "120a"
+          coverages.where("residency > 119").count(:id)
+        end
+    end
+  end
+
+  def destroy_batches_agroup(age_group)
+    if age_group.present? == true
+        case age_group
+        when "1865"
+          coverages.where(age: 18..65).destroy_all
+        when "6670b"
+          coverages.where(age: 66..70).where("loan_coverage <= 350000").destroy_all
+        when "6670a"
+          coverages.where(age: 66..70).where("loan_coverage > 350001").destroy_all
+        when "7175b"
+          coverages.where(age: 71..75).where("loan_coverage <= 350000").destroy_all
+        when "7175a"
+          coverages.where(age: 71..75).where("loan_coverage > 350001").destroy_all
+        when "7680b"
+          coverages.where(age: 76..80).where("loan_coverage <= 350000").destroy_all
+        when "7680a"
+          coverages.where(age: 76..80).where("loan_coverage > 350001").destroy_all
+        when "0119"
+          coverages.where("residency BETWEEN 0 AND 119").destroy_all
+        when "120a"
+          coverages.where("residency > 119").destroy_all
+        end
+    end
+  end
+
   def get_service_fee(prem, age_r, sfee)
     csfee = 0
     if sfee.present? == true
@@ -214,7 +266,8 @@ class Batch < ApplicationRecord
 
   def batch_csv(batch_id) 
     @batch = Batch.find(batch_id)
-    CSV.generate(col_sep: ";") do |csv|
+    # CSV.generate(col_sep: ";") do |csv|
+    CSV.generate(col_sep: "\t") do |csv|
       csv << ["id","member_typ", "first_name", "middle_name", "last_name", "suffix", "certificate", "residency", "effectiity", "expiry", "terms", "grace_period", "status", "loan_coverage", "loan_premium", "life", "ad&d", "burial", "group_premium"]
       @batch.coverages.each do |cov|
         csv << [

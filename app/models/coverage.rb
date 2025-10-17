@@ -9,7 +9,7 @@ class Coverage < ApplicationRecord
   belongs_to :center_name
   # validates_presence_of :member_id, :loan_certificate, :effectivity, :term, :grace_period, :status
   validates_presence_of :member_id, :loan_certificate, :effectivity, :term, :status
-  # validates :grace_period, numericality: { only_integer: true }
+  validates :grace_period, numericality: { only_integer: true }
   validates :loan_coverage, numericality: { greater_than: 0 }, if: :member_button_pressed?
 
   TERMS = [3, 4, 5, 6, 9, 12, 18, 24, 30, 36]
@@ -49,7 +49,7 @@ class Coverage < ApplicationRecord
         self.expiry = expiry + grace_period
         self.loan_premium = ( (loan_coverage/1000) * (rate * (term + grace_period) ) )
       end
-      
+    
     # self.residency = (effectivity.year * 12 + effectivity.month) - (member.date_membership.year * 12 + member.date_membership.month)
     # self.residency = member.coverages.sum(:term)
 

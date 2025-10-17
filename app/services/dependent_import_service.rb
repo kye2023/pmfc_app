@@ -42,40 +42,72 @@ class DependentImportService
         relationship: row["RELATIONSHIP"] == nil ? nil : row["RELATIONSHIP"]
       }
       
-      member_id = Member.find_by(last_name: principal_lname, first_name: principal_fname, middle_name: principal_mname)&.id
+      # member_id = Member.find_by(last_name: principal_lname, first_name: principal_fname, middle_name: principal_mname[0])&.id
       # "SELECT id FROM members WHERE last_name="Dela cruz" AND first_name="Juan" AND middle_name="P" "
-      
-      if member_id.nil?
-        next
-      else
-        dependent = Dependent.find_or_initialize_by(
-          member_id: member_id,
-          last_name: dependent_hash[:last_name],
-          first_name: dependent_hash[:first_name],
-          middle_name: dependent_hash[:middle_name],
-          birth_date: dependent_hash[:birth_date]
-        )
+      member_id = Member.where(last_name: principal_lname, first_name: principal_fname).where("middle_name LIKE ?", "#{principal_mname[0]}%").first
+     
+      # raise "errors"
+      if member_id.blank? == false
         
-        if dependent.persisted? == true
-          #dependent.update(dependent_hash)
-          row["STATUS"] = "Existing"
-          next
-        else
-          new_dependent = Dependent.create(dependent_hash)
-          dependent.assign_attributes(dependent_hash)
-          dependent.save!
-          row["STATUS"] = "Uploaded"  
-        end
+        dependent = Dependent.where(member_id: member_id,last_name: dependent_hash[:last_name],first_name: dependent_hash[:first_name]).where("middle_name LIKE ?", "#{dependent_hash[:middle_name][0]}%").where(birth_date: dependent_hash[:birth_date])
         
         # raise "errors"
-      end
 
+        if dependent.blank? == false
+          row["STATUS"] = "Existing"
+          row["Remarks"] = "O"
+          row["Current Age"] = "X"
+          next
+        else
+          new_dep = ageValidity(dependent_hash[:birth_date], dependent_hash[:relationship])
+          if new_dep == true
+            dependent_hash[:member_id] = member_id.id
+            new_dependent = Dependent.create(dependent_hash)
+            new_dependent.assign_attributes(dependent_hash)
+            new_dependent.save!
+            row["STATUS"] = "New"
+            row["Remarks"] = "O"
+            row["Current Age"] = "X"
+            next
+          else
+            row["STATUS"] = "Invalid"
+            row["Remarks"] = "Sibling & Child must be 3-21 y/o, Spouse & Parent must be 18-65 y/o"
+            row["Current Age"] = "#{getCurrentAge(dependent_hash[:birth_date])} y/o"
+            next
+          end
+        end
+
+      else
+        row["STATUS"] = "Unlisted"
+        row["Remarks"] = "X"
+        row["Current Age"] = "X"
+        next
+      end
+      
     end
 
     # "Success"
+    
+  end
+
+  def ageValidity(bday, rel)
+    age = ((Date.today - bday.to_date) / 365).round
+    rel = rel.downcase
+    
+    if ["spouse", "parent"].include?(rel.downcase) && (18..65).include?(age)
+      return true
+    elsif ["child", "sibling"].include?(rel.downcase) && (3..21).include?(age)
+      return true
+    else
+      return false
+    end
 
   end
 
+  def getCurrentAge(bday)
+    age = ((Date.today - bday.to_date) / 365).round
+    return age
+  end
 
   private
   def extract_headers(spreadsheet, sheet_name)

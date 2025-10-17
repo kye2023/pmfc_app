@@ -12,8 +12,8 @@
     <thead>
       <tr>
       <th>#</th>
-            <th>User</th>
-            <th></th>
+          <th>User</th>
+          <th></th>
         </tr>
     </thead>
 
@@ -33,7 +33,6 @@
             <%= link_to 'Approve', approve_user_user_detail_path(user_detail), class: 'btn btn-warning btn-sm' unless user_detail.user.approved %>
             <%= link_to 'Disable', approve_user_user_detail_path(user_detail), class: 'btn btn-danger btn-sm' if user_detail.user.approved %>
           </td>
-
         </tr>
       <% end %>
     </tbody>

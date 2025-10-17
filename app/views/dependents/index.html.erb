@@ -37,8 +37,11 @@
         --Add Dependent-->
       </div>
       <% end %>
+      <%== pagy_bootstrap_nav(@pagy) %>
+      <%== pagy_info(@pagy) %>
     </div>
     <!--Search-->
+
     <!--table-dependent-->
     <table class="table table-striped table-bordered table-hover">
       <thead>
@@ -53,7 +56,7 @@
         <% dpdntcount = 0 %>
         <% @dependents.each do |dependent| %>
           <% dpdntcount += 1 %>
-          <tr>
+          <tr id="dependents">
             <th scope="row"><%= dpdntcount %></th>
             <td><%= dependent.member.get_cmember %></td>
             <td>

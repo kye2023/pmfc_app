@@ -36,7 +36,9 @@
       <!--<td class="text-center"><%#= batch.coverages.count %></td>-->
       <td class="text-end">
         <% lppi = 0 %>
-        <% lppi = batch.coverages.sum(:loan_premium) %>
+        <%# raise "errors" %>
+        <%# lppi = batch.coverages.sum(:loan_premium) %>
+        <% lppi = batch.coverages.count %>
         <% if lppi == 0 %>
           <%= link_to '<i class="bi bi-file-plus"></i>'.html_safe+" Add Coverage", batch_url(batch, qry: 0, pln: 0, pth: "b1"), class: 'btn btn-secondary btn-sm' %>
         <% else %>
@@ -47,7 +49,8 @@
       <td class="text-end">
         <!--<div class="text-wrap fw-lighter"><small><%# to_curr(batch.coverages.sum(:group_premium)+(batch.batch_coverage)) %></small></div>-->
         <% gyrt = 0 %>
-        <% gyrt = batch.coverages.sum(:group_premium)+(batch.batch_coverage) %>
+        <%# gyrt = batch.coverages.sum(:group_premium)+(batch.batch_coverage) %>
+        <% gyrt = batch.coverages.count %>
         <% if gyrt == 0 %>
           <%= link_to '<i class="bi bi-file-plus"></i>'.html_safe+" Add Coverage", batch_url(batch, qry: 0, pln: 1, pth: "b1"), class: 'btn btn-secondary btn-sm' %>
         <% else %>

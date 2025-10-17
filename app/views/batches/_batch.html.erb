@@ -1,20 +1,20 @@
-<% @batch.id %>
-<% params[:query] %>
-<% age_r = params[:qry] %>
-<% pln = params[:pln] %>
-<% pth = params[:pth] %>
+<%= @batch.id %>
+<%= params[:query] %>
+<%= age_r = params[:qry] %>
+<%= pln = params[:pln] %>
+<%= pth = params[:pth] %>
 
 <%# psubs = pth.split("-") %>
 <%# psubs.size %>
 
 <div id="<%= dom_id batch %>">
   
-  <div class="row">
-    
+  <div class="row mb-3">
     <!-- SEARCH -->
-    <div class="col-lg-8">
+    <div class="col-md-9">
       <%= form_with( url: batch, method: :get ) do |form| %>
       <div class="input-group mb-3">
+      <!--Btn-Control-Group-->
         <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, batches_path, class: "btn btn-secondary" %>
         <%= form.text_field :query, placeholder: 'Search by Name...', class: "form-control" %>
         <%= form.submit 'Search', class: "btn btn-success" %>
@@ -33,21 +33,27 @@
               <ul class="dropdown-menu">
                 <%= link_to 'All', batch_url(batch, qry: "0", pln: pln, pth: "b1"), class: 'dropdown-item' %>
                 <% if pln == "0" %>
-                  <%= link_to '18-65', batch_url(batch, qry: "1865", pln: pln, pth: "b1"), class: 'dropdown-item' %>
-                  <%= link_to '66-70 350,000 and below', batch_url(batch, qry: "6670b", pln: pln, pth: "b1"), class: 'dropdown-item' %>
-                  <%= link_to '66-70 350,001 and above', batch_url(batch, qry: "6670a", pln: pln, pth: "b1"), class: 'dropdown-item' %>
-                  <%= link_to '71-75 350,000 and below', batch_url(batch, qry: "7175b", pln: pln, pth: "b1"), class: 'dropdown-item' %>
-                  <%= link_to '71-75 350,001 and above', batch_url(batch, qry: "7175a", pln: pln, pth: "b1"), class: 'dropdown-item' %>
-                  <%= link_to '76-80 350,000 and below', batch_url(batch, qry: "7680b", pln: pln, pth: "b1"), class: 'dropdown-item' %>
-                  <%= link_to '75-80 350,001 and above', batch_url(batch, qry: "7680a", pln: pln, pth: "b1"), class: 'dropdown-item' %>
+                  <%= link_to "18-65 <span class='badge bg-secondary'>#{batch.count_batches_agroup("1865")}</span>".html_safe, batch_url(batch, qry: "1865", pln: pln, pth: "b1"), class: 'dropdown-item' if batch.count_batches_agroup("1865") > 0 %>
+                  <%= link_to "66-70 350,000 and below <span class='badge bg-secondary'>#{batch.count_batches_agroup("6670b")}</span>".html_safe, batch_url(batch, qry: "6670b", pln: pln, pth: "b1"), class: 'dropdown-item' if batch.count_batches_agroup("6670b") > 0 %>
+                  <%= link_to "66-70 350,001 and above <span class='badge bg-secondary'>#{batch.count_batches_agroup("6670a")}</span>".html_safe, batch_url(batch, qry: "6670a", pln: pln, pth: "b1"), class: 'dropdown-item' if batch.count_batches_agroup("6670a") > 0 %>
+                  <%= link_to "71-75 350,000 and below <span class='badge bg-secondary'>#{batch.count_batches_agroup("7175b")}</span>".html_safe, batch_url(batch, qry: "7175b", pln: pln, pth: "b1"), class: 'dropdown-item' if batch.count_batches_agroup("7175b") > 0 %>
+                  <%= link_to "71-75 350,001 and above <span class='badge bg-secondary'>#{batch.count_batches_agroup("7175a")}</span>".html_safe, batch_url(batch, qry: "7175a", pln: pln, pth: "b1"), class: 'dropdown-item' if batch.count_batches_agroup("7175a") > 0 %>
+                  <%= link_to "76-80 350,000 and below <span class='badge bg-secondary'>#{batch.count_batches_agroup("7680b")}</span>".html_safe, batch_url(batch, qry: "7680b", pln: pln, pth: "b1"), class: 'dropdown-item' if batch.count_batches_agroup("7680b") > 0 %>
+                  <%= link_to "75-80 350,001 and above <span class='badge bg-secondary'>#{batch.count_batches_agroup("7680a")}</span>".html_safe, batch_url(batch, qry: "7680a", pln: pln, pth: "b1"), class: 'dropdown-item' if batch.count_batches_agroup("7680a") > 0 %>
                 <% elsif pln == "1" %>
-                  <%= link_to '0-119 (Residency)', batch_url(batch, qry: "0119", pln: pln, pth: "b1"), class: 'dropdown-item' %>
-                  <%= link_to '120 and Above (Residency)', batch_url(batch, qry: "120a", pln: pln, pth: "b1"), class: 'dropdown-item' %>
+                  <%= link_to "0-119 (Residency) <span class='badge bg-secondary'>#{batch.count_batches_agroup("0119")}</span>".html_safe, batch_url(batch, qry: "0119", pln: pln, pth: "b1"), class: 'dropdown-item' %>
+                  <%= link_to "120 and Above (Residency) <span class='badge bg-secondary'>#{batch.count_batches_agroup("120a")}</span>".html_safe, batch_url(batch, qry: "120a", pln: pln, pth: "b1"), class: 'dropdown-item' %>
                 <% end %>
               </ul>
             </div>
           </div>
           <% end %>
+          <!--Btn-Delete-AGroup-->
+          <% if age_r.present? == true && age_r != "0" %>
+            <%= link_to '<i class="bi bi-trash"></i> Age group'.html_safe, age_group_batch_path(batch, agp: age_r), class: "btn btn-danger", method: :patch, data: { "turbo-method": :patch, turbo_confirm: "Are you sure?" } %>
+          <% end %>
+          <!--Btn-Delete-AGroup-->
+        <!--Btn-Control-Group-->
       </div>
         <% if params[:query].present? == true %>
           <%= form.hidden_field :pquery, value: params[:pquery] %>
@@ -61,8 +67,8 @@
     </div>
     <!-- SEARCH -->
   
-    <div class="col-lg-2">
-      <div class="mb-3"></div>
+    <div class="col-md-3">
+      <!--<div class="mb-3"></div>-->
     </div>
   
   </div>

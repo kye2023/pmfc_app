@@ -22,28 +22,22 @@ class Dependent < ApplicationRecord
     rlship = self.relationship
     
     case rlship
-    when "Spouse"
-      mmbr_type = 'spouse'
-    when "Child"
-      mmbr_type = 'child'
-    when "Parent"
-      mmbr_type = 'parent'
-    end
+      when "Spouse"
+        mmbr_type = 'spouse'
+      when "Child"
+        mmbr_type = 'child'
+      when "Parent"
+        mmbr_type = 'parent'
+      end
 
     if val == "gp"
-      
       g_prm = GroupPremium.where('? between residency_floor and residency_ceiling', coverage.residency)
       group_premium = g_prm.find_by(member_type: "#{mmbr_type}", term: coverage.term).premium unless g_prm.nil?
-      
       return group_premium
-    
     else
-
       g_bnft = GroupBenefit.where('? between residency_floor and residency_ceiling', coverage.residency)
       group_benefit_id = g_bnft.find_by(member_type: "#{mmbr_type}").id
-      
       return group_benefit_id
-
     end
   end
 
@@ -79,15 +73,15 @@ class Dependent < ApplicationRecord
   def self.get_dependents_index(admin, query, current_user)
     if query.present?
       if admin == true
-        where("last_name LIKE ? OR first_name LIKE ?", "%#{query}%", "%#{query}%")
+        where("last_name LIKE ? OR first_name LIKE ?", "%#{query}%", "%#{query}%").limit(50)
       else
-        where(member: Member.where(branch_id: current_user.user_detail.branch_id).where("description LIKE ?", "%#{query}%"))
+        where(member: Member.where(branch_id: current_user.user_detail.branch_id).where("last_name LIKE ? OR first_name LIKE ?", "%#{query}%", "%#{query}%")).limit(50)
       end
     else
       if admin == true
         all
       else
-        where(member: Member.where(branch_id: current_user.user_detail.branch_id))
+        where(member: Member.where(branch_id: current_user.user_detail.branch_id)).limit(150)
       end
     end
   end

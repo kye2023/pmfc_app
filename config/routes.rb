@@ -39,6 +39,7 @@ Rails.application.routes.draw do
   end
   
   resources :dependents do
+    get :invalid_preview, on: :member
     get :age_validation
     collection do
       post :import
@@ -48,6 +49,7 @@ Rails.application.routes.draw do
   resources :batches do
     get :unlisted_preview, on: :member
     get :batch_submit, on: :member
+    patch :age_group, on: :member #temp
     get :batch_download, on: :member
     get :batch_preview, on: :member
     get :load_batch

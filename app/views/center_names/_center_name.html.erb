@@ -4,15 +4,38 @@
      <%# link_to '75-80 350,001 and above', center_name_url(center_name, type: "7680a"), class: 'btn btn-secondary btn-sm' %>
       <div class="row">
         <div class="col-lg-6">
-          <p><strong>Center :</strong><%= center_name.description %></p>
-          <p><strong>Branch :</strong><%= center_name.branch.name %></p>
-          <p><strong>Enrolled :</strong><%= center_name.coverages.count %></p>
+          <p><strong>Center :</strong><%= cn.description %></p>
+          <p><strong>Branch :</strong><%= cn.branch.name %></p>
+          <p><strong>Enrolled :</strong><%= cn.coverages.count %></p>
+          <p><strong>BID :</strong><%= cn.branch_id %></p>
+          <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, center_names_path, class: 'btn btn-secondary btn-sm' %>
         </div>
       </div>
   </div>
   </div>
   <div class="card-footer">
-    <%= link_to '<i class="bi bi-arrow-bar-left"></i>'.html_safe, center_names_path, class: 'btn btn-secondary btn-sm' %>
+    <div class="row mb-3"><!--rmb-3-->
+      <div class="col-md-9">
+        <!--column-3-->
+        <%== pagy_bootstrap_nav(@pagy) %>
+        <%== pagy_info(@pagy) %>
+      </div>
+      <div class="col-md-3">
+        <!--column-6-->
+        <%= form_with( url: center_name_path, method: :get, data: {turbo_frame: "search_member"} ) do |form| %>
+          <div class="input-group mb-3">
+            <%= form.text_field :squery, placeholder: 'Search by last name...', class: "form-control" %>
+            <%#= form.submit raw('<i class="bi bi-search"></i>'), class: "btn btn-success" %>
+            <%= form.button class: "btn btn-success" do %>
+              <i class="bi bi-search"></i>
+            <% end %>
+            <% if params[:squery].present? == true %>
+            <%= link_to '<i class="bi bi-arrow-counterclockwise"></i>'.html_safe, center_name_path, class: "btn btn-secondary" %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div><!--rmb-3-->
   </div>
 </div>
 
@@ -44,10 +67,10 @@
         </thead>
         <tbody>
           <%
-          @center_name.coverages.each do |cncvg|
+          scn.each do |cncvg|
             cn_aging = cncvg.coverage_aging
           %>
-          <tr>
+          <tr id="t_cname">
             <th scope="row" class="text-center"><%= cncvg.id %></th>
             <td><%= cncvg.member.get_cmember.upcase %></td>
             <td class="text-center"><div class="text-wrap fw-lighter"><%= to_curr(cncvg.loan_coverage) %></div></td>
@@ -67,4 +90,4 @@
     </div>  
   </div>  
 </div>  
-<%# console %>
+<%#= console %>
