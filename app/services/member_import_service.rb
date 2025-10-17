@@ -37,28 +37,22 @@ class MemberImportService
         branch_id: @branch_id
       }
     
-      member = Member.find_or_initialize_by(
-        last_name: member_hash[:last_name],
-        first_name: member_hash[:first_name],
-        middle_name: member_hash[:middle_name],
-        birth_date: member_hash[:birth_date]
-      )
+      # member = Member.find_or_initialize_by(last_name: member_hash[:last_name],first_name: member_hash[:first_name],middle_name: member_hash[:middle_name],birth_date: member_hash[:birth_date])
 
-      
+      member = Member.where(last_name: member_hash[:last_name],first_name: member_hash[:first_name]).where("middle_name LIKE ?", "#{member_hash[:middle_name][0]}").where(birth_date: member_hash[:birth_date])
 
-      if member.persisted? == true
+      # raise "errors"
+      if member.present? == true
        #member.update(member_hash)
        row["STATUS"] = "Existing"
        next
       else
-        nmember = Member.new(member_hash)
-        if nmember.save
-          row["STATUS"] = "Uploaded"
-        else
-          row["STATUS"] = "Error: #{nmember.errors.full_messages.join(', ')}"
-        end
+        nmember = Member.create(member_hash)
+        nmember = Member.assign_attributes(member_hash)
+        nmember.save!
+        row["STATUS"] = "Uploaded"
       end
-    
+      
     end
 
     # "Success!\nNew :"+"#{mbr_ncount}"+"\nExisting :"+"#{mbr_ecount}"
