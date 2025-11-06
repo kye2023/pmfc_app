@@ -39,16 +39,15 @@ class MemberImportService
     
       # member = Member.find_or_initialize_by(last_name: member_hash[:last_name],first_name: member_hash[:first_name],middle_name: member_hash[:middle_name],birth_date: member_hash[:birth_date])
 
-      member = Member.where(last_name: member_hash[:last_name],first_name: member_hash[:first_name]).where("middle_name LIKE ?", "#{member_hash[:middle_name][0]}").where(birth_date: member_hash[:birth_date])
+      member = Member.where(last_name: member_hash[:last_name],first_name: member_hash[:first_name]).where("middle_name LIKE ?", "#{member_hash[:middle_name][0]}%").where(birth_date: member_hash[:birth_date])
 
       # raise "errors"
-      if member.present? == true
+      if member.present?
        #member.update(member_hash)
        row["STATUS"] = "Existing"
        next
       else
         nmember = Member.create(member_hash)
-        nmember = Member.assign_attributes(member_hash)
         nmember.save!
         row["STATUS"] = "Uploaded"
       end

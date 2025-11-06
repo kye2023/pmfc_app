@@ -63,7 +63,6 @@ class DependentImportService
           if new_dep == true
             dependent_hash[:member_id] = member_id.id
             new_dependent = Dependent.create(dependent_hash)
-            new_dependent.assign_attributes(dependent_hash)
             new_dependent.save!
             row["STATUS"] = "New"
             row["Remarks"] = "O"
