@@ -116,19 +116,18 @@ class BatchImportCoverage
             next
           end
         else
+          # center not present
           row["up_STATUS"] = "No_Center_Name"
           row["cvgID"] = "-"
           next    
         end  
       else
+        # term not present
         row["up_STATUS"] = "Invalid_term"
         row["cvgID"] = "-"
         next
       end
     end
-   
-    # "Success\n#{up_loaded}\n#{e_xisting}\n#{new_member_counter}"
-    
   end
 
 #----------------------------------------COVERAGE-method--------------------------------------------------------
